@@ -1,0 +1,9 @@
+[submodule "vendor/plugins/restful_authentication"]
+	path = vendor/plugins/restful_authentication
+	url = git://activereload.net/restful_authentication.git
+[submodule "vendor/plugins/custom_scaffold"]
+	path = vendor/plugins/custom_scaffold
+	url = git://activereload.net/custom_scaffold.git
+[submodule "vendor/plugins/rspec_on_rails_on_crack"]
+	path = vendor/plugins/rspec_on_rails_on_crack
+	url = git://activereload.net/rspec_on_rails_on_crack.git
