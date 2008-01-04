@@ -1,0 +1,5 @@
+log
+config/database.yml
+db/*.sqlite3
+.rake_tasks
+vendor/rails
