@@ -4,8 +4,11 @@ class UsersController < ApplicationController
   
   # Protect these actions behind an admin login
   # before_filter :admin_required, :only => [:suspend, :unsuspend, :destroy, :purge]
-  before_filter :find_user, :only => [:suspend, :unsuspend, :destroy, :purge]
-  
+  before_filter :find_user, :only => [:show, :suspend, :unsuspend, :destroy, :purge]
+
+  def index
+    @users = User.find :all, :order => 'login'
+  end
 
   # render new.rhtml
   def new

@@ -1,5 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :users, :statuses
+  map.root :controller => 'users', :action => 'index'
+
+  map.resources :statuses
+  map.resources :users, :has_many => :statuses
   map.resource :session
 
   map.activate '/activate/:activation_code', :controller => 'users',    :action => 'activate', :activation_code => nil

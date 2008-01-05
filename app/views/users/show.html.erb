@@ -1,0 +1,6 @@
+<h1><%=h @user.login %></h1>
+
+<% form_for @user.statuses.build, :url => new_user_status_path(@user) do |f| -%>
+	<p><%= f.text_area :message %></p>
+	<p><%= submit_tag :Update %></p>
+<% end -%>
