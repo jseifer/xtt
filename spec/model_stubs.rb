@@ -7,6 +7,10 @@ ModelStubbing.define_models do
       :created_at => current_time - 5.days, :remember_token => 'foo-bar', :remember_token_expires_at => current_time + 5.days,
       :activation_code => '8f24789ae988411ccf33ab0c30fe9106fab32e9b', :activated_at => current_time - 4.days
   end
+  
+  model Status do
+    stub :user => all_stubs(:user), :message => 'foo', :state => 'processed', :hours => 5
+  end
 end
 
 ModelStubbing.define_models :users do 
@@ -15,6 +19,9 @@ ModelStubbing.define_models :users do
     stub :pending,   :login => 'pending-user',   :email => 'pending-user@example.com',   :state => 'pending', :activated_at => nil, :remember_token => 'asdf', :activation_code => 'abcdef'
     stub :suspended, :login => 'suspended-user', :email => 'suspended-user@example.com', :state => 'suspended', :remember_token => 'dfdfd'
   end
+end
+
+ModelStubbing.define_models :statuses do
 end
 
 ModelStubbing.define_models :stubbed, :insert => false

@@ -9,7 +9,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 1) do
+ActiveRecord::Schema.define(:version => 2) do
+
+  create_table "statuses", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "hours",      :default => 0
+    t.string   "message"
+    t.string   "state"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "statuses", ["created_at", "user_id"], :name => "index_statuses_on_created_at_and_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "login"
