@@ -2,7 +2,10 @@
 
 <ul>
 <% @user.statuses.each do |status| -%>
-	<li><%=h status.message %></li>
+	<li>
+		<%=h status.message %>
+		<% unless status.hours.zero? -%>(<%= pluralize status.hours, 'hour' %>)<% end -%>
+	</li>
 <% end -%>
 </ul>
 

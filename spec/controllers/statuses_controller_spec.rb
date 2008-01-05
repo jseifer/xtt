@@ -52,6 +52,7 @@ describe StatusesController, "POST #create" do
     @status = Status.new(@attributes)
     @user = users(:default)
     @user.stub!(:statuses).and_return([])
+    @user.statuses.stub!(:before).and_return(nil)
     @user.statuses.stub!(:build).and_return(@status)
     @status.user = @user
     User.stub!(:find).with(@user.id.to_s).and_return(@user)
