@@ -1,0 +1,7 @@
+<h1><%=h @project.name %></h1>
+
+<% if @status -%>
+<p><strong>Currently...</strong> <%=h @status.message %></p>
+<% end -%>
+
+<p><%= link_to 'Statuses', project_statuses_path(@project) %></p>

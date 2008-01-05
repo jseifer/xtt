@@ -1,10 +1,11 @@
 class StatusesController < ApplicationController
-  before_filter :find_user, :only => [:index, :new, :create]
+  before_filter :find_record, :only => :index
+  before_filter :find_user,   :only => [:new, :create]
 
   # USER SCOPE
   
   def index
-    @statuses = @user.statuses
+    @statuses = @record.statuses
 
     respond_to do |format|
       format.html # index.html.erb
@@ -27,7 +28,7 @@ class StatusesController < ApplicationController
     respond_to do |format|
       if @status.save
         flash[:notice] = 'Status was successfully created.'
-        format.html { redirect_to(user_path(@user)) }
+        format.html { redirect_to(@user) }
         format.xml  { render :xml  => @status, :status => :created, :location => @status }
       else
         format.html { render :action => "new" }
@@ -77,6 +78,17 @@ class StatusesController < ApplicationController
   end
   
 protected
+  def find_record
+    @record = 
+      if params[:user_id]
+        find_user
+      elsif params[:project_id]
+        @project = Project.find(params[:project_id])
+      else
+        raise ActiveRecord::RecordNotfound
+      end
+  end
+  
   def find_user
     @user = User.find(params[:user_id])
   end

@@ -2,16 +2,17 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 # USER SCOPE
 
-describe StatusesController, "GET #index" do
+describe StatusesController, "GET #index for user" do
   define_models
 
   act! { get :index, :user_id => users(:default).id }
 
   before do
+    @record   = @user = users(:default)
     @statuses = [statuses(:default)]
   end
   
-  it.assigns :statuses
+  it.assigns :statuses, :record, :user
   it.renders :template, :index
 
   describe StatusesController, "(xml)" do
@@ -19,7 +20,30 @@ describe StatusesController, "GET #index" do
     
     act! { get :index, :user_id => users(:default).id, :format => 'xml' }
 
-    it.assigns :statuses
+    it.assigns :statuses, :record, :user
+    it.renders :xml, :statuses
+  end
+end
+
+describe StatusesController, "GET #index for project" do
+  define_models
+
+  act! { get :index, :project_id => projects(:default).id }
+
+  before do
+    @record   = @project = projects(:default)
+    @statuses = [statuses(:default)]
+  end
+  
+  it.assigns :statuses, :record, :project
+  it.renders :template, :index
+
+  describe StatusesController, "(xml)" do
+    define_models
+    
+    act! { get :index, :project_id => projects(:default).id, :format => 'xml' }
+
+    it.assigns :statuses, :record, :project
     it.renders :xml, :statuses
   end
 end
