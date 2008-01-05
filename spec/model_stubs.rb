@@ -9,7 +9,7 @@ ModelStubbing.define_models do
   end
   
   model Status do
-    stub :user => all_stubs(:user), :message => 'foo', :state => 'processed', :hours => 5
+    stub :user => all_stubs(:user), :message => 'foo', :state => 'processed', :hours => 5, :created_at => current_time - 3.days
   end
 end
 
@@ -22,6 +22,10 @@ ModelStubbing.define_models :users do
 end
 
 ModelStubbing.define_models :statuses do
+  model Status do
+    stub :pending,    :state => 'pending',    :hours => 0, :created_at => current_time - 1.day
+    stub :processing, :state => 'processing', :hours => 0, :created_at => current_time - 2.days
+  end
 end
 
 ModelStubbing.define_models :stubbed, :insert => false

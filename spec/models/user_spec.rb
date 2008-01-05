@@ -1,5 +1,13 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
+describe User, "#statuses" do
+  define_models :statuses
+
+  it "retrieves associated statuses in reverse-chronological order" do
+    users(:default).statuses.should == [statuses(:pending), statuses(:processing), statuses(:default)]
+  end
+end
+
 describe User do
   define_models :users
 
