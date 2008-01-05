@@ -1,5 +1,9 @@
 <h1><%=h @user.login %></h1>
 
+<% if @status -%>
+<p><strong>Currently...</strong> <%=h @status.message %></p>
+<% end -%>
+
 <p><%= link_to 'Statuses', user_statuses_path(@user) %></p>
 
 <%= render :partial => "statuses/form", :locals => { :status => @user.statuses.build } %>

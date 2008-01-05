@@ -63,7 +63,7 @@ describe StatusesController, "POST #create" do
     act! { post :create, :user_id => users(:default).id, :status => @attributes }
     
     it.assigns :user, :status, :flash => { :notice => :not_nil }
-    it.redirects_to { user_statuses_path(@user) }
+    it.redirects_to { user_path(@user) }
   end
 
   describe StatusesController, "(unsuccessful creation)" do

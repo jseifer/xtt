@@ -10,6 +10,10 @@ class UsersController < ApplicationController
     @users = User.find :all, :order => 'login'
   end
 
+  def show
+    @status = @user.statuses.latest
+  end
+
   # render new.rhtml
   def new
   end

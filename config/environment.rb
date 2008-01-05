@@ -56,4 +56,9 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   config.active_record.default_timezone = :utc
+  
+  config.after_initialize do
+    gem 'has_finder'
+    require 'has_finder'
+  end
 end
