@@ -1,11 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-# Be sure to include AuthenticatedTestHelper in spec/spec_helper.rb instead
-# Then, you can remove it from this and the units test.
-include AuthenticatedTestHelper
-
 describe UsersController do
-  fixtures :users
+  define_models :users
 
   it 'allows signup' do
     lambda do
@@ -46,23 +42,27 @@ describe UsersController do
     end.should_not change(User, :count)
   end
   
-  
   it 'activates user' do
-    User.authenticate('aaron', 'test').should be_nil
-    get :activate, :activation_code => users(:aaron).activation_code
+    User.authenticate(users(:pending).login, 'test').should be_nil
+    get :activate, :activation_code => users(:pending).activation_code
     response.should redirect_to('/')
+    User.authenticate(users(:pending).login, 'test').should == users(:pending)
     flash[:notice].should_not be_nil
-    User.authenticate('aaron', 'test').should == users(:aaron)
   end
   
   it 'does not activate user without key' do
-      get :activate
-      flash[:notice].should be_nil
+    get :activate
+    flash[:notice].should be_nil
   end
   
   it 'does not activate user with blank key' do
-      get :activate, :activation_code => ''
-      flash[:notice].should be_nil
+    get :activate, :activation_code => ''
+    flash[:notice].should be_nil
+  end
+  
+  it "sends an email to the user on create" do
+    pending "Email functionality has not been written"
+    lambda{ create_user }.should change(ActionMailer::Base.deliveries, :size).by(1)
   end
   
   def create_user(options = {})
