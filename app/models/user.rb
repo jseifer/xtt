@@ -1,3 +1,3 @@
 class User < ActiveRecord::Base
-  concerned_with :validation, :authentication, :state_machine
+  concerned_with :authentication, :state_machine
 end
