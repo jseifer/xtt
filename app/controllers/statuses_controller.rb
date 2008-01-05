@@ -1,8 +1,10 @@
 class StatusesController < ApplicationController
-  # SCOPED TO USERS
+  before_filter :find_user, :only => [:index, :new, :create]
+
+  # USER SCOPE
   
   def index
-    @statuses = Status.find(:all)
+    @statuses = @user.statuses
 
     respond_to do |format|
       format.html # index.html.erb
@@ -20,12 +22,12 @@ class StatusesController < ApplicationController
   end
 
   def create
-    @status = Status.new(params[:status])
+    @status = @user.statuses.build(params[:status])
 
     respond_to do |format|
       if @status.save
         flash[:notice] = 'Status was successfully created.'
-        format.html { redirect_to(@status) }
+        format.html { redirect_to(user_statuses_path(@user)) }
         format.xml  { render :xml  => @status, :status => :created, :location => @status }
       else
         format.html { render :action => "new" }
@@ -34,7 +36,7 @@ class StatusesController < ApplicationController
     end
   end
 
-  # TOP LEVEL
+  # GLOBAL SCOPE
   
   def show
     @status = Status.find(params[:id])
@@ -72,5 +74,10 @@ class StatusesController < ApplicationController
       format.html { redirect_to(statuses_url) }
       format.xml  { head :ok }
     end
+  end
+  
+protected
+  def find_user
+    @user = User.find(params[:user_id])
   end
 end

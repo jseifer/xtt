@@ -1,0 +1,9 @@
+<h3>Recent Statuses for <%=h @user.login %></h3>
+
+<ul>
+<% @user.statuses.each do |status| -%>
+	<li><%=h status.message %></li>
+<% end -%>
+</ul>
+
+<%= render :partial => "statuses/form", :locals => { :status => @user.statuses.build } %>

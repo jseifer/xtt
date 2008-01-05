@@ -1,0 +1,7 @@
+<% form_for status, 
+	   :url    => status.new_record? ? user_statuses_path(@user) : status_path(status),
+	   :method => status.new_record? ? :post : :put \
+	 do |f| -%>
+	<p><%= f.text_area :message %></p>
+	<p><%= submit_tag :Update %></p>
+<% end -%>
