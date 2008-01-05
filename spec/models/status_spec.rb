@@ -95,6 +95,14 @@ describe Status, "in pending state" do
     @status.should be_processed
     @status.hours.should == 3
   end
+  
+  it "does no process @status hours if not billable" do
+    Status.update_all :project_id => nil
+    @status.reload
+    @status.process!
+    @status.should be_processed
+    @status.hours.should == 0
+  end
 end
 
 describe_validations_for Status, :user_id => 1, :message => 'foo bar' do
