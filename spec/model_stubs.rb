@@ -8,8 +8,12 @@ ModelStubbing.define_models do
       :activation_code => '8f24789ae988411ccf33ab0c30fe9106fab32e9b', :activated_at => current_time - 4.days
   end
   
+  model Project do
+    stub :name => 'project', :billable => true
+  end
+  
   model Status do
-    stub :user => all_stubs(:user), :message => 'foo', :state => 'processed', :hours => 5, :created_at => current_time - 2.days
+    stub :user => all_stubs(:user), :message => 'foo', :state => 'processed', :hours => 5, :created_at => current_time - 2.days, :project => all_stubs(:project)
   end
 end
 

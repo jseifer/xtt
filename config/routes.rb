@@ -1,7 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'users', :action => 'index'
 
-  map.resources :statuses
+  map.resources :statuses, :projects
   map.resources :users, :has_many => :statuses
   map.resource :session
 

@@ -1,33 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe User, "#statuses" do
-  define_models :statuses
-
-  before do
-    @user = users(:default)
-  end
-
-  describe User, "(order)" do
-    define_models do
-      model Status do
-        stub :pending, :state => 'pending', :hours => 0, :created_at => current_time - 3.days
-      end
-    end
-    
-    it "retrieves associated statuses in reverse-chronological order" do
-      @user.statuses.should == [statuses(:default), statuses(:pending)]
-    end
-  end
-
-  it "retrieves status after given status" do
-    @user.statuses.after(statuses(:default)).should == statuses(:pending)
-  end
-  
-  it "retrieves status before given status" do
-    @user.statuses.before(statuses(:pending)).should == statuses(:default)
-  end
-end
-
 describe User do
   define_models :users
 

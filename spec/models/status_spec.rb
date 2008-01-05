@@ -14,6 +14,23 @@ describe Status do
   it "#next retrieves previous status" do
     statuses(:pending).previous.should == statuses(:default)
   end
+  
+  it "is billable if project is billable" do
+    projects(:default).should be_billable
+    statuses(:default).project.should == projects(:default)
+    statuses(:default).should be_billable
+  end
+  
+  it "is not billable if project is not billable" do
+    projects(:default).update_attribute(:billable, false)
+    statuses(:default).project.should == projects(:default)
+    statuses(:default).should_not be_billable
+  end
+  
+  it "is not billable if there is no project" do
+    Status.update_all :project_id => nil
+    statuses(:default).reload.should_not be_billable
+  end
 end
 
 describe Status, "being created" do

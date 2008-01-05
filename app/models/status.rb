@@ -4,6 +4,7 @@ class Status < ActiveRecord::Base
   attr_writer :followup
   
   belongs_to :user
+  belongs_to :project
   
   acts_as_state_machine :initial => :pending
   state :pending, :enter => :process_previous
@@ -13,14 +14,20 @@ class Status < ActiveRecord::Base
     transitions :from => :pending, :to => :processed, :guard => :calculate_hours
   end
 
-  def followup
+  def followup(reload = false)
+    @followup   = nil if reload
     @followup ||= user.statuses.after(self) || :false
     @followup == :false ? nil : @followup
   end
   
-  def previous
+  def previous(reload = false)
+    @previous   = nil if reload
     @previous ||= user.statuses.before(self) || :false
     @previous == :false ? nil : @previous
+  end
+  
+  def billable?
+    project && project.billable?
   end
 
 protected
