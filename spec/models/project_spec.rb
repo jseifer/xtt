@@ -1,8 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
-describe Project do
-  # Replace this with your real tests.
-  it "passed" do
-    1.should == 1
-  end
+describe_validations_for Project, :name => 'foo', :account_id => 32 do
+  presence_of :name, :account_id
 end

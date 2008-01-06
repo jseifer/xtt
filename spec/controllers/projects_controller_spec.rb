@@ -6,8 +6,10 @@ describe ProjectsController, "GET #index" do
   act! { get :index }
 
   before do
+    @account  = accounts(:default)
     @projects = []
-    Project.stub!(:find).with(:all).and_return(@projects)
+    @account.stub!(:projects).and_return(@projects)
+    controller.stub!(:account).and_return(@account)
   end
   
   it.assigns :projects
@@ -29,8 +31,11 @@ describe ProjectsController, "GET #show" do
   act! { get :show, :id => 1 }
 
   before do
-    @project  = projects(:default)
-    Project.stub!(:find).with('1').and_return(@project)
+    @account = accounts(:default)
+    @project = projects(:default)
+    @account.stub!(:projects).and_return([])
+    @account.projects.stub!(:find).with('1').and_return(@project)
+    controller.stub!(:account).and_return(@account)
   end
   
   it.assigns :project
@@ -72,8 +77,11 @@ describe ProjectsController, "GET #edit" do
   act! { get :edit, :id => 1 }
   
   before do
-    @project  = projects(:default)
-    Project.stub!(:find).with('1').and_return(@project)
+    @account = accounts(:default)
+    @project = projects(:default)
+    @account.stub!(:projects).and_return([])
+    @account.projects.stub!(:find).with('1').and_return(@project)
+    controller.stub!(:account).and_return(@account)
   end
 
   it.assigns :project
@@ -84,7 +92,10 @@ describe ProjectsController, "POST #create" do
   before do
     @attributes = {}
     @project = mock_model Project, :new_record? => false, :errors => []
-    Project.stub!(:new).with(@attributes).and_return(@project)
+    @account = accounts(:default)
+    @account.stub!(:projects).and_return([])
+    @account.projects.stub!(:build).with(@attributes).and_return(@project)
+    controller.stub!(:account).and_return(@account)
   end
   
   describe ProjectsController, "(successful creation)" do
@@ -140,8 +151,11 @@ end
 describe ProjectsController, "PUT #update" do
   before do
     @attributes = {}
+    @account = accounts(:default)
     @project = projects(:default)
-    Project.stub!(:find).with('1').and_return(@project)
+    @account.stub!(:projects).and_return([])
+    @account.projects.stub!(:find).with('1').and_return(@project)
+    controller.stub!(:account).and_return(@account)
   end
   
   describe ProjectsController, "(successful save)" do
@@ -198,9 +212,12 @@ describe ProjectsController, "DELETE #destroy" do
   act! { delete :destroy, :id => 1 }
   
   before do
+    @account = accounts(:default)
     @project = projects(:default)
     @project.stub!(:destroy)
-    Project.stub!(:find).with('1').and_return(@project)
+    @account.stub!(:projects).and_return([])
+    @account.projects.stub!(:find).with('1').and_return(@project)
+    controller.stub!(:account).and_return(@account)
   end
 
   it.assigns :project

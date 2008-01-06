@@ -1,30 +1,15 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
+describe_validations_for User, 
+  :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire', :account_id => 5 do
+    presence_of :login, :password, :password_confirmation, :email, :account_id
+end
+
 describe User do
   define_models :users
 
-  describe User, "being created" do
-    define_models :users
-  
-    before do
-      @creating_user = lambda do
-        user = create_user
-        violated "#{user.errors.full_messages.to_sentence}" if user.new_record?
-      end
-    end
-  
-    it 'increments User.count' do
-      @creating_user.should change(User, :count).by(1)
-    end
-  end
-
-  [:login, :password, :password_confirmation, :email].each do |attr|
-    it "requires #{attr}" do
-      lambda do
-        u = create_user attr => nil
-        u.errors.on(attr).should_not be_nil
-      end.should_not change(User, :count)
-    end
+  it 'being created increments User.count' do
+    method(:create_user).should change(User, :count).by(1)
   end
 
   it 'resets password' do
@@ -104,6 +89,7 @@ describe User do
 
 protected
   def create_user(options = {})
-    User.create({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
+    accounts(options.delete(:account) || :default).users.create(
+      { :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
   end
 end

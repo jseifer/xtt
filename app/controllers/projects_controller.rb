@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   def index
-    @projects = Project.find(:all)
+    @projects = account.projects
 
     respond_to do |format|
       format.html # index.html.erb
@@ -9,7 +9,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.find(params[:id])
+    @project = account.projects.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -27,11 +27,11 @@ class ProjectsController < ApplicationController
   end
 
   def edit
-    @project = Project.find(params[:id])
+    @project = account.projects.find(params[:id])
   end
 
   def create
-    @project = Project.new(params[:project])
+    @project = account.projects.build(params[:project])
 
     respond_to do |format|
       if @project.save
@@ -46,7 +46,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    @project = Project.find(params[:id])
+    @project = account.projects.find(params[:id])
 
     respond_to do |format|
       if @project.update_attributes(params[:project])
@@ -61,7 +61,7 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
-    @project = Project.find(params[:id])
+    @project = account.projects.find(params[:id])
     @project.destroy
 
     respond_to do |format|

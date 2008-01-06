@@ -3,6 +3,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe SessionsController do
   define_models
 
+  before do
+    @account = accounts(:default)
+    controller.stub!(:account).and_return(@account)
+  end
+
   it 'logins and redirects' do
     post :create, :login => users(:default).login, :password => 'test'
     session[:user_id].should_not be_nil

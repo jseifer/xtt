@@ -7,7 +7,7 @@ class UsersController < ApplicationController
   before_filter :find_user, :only => [:show, :suspend, :unsuspend, :destroy, :purge]
 
   def index
-    @users = User.find :all, :order => 'login'
+    @users = account.users
   end
 
   def show
@@ -24,7 +24,7 @@ class UsersController < ApplicationController
     # request forgery protection.
     # uncomment at your own risk
     # reset_session
-    @user = User.new(params[:user])
+    @user = account.users.build(params[:user])
     @user.save!
     self.current_user = @user
     redirect_back_or_default('/')
@@ -34,7 +34,7 @@ class UsersController < ApplicationController
   end
 
   def activate
-    self.current_user = params[:activation_code].blank? ? :false : User.find_by_activation_code(params[:activation_code])
+    self.current_user = params[:activation_code].blank? ? :false : account.users.find_by_activation_code(params[:activation_code])
     if logged_in? && !current_user.active?
       current_user.activate!
       flash[:notice] = "Signup complete!"
@@ -64,7 +64,7 @@ class UsersController < ApplicationController
 
 protected
   def find_user
-    @user = User.find(params[:id])
+    @user = account.users.find(params[:id])
   end
 
 end

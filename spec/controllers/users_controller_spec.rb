@@ -3,6 +3,11 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe UsersController do
   define_models :users
 
+  before do
+    @account = accounts(:default)
+    controller.stub!(:account).and_return(@account)
+  end
+
   it 'allows signup' do
     lambda do
       create_user
