@@ -3,6 +3,7 @@
 <ul>
 <% @record.statuses.each do |status| -%>
 	<li>
+		[<%= status.project? ? link_to(status.project.name, status.project) : :Out %>]
 		<%=h status.message %>
 		<% unless status.hours.zero? -%>(<%= pluralize status.hours, 'hour' %>)<% end -%>
 	</li>

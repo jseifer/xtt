@@ -5,7 +5,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :users, :has_many => :statuses
   map.resource :session
   
-  map.project_statuses_path 'projects/:project_id/statuses', :controller => 'statuses', :action => 'index'
+  map.project_statuses 'projects/:project_id/statuses', :controller => 'statuses', :action => 'index'
 
   map.activate '/activate/:activation_code', :controller => 'users',    :action => 'activate', :activation_code => nil
   map.signup   '/signup',                    :controller => 'users',    :action => 'new'

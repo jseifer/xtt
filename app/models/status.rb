@@ -29,6 +29,10 @@ class Status < ActiveRecord::Base
   def billable?
     project && project.billable?
   end
+  
+  def project?
+    !project_id.nil?
+  end
 
 protected
   def calculate_hours
