@@ -1,0 +1,12 @@
+<p>
+<% if logged_in? -%>
+	<%= link_to 'Projects', projects_path %>
+	<%= link_to 'Statuses', user_statuses_path(current_user) %>
+	<%= link_to 'Logout', logout_path %>
+<% else -%>
+	<%= link_to 'Login', login_path %>
+	<%= link_to 'Signup', signup_path %>
+<% end -%>
+</p>
+
+<%= yield %>
