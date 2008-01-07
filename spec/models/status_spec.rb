@@ -73,6 +73,7 @@ describe Status, "in pending state" do
   end
   
   before do
+    @new    = statuses(:new)
     @status = statuses(:pending)
   end
   
@@ -88,12 +89,17 @@ describe Status, "in pending state" do
     @status.should be_pending
   end
   
-  it "processes @status hours" do
-    @status.hours.should == 0
-    @status.should be_pending
-    @status.process!
-    @status.should be_processed
-    @status.hours.should == 3
+  {0 => 0, 10 => 0.25, 15 => 0.25, 25 => 0.5, 30 => 0.5, 45 => 0.75}.each do |min, result|
+    it "processes @status hours in quarters at #{min} minutes past the hour" do
+      @new.created_at = @new.created_at + min.minutes
+      @new.save
+
+      @status.hours.should == 0
+      @status.should be_pending
+      @status.process!
+      @status.should be_processed
+      @status.hours.to_s.should == (3.to_f + result).to_s
+    end
   end
   
   it "does no process @status hours if not billable" do

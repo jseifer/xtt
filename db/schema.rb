@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 4) do
+ActiveRecord::Schema.define(:version => 5) do
 
   create_table "accounts", :force => true do |t|
     t.string   "host"
@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(:version => 4) do
 
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
-    t.integer  "hours",      :default => 0
+    t.decimal  "hours",      :default => 0.0
     t.string   "message"
     t.string   "state"
     t.datetime "created_at"
