@@ -1,7 +1,7 @@
 <h1><%=h @user.login %></h1>
 
 <% if @status -%>
-<p><strong>Currently...</strong> <%=h @status.message %></p>
+<p><strong>Currently...</strong> <%=h @status.message %> in <%= link_to h(@status.project.name), @status.project %>, <%= distance_of_time_in_words_to_now @status.created_at %> ago</p>
 <% end -%>
 
 <p><%= link_to 'Statuses', user_statuses_path(@user) %></p>

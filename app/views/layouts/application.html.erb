@@ -1,12 +1,41 @@
-<p>
-<% if logged_in? -%>
-	<%= link_to 'Projects', projects_path %>
-	<%= link_to 'Statuses', user_statuses_path(current_user) %>
-	<%= link_to 'Logout', logout_path %>
-<% else -%>
-	<%= link_to 'Login', login_path %>
-	<%= link_to 'Signup', signup_path %>
-<% end -%>
-</p>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<%= yield %>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <%= stylesheet_link_tag 'court3' %>
+  <%= javascript_include_tag :defaults %>
+</head>
+
+<body>
+  <div id="menu">
+  <% if logged_in? -%>
+  	<%= link_to 'Projects', projects_path %>
+  	<%= link_to 'Statuses', user_statuses_path(current_user) %>
+
+    <div class="login">
+      <%= link_to h(current_user.login), current_user %>
+      <% if status = current_user.statuses.latest %>
+        is currently: <%= link_to h(status.message), status %>
+      <% end %>
+      <% if project = current_user.projects.latest %>
+        <%= link_to h(project.name), project %>
+      <% end %>
+      &raquo;
+    	<%= link_to 'Logout', logout_path %>
+    </div>
+  <% else -%>
+    <div class="login">
+  	  <%= link_to 'Login', login_path %>
+  	  <%= link_to 'Signup', signup_path %>
+  	</div>
+  <% end -%>
+  </div>
+  
+  <div id="content">
+  <%= yield %>
+  </div>
+
+</body>
+</html>

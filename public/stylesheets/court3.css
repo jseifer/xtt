@@ -1,0 +1,27 @@
+html,body {
+  margin: 0;
+  padding: 0;
+}
+
+.login {
+  float: right;
+}
+
+#menu {
+  padding: 5px;
+  background-color: #eee;
+  font-family: Helvetica, Verdana, Arial, sans serif;
+  font-size: 80%;
+}
+#menu a {
+  color: #333;
+}
+
+#content { 
+  padding: 5px;
+}
+
+
+span.timer {
+  color: #888;
+}
