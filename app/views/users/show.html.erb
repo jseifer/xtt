@@ -12,4 +12,7 @@
 
 <p><%= link_to 'Statuses', user_statuses_path(@user) %></p>
 
+<div class="inset">
+  <h2>Change to something else</h2>
 <%= render :partial => "statuses/form", :locals => { :status => @user.statuses.build } %>
+</div>

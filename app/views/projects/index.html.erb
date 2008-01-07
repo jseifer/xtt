@@ -1,16 +1,20 @@
-<ul>
+<h1>Projects</h1>
+
 <% @projects.each do |project| -%>
-	<li><%= link_to h(project.name), project %>
-	  <% if statuses = project.statuses.select {|s| s.followup.nil? } and statuses.any? %>
-	  <ul>
+  <h2><%= link_to h(project.name), project %></h2>
+  <span class="timer"><%= nice_time project.statuses.sum_accurate_time %></span>
+  <%= project.hours %>
+  <% if statuses = project.statuses.select {|s| s.followup.nil? } and statuses.any? %>
+	  <table>
 	    <% statuses.each do |status| %>
-	    <li><%= link_to h(status.user.login), status.user %> 
-	      <%= nice_timer_for status %>
-      </li>
-	    <% end %>
-	  </ul>
-	  <% end %></li>
+	    <tr>
+	      <td><%= link_to h(status.user.login), status.user %></td>
+	      <td><%=h status.message %></td>
+	      <td><%= nice_timer_for status %></td>
+	    </tr>
+	    <% end # status -%>
+    </table>
+	  <% end %>
 <% end -%>
-</ul>
 
 <p><%= link_to 'New Project', new_project_path %></p>

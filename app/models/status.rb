@@ -45,7 +45,8 @@ class Status < ActiveRecord::Base
 protected
   def calculate_hours
     return false if followup.nil?
-    self.hours = billable? ? ((followup.created_at - created_at).to_f / 1.hour.to_f).ceil : 0
+    quarters = billable? ? ((followup.created_at - created_at).to_f / 15.minutes.to_f).ceil : 0
+    self.hours = quarters / 4
   end
   
   def process_previous

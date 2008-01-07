@@ -1,13 +1,19 @@
 <h3>Recent Statuses for <%=h(@user ? @user.login : @project.name) %></h3>
 
-<ul>
+<table>
 <% @record.statuses.each do |status| -%>
-	<li>
+<tr>
+  <td><%=h status.created_at %></td>
+	<td>
 		[<%= status.project? ? link_to(status.project.name, status.project) : :Out %>]
+	</td>
+	<td>
 		<%=h status.message %>
 		<% unless status.hours.zero? -%>(<%= pluralize status.hours, 'hour' %>)<% end -%>
-	</li>
+	</td>
+	<td><%= nice_timer_for status %></td>
+</tr>
 <% end -%>
-</ul>
+</table>
 
 <%= render :partial => "statuses/form", :locals => { :status => @user.statuses.build } if @user %>
