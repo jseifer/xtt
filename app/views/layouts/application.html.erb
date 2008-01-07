@@ -18,9 +18,11 @@
       <%= link_to h(current_user.login), current_user %>
       <% if status = current_user.statuses.latest %>
         is currently: <%= link_to h(status.message), status %>
-      <% end %>
-      <% if project = current_user.projects.latest %>
+        <% if project = status.project %>
         <%= link_to h(project.name), project %>
+        <% else %>
+        (Out)
+        <% end %>
       <% end %>
       &raquo;
     	<%= link_to 'Logout', logout_path %>
