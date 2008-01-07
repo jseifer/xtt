@@ -14,11 +14,12 @@ module ApplicationHelper
   def nice_timer_for(status)
     if status.followup.nil?
       (@content_for_head ||= "")
-      @content_for_head += periodically_call_remote(:url => status_path(status), 
-  	      :update => "timer_#{dom_id(status)}",
-  	      :frequency => 1,
-  	      :method => :get)
-  	end
+      @content_for_head += <<-JS
+  <script type='text/javascript'>
+    new PeriodicalExecuter(function() { timerIncrement('timer_#{dom_id(status)}') }, 1);
+  </script>
+JS
+  end
     "<span class=\"timer\" id=\"timer_#{dom_id status}\">#{nice_time status.accurate_time}</span>"
   end
     
