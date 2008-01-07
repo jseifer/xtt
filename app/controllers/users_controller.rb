@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  # Protect these actions behind an admin login
-  # before_filter :admin_required, :only => [:suspend, :unsuspend, :destroy, :purge]
+  before_filter :login_required, :except => :activate
+  before_filter :admin_required, :only => [:suspend, :unsuspend, :destroy, :purge]
   before_filter :find_user, :only => [:show, :suspend, :unsuspend, :destroy, :purge]
 
   def index
@@ -17,10 +17,6 @@ class UsersController < ApplicationController
 
   def create
     cookies.delete :auth_token
-    # protects against session fixation attacks, wreaks havoc with 
-    # request forgery protection.
-    # uncomment at your own risk
-    # reset_session
     @user = account.users.build(params[:user])
     @user.save!
     self.current_user = @user
@@ -63,5 +59,4 @@ protected
   def find_user
     @user = account.users.find(params[:id])
   end
-
 end

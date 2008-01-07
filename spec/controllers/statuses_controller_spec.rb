@@ -10,6 +10,7 @@ describe StatusesController, "GET #index for user" do
   before do
     @record   = @user = users(:default)
     @statuses = [statuses(:default)]
+    controller.stub!(:login_required)
   end
   
   it.assigns :statuses, :record, :user
@@ -33,6 +34,7 @@ describe StatusesController, "GET #index for project" do
   before do
     @record   = @project = projects(:default)
     @statuses = [statuses(:default)]
+    controller.stub!(:login_required)
   end
   
   it.assigns :statuses, :record, :project
@@ -53,6 +55,7 @@ describe StatusesController, "GET #new" do
   act! { get :new, :user_id => users(:default).id }
   before do
     @status  = Status.new
+    controller.stub!(:login_required)
   end
 
   it "assigns @status" do
@@ -80,6 +83,7 @@ describe StatusesController, "POST #create" do
     @user.statuses.stub!(:build).and_return(@status)
     @status.user = @user
     User.stub!(:find).with(@user.id.to_s).and_return(@user)
+    controller.stub!(:login_required)
   end
   
   describe StatusesController, "(successful creation)" do
@@ -96,6 +100,7 @@ describe StatusesController, "POST #create" do
 
     before do
       @status.message = nil
+      controller.stub!(:login_required)
     end
     
     it.assigns :user, :status
@@ -116,6 +121,7 @@ describe StatusesController, "POST #create" do
 
     before do
       @status.message = nil
+      controller.stub!(:login_required)
     end
     
     it.assigns :user, :status
@@ -133,6 +139,7 @@ describe StatusesController, "GET #show" do
   before do
     @status  = statuses(:default)
     Status.stub!(:find).with('1').and_return(@status)
+    controller.stub!(:login_required)
   end
   
   it.assigns :status
@@ -154,6 +161,7 @@ describe StatusesController, "GET #edit" do
   before do
     @status  = statuses(:default)
     Status.stub!(:find).with('1').and_return(@status)
+    controller.stub!(:login_required)
   end
 
   it.assigns :status
@@ -165,6 +173,7 @@ describe StatusesController, "PUT #update" do
     @attributes = {}
     @status = statuses(:default)
     Status.stub!(:find).with('1').and_return(@status)
+    controller.stub!(:login_required)
   end
   
   describe StatusesController, "(successful save)" do
@@ -173,6 +182,7 @@ describe StatusesController, "PUT #update" do
 
     before do
       @status.stub!(:save).and_return(true)
+      controller.stub!(:login_required)
     end
     
     it.assigns :status, :flash => { :notice => :not_nil }
@@ -185,6 +195,7 @@ describe StatusesController, "PUT #update" do
 
     before do
       @status.stub!(:save).and_return(false)
+      controller.stub!(:login_required)
     end
     
     it.assigns :status
@@ -197,6 +208,7 @@ describe StatusesController, "PUT #update" do
 
     before do
       @status.stub!(:save).and_return(true)
+      controller.stub!(:login_required)
     end
     
     it.assigns :status
@@ -209,6 +221,7 @@ describe StatusesController, "PUT #update" do
 
     before do
       @status.stub!(:save).and_return(false)
+      controller.stub!(:login_required)
     end
     
     it.assigns :status
@@ -224,6 +237,7 @@ describe StatusesController, "DELETE #destroy" do
     @status = statuses(:default)
     @status.stub!(:destroy)
     Status.stub!(:find).with('1').and_return(@status)
+    controller.stub!(:login_required)
   end
 
   it.assigns :status

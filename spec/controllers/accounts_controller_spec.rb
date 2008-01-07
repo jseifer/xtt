@@ -8,6 +8,7 @@ describe AccountsController, "GET #index" do
   before do
     @accounts = []
     Account.stub!(:find).with(:all).and_return(@accounts)
+    controller.stub!(:admin_required)
   end
   
   it.assigns :accounts
@@ -22,6 +23,7 @@ describe AccountsController, "GET #show" do
   before do
     @account  = accounts(:default)
     Account.stub!(:find).with('1').and_return(@account)
+    controller.stub!(:admin_required)
   end
   
   it.assigns :account
@@ -33,6 +35,7 @@ describe AccountsController, "GET #new" do
   act! { get :new }
   before do
     @account  = Account.new
+    controller.stub!(:admin_required)
   end
 
   it "assigns @account" do
@@ -50,6 +53,7 @@ describe AccountsController, "GET #edit" do
   before do
     @account  = accounts(:default)
     Account.stub!(:find).with('1').and_return(@account)
+    controller.stub!(:admin_required)
   end
 
   it.assigns :account
@@ -61,6 +65,7 @@ describe AccountsController, "POST #create" do
     @attributes = {}
     @account = mock_model Account, :new_record? => false, :errors => []
     Account.stub!(:new).with(@attributes).and_return(@account)
+    controller.stub!(:admin_required)
   end
   
   describe AccountsController, "(successful creation)" do
@@ -69,6 +74,7 @@ describe AccountsController, "POST #create" do
 
     before do
       @account.stub!(:save).and_return(true)
+      controller.stub!(:admin_required)
     end
     
     it.assigns :account, :flash => { :notice => :not_nil }
@@ -81,6 +87,7 @@ describe AccountsController, "POST #create" do
 
     before do
       @account.stub!(:save).and_return(false)
+      controller.stub!(:admin_required)
     end
     
     it.assigns :account
@@ -93,6 +100,7 @@ describe AccountsController, "PUT #update" do
     @attributes = {}
     @account = accounts(:default)
     Account.stub!(:find).with('1').and_return(@account)
+    controller.stub!(:admin_required)
   end
   
   describe AccountsController, "(successful save)" do
@@ -101,6 +109,7 @@ describe AccountsController, "PUT #update" do
 
     before do
       @account.stub!(:save).and_return(true)
+      controller.stub!(:admin_required)
     end
     
     it.assigns :account, :flash => { :notice => :not_nil }
@@ -113,6 +122,7 @@ describe AccountsController, "PUT #update" do
 
     before do
       @account.stub!(:save).and_return(false)
+      controller.stub!(:admin_required)
     end
     
     it.assigns :account
@@ -128,6 +138,7 @@ describe AccountsController, "DELETE #destroy" do
     @account = accounts(:default)
     @account.stub!(:destroy)
     Account.stub!(:find).with('1').and_return(@account)
+    controller.stub!(:admin_required)
   end
 
   it.assigns :account

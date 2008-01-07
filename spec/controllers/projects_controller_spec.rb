@@ -10,6 +10,7 @@ describe ProjectsController, "GET #index" do
     @projects = []
     @account.stub!(:projects).and_return(@projects)
     controller.stub!(:account).and_return(@account)
+    controller.stub!(:login_required)
   end
   
   it.assigns :projects
@@ -36,6 +37,7 @@ describe ProjectsController, "GET #show" do
     @account.stub!(:projects).and_return([])
     @account.projects.stub!(:find).with('1').and_return(@project)
     controller.stub!(:account).and_return(@account)
+    controller.stub!(:login_required)
   end
   
   it.assigns :project
@@ -55,6 +57,7 @@ describe ProjectsController, "GET #new" do
   act! { get :new }
   before do
     @project  = Project.new
+    controller.stub!(:login_required)
   end
 
   it "assigns @project" do
@@ -82,6 +85,7 @@ describe ProjectsController, "GET #edit" do
     @account.stub!(:projects).and_return([])
     @account.projects.stub!(:find).with('1').and_return(@project)
     controller.stub!(:account).and_return(@account)
+    controller.stub!(:login_required)
   end
 
   it.assigns :project
@@ -96,6 +100,7 @@ describe ProjectsController, "POST #create" do
     @account.stub!(:projects).and_return([])
     @account.projects.stub!(:build).with(@attributes).and_return(@project)
     controller.stub!(:account).and_return(@account)
+    controller.stub!(:login_required)
   end
   
   describe ProjectsController, "(successful creation)" do
@@ -104,6 +109,7 @@ describe ProjectsController, "POST #create" do
 
     before do
       @project.stub!(:save).and_return(true)
+      controller.stub!(:login_required)
     end
     
     it.assigns :project, :flash => { :notice => :not_nil }
@@ -116,6 +122,7 @@ describe ProjectsController, "POST #create" do
 
     before do
       @project.stub!(:save).and_return(false)
+      controller.stub!(:login_required)
     end
     
     it.assigns :project
@@ -129,6 +136,7 @@ describe ProjectsController, "POST #create" do
     before do
       @project.stub!(:save).and_return(true)
       @project.stub!(:to_xml).and_return("mocked content")
+      controller.stub!(:login_required)
     end
     
     it.assigns :project, :headers => { :Location => lambda { project_url(@project) } }
@@ -141,6 +149,7 @@ describe ProjectsController, "POST #create" do
 
     before do
       @project.stub!(:save).and_return(false)
+      controller.stub!(:login_required)
     end
     
     it.assigns :project
@@ -156,6 +165,7 @@ describe ProjectsController, "PUT #update" do
     @account.stub!(:projects).and_return([])
     @account.projects.stub!(:find).with('1').and_return(@project)
     controller.stub!(:account).and_return(@account)
+    controller.stub!(:login_required)
   end
   
   describe ProjectsController, "(successful save)" do
@@ -164,6 +174,7 @@ describe ProjectsController, "PUT #update" do
 
     before do
       @project.stub!(:save).and_return(true)
+      controller.stub!(:login_required)
     end
     
     it.assigns :project, :flash => { :notice => :not_nil }
@@ -176,6 +187,7 @@ describe ProjectsController, "PUT #update" do
 
     before do
       @project.stub!(:save).and_return(false)
+      controller.stub!(:login_required)
     end
     
     it.assigns :project
@@ -188,6 +200,7 @@ describe ProjectsController, "PUT #update" do
 
     before do
       @project.stub!(:save).and_return(true)
+      controller.stub!(:login_required)
     end
     
     it.assigns :project
@@ -200,6 +213,7 @@ describe ProjectsController, "PUT #update" do
 
     before do
       @project.stub!(:save).and_return(false)
+      controller.stub!(:login_required)
     end
     
     it.assigns :project
@@ -218,6 +232,7 @@ describe ProjectsController, "DELETE #destroy" do
     @account.stub!(:projects).and_return([])
     @account.projects.stub!(:find).with('1').and_return(@project)
     controller.stub!(:account).and_return(@account)
+    controller.stub!(:login_required)
   end
 
   it.assigns :project

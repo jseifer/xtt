@@ -1,4 +1,7 @@
 class AccountsController < ApplicationController
+  # TEMPORARY UNTIL REAL SIGNUP IS ADDED
+  before_filter :admin_required
+
   def index
     @accounts = Account.find(:all)
   end

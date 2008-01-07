@@ -31,7 +31,7 @@ module AuthenticatedSystem
     #    current_user.login != "bob"
     #  end
     def authorized?
-      logged_in?
+      logged_in? && account.users.include?(current_user)
     end
 
     # Filter method to enforce a login requirement.
@@ -51,6 +51,10 @@ module AuthenticatedSystem
     def login_required
       authorized? || access_denied
     end
+    
+    def admin_required
+      access_denied
+    end
 
     # Redirect as appropriate when an access request fails.
     #
@@ -64,7 +68,7 @@ module AuthenticatedSystem
       respond_to do |format|
         format.html do
           store_location
-          redirect_to new_session
+          redirect_to new_session_path
         end
         format.xml do
           request_http_basic_authentication 'Web Password'

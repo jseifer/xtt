@@ -1,4 +1,5 @@
 class StatusesController < ApplicationController
+  before_filter :login_required
   before_filter :find_record, :only => :index
   before_filter :find_user,   :only => [:new, :create]
 
