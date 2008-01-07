@@ -1,6 +1,15 @@
 <ul>
 <% @projects.each do |project| -%>
-	<li><%= link_to h(project.name), project %></li>
+	<li><%= link_to h(project.name), project %>
+	  <% if statuses = project.statuses.select {|s| s.followup.nil? } and statuses.any? %>
+	  <ul>
+	    <% statuses.each do |status| %>
+	    <li><%= link_to h(status.user.login), status.user %> 
+	      <%= nice_timer_for status %>
+      </li>
+	    <% end %>
+	  </ul>
+	  <% end %></li>
 <% end -%>
 </ul>
 

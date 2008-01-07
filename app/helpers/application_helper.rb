@@ -11,4 +11,16 @@ module ApplicationHelper
     (hours > 0 ? "#{hours}:" : '') + ('%02d:%02d' % [minutes, seconds])
   end
 
+  def nice_timer_for(status)
+    if status.followup.nil?
+      (@content_for_head ||= "")
+      @content_for_head += periodically_call_remote(:url => status_path(status), 
+  	      :update => "timer_#{dom_id(status)}",
+  	      :frequency => 1,
+  	      :method => :get)
+  	end
+    "<span class=\"timer\" id=\"timer_#{dom_id status}\">#{nice_time status.accurate_time}</span>"
+  end
+    
+
 end

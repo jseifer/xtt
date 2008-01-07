@@ -4,21 +4,17 @@
 <p><strong>Currently...</strong> <%=h @status.message %></p>
 <% end -%>
 
-<ul>
+<table id="<%= dom_id(@project) %>_statuses">
 <% @project.statuses.each do |status| -%>
-	<li>
-	  <%= link_to h(status.user.login), status.user %>:
-		<%=h status.message %>
-		<span class="timer" id="timer_<%= dom_id status %>"><%= nice_time status.accurate_time %></span>
-		<% unless status.hours.zero? -%>(<%= pluralize status.hours, 'hour' %>)<% end -%>
-	</li>
-	
-	<%= periodically_call_remote(:url => status_path(status), 
-	      :update => "timer_#{dom_id(status)}",
-	      :frequency => 1,
-	      :method => :get) unless status.followup %>
-  
+	<tr class="alternate">
+	  <td><%= link_to h(status.user.login), status.user %></td>
+	  <td><%=h status.message %></td>
+	  <td><%= status.created_at.strftime("%Y-%h-%d %H:%M")%></td>
+	  <td><%= nice_timer_for status %> <% unless status.hours.zero? -%>(<%= pluralize status.hours, 'hour' %>)<% end -%></td>
+	</tr>
 <% end -%>
-</ul>
+</table>
+
+<script type="text/javascript">zebra('<%= dom_id(@project) %>_statuses')</script>
 
 <p><%= link_to 'Statuses', project_statuses_path(@project) %></p>

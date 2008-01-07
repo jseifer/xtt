@@ -6,6 +6,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <%= stylesheet_link_tag 'court3' %>
   <%= javascript_include_tag :defaults %>
+  <%= yield :head %>
 </head>
 
 <body>
@@ -37,6 +38,23 @@
   
   <div id="content">
   <%= yield %>
+  </div>
+
+  <div id="foot">
+  <% if logged_in? %>
+    <% if status = current_user.statuses.latest and status.project %>
+    <% form_for current_user.statuses.new, 
+    	   :url    => user_statuses_path(current_user),
+    	   :method => :post do |f| -%>
+    	<%= f.hidden_field :project_id %>
+    	<p>
+    	  Take a break
+    		<%= f.text_field :message %>
+        <%= submit_tag :Out %>
+      </p>
+    <% end -%>
+    <% end %>
+  <% end %>
   </div>
 
 </body>
