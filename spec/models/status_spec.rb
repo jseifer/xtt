@@ -111,6 +111,31 @@ describe Status, "in pending state" do
   end
 end
 
+describe Status, 'permissions' do
+  define_models do
+    model User do
+      stub :other, :login => 'other'
+      stub :admin, :login => 'admin'
+    end
+  end
+  
+  before do
+    @status = statuses :default
+  end
+  
+  it "allow status owner to edit" do
+    @status.should be_editable_by(users(:default))
+  end
+  
+  it "restrict other user from editing" do
+    @status.should_not be_editable_by(users(:other))
+  end
+  
+  it "restrict nil user from editing" do
+    @status.should_not be_editable_by(nil)
+  end
+end
+
 describe_validations_for Status, :user_id => 1, :message => 'foo bar' do
   presence_of :user_id, :message
 end

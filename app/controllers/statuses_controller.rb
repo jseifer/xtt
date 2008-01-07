@@ -2,6 +2,7 @@ class StatusesController < ApplicationController
   before_filter :login_required
   before_filter :find_record, :only => :index
   before_filter :find_user,   :only => [:new, :create]
+  before_filter :find_status, :only => [:show, :update, :destroy]
 
   # USER SCOPE
   
@@ -42,8 +43,6 @@ class StatusesController < ApplicationController
   include ApplicationHelper
   
   def show
-    @status = Status.find(params[:id])
-
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml  => @status }
@@ -51,13 +50,7 @@ class StatusesController < ApplicationController
     end
   end
 
-  def edit
-    @status = Status.find(params[:id])
-  end
-
   def update
-    @status = Status.find(params[:id])
-
     respond_to do |format|
       if @status.update_attributes(params[:status])
         flash[:notice] = 'Status was successfully updated.'
@@ -71,7 +64,6 @@ class StatusesController < ApplicationController
   end
 
   def destroy
-    @status = Status.find(params[:id])
     @status.destroy
 
     respond_to do |format|
@@ -94,5 +86,12 @@ protected
   
   def find_user
     @user = User.find(params[:user_id])
+  end
+  
+  # skip anon users for specs
+  # login_required has your back
+  def find_status
+    @status = Status.find(params[:id])
+    !logged_in? || @status.editable_by?(current_user) || access_denied
   end
 end

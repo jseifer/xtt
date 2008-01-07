@@ -154,20 +154,6 @@ describe StatusesController, "GET #show" do
   end
 end
 
-describe StatusesController, "GET #edit" do
-  define_models
-  act! { get :edit, :id => 1 }
-  
-  before do
-    @status  = statuses(:default)
-    Status.stub!(:find).with('1').and_return(@status)
-    controller.stub!(:login_required)
-  end
-
-  it.assigns :status
-  it.renders :template, :edit
-end
-
 describe StatusesController, "PUT #update" do
   before do
     @attributes = {}

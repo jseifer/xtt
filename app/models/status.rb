@@ -37,6 +37,10 @@ class Status < ActiveRecord::Base
   def accurate_time
     (followup ? followup.created_at : Time.now) - created_at
   end
+  
+  def editable_by?(user)
+    user && user_id == user.id
+  end
 
 protected
   def calculate_hours
