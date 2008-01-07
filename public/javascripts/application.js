@@ -10,11 +10,11 @@ function zebra(host) {
 }
 
 function nice_time(seconds) {
-  var hours = (seconds / 3600).floor().toPaddedString(2);
+  var hours = (seconds / 3600).floor();
   seconds = seconds % 3600;
   var minutes = (seconds / 60).floor().toPaddedString(2);
-  seconds = seconds % 60;
-  return "" + hours + ":" + minutes + ":" + seconds;
+  seconds = (seconds % 60).toPaddedString(2);
+  return([hours, minutes, seconds].join(":"));
 }
 
 function timerIncrement(dom) {
