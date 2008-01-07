@@ -16,7 +16,7 @@
 	<%= periodically_call_remote(:url => status_path(status), 
 	      :update => "timer_#{dom_id(status)}",
 	      :frequency => 1,
-	      :method => :get) unless status.followup # only update current state %>
+	      :method => :get) unless status.followup %>
   
 <% end -%>
 </ul>
