@@ -1,0 +1,79 @@
+html,body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #999;
+}
+
+.login {
+  float: right;
+}
+
+h1,h2,h3,h4,h5{
+  font-family: Helvetica, Verdana, Arial, sans serif;
+  margin: 0;
+}
+
+#menu {
+  padding: 5px;
+  background-color: #eee;
+  font-family: Helvetica, Verdana, Arial, sans serif;
+  font-size: 80%;
+}
+#menu a {
+  color: #333;
+}
+
+#content { 
+  padding: 20px;
+  background-color: #fff;
+  margin: 0 5px;
+}
+
+
+span.timer {
+  color: #888;
+}
+
+#foot {
+  border-top: 10px solid #333;
+  background-color: #333;
+}
+
+div.inset, 
+#foot form {
+  padding: 10px;
+  display: block;
+  width: 50%;
+  background-color: #99f;
+}
+
+
+
+table {
+  padding: 0;
+  margin: 10px 0;
+  border: 2px solid #eee;
+  border-bottom: 2px solid #ccc;
+  border-collapse: collapse;
+}
+
+td { 
+  border: 1px solid #eee;
+  padding: 10px;
+  margin: 0;
+}
+
+.alternate td {
+  background-color: #eef;
+}
+
+
+a:link {
+  color: #eee;
+}
+a:visited {
+  color: #88a;
+}

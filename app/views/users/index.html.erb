@@ -1,7 +1,23 @@
+<h1>What's Everyone Doing?</h1>
 <p>Temp page, soon to be scoped by Account</p>
 
-<ul>
+<table>
+  <tbody>
 <% @users.each do |user| -%>
-	<li><%= link_to h(user.login), user %></li>
+	  <tr>
+	    <td><%= link_to h(user.login), user %></td>
+	    <td>
+        <% if status = user.statuses.latest -%>
+        <p><%=h status.message %> 
+          <% if status.project %>
+            in <%= link_to h(status.project.name), status.project %>,
+          <% else %>
+            (Out),
+          <% end %>
+          <%= nice_timer_for status %>
+        <% end -%>
+	    </td>
+	  </tr>
 <% end -%>
-</ul>
+  </tbody>
+</table>

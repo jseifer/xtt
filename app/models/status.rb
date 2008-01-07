@@ -34,10 +34,19 @@ class Status < ActiveRecord::Base
     !project_id.nil?
   end
 
+  def accurate_time
+    if followup
+      (followup.created_at - created_at).to_f / 1.second.to_f
+    else
+      (Time.now - created_at).to_f / 1.second.to_f
+    end.to_i
+  end
+
 protected
   def calculate_hours
     return false if followup.nil?
-    self.hours = billable? ? ((followup.created_at - created_at).to_f / 1.hour.to_f).ceil : 0
+    quarters = billable? ? ((followup.created_at - created_at).to_f / 15.minutes.to_f).ceil : 0
+    self.hours = quarters / 4
   end
   
   def process_previous

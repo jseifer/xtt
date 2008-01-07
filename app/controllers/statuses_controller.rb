@@ -38,6 +38,7 @@ class StatusesController < ApplicationController
   end
 
   # GLOBAL SCOPE
+  include ApplicationHelper
   
   def show
     @status = Status.find(params[:id])
@@ -45,6 +46,7 @@ class StatusesController < ApplicationController
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml  => @status }
+      format.js   { render :text => nice_time(@status.accurate_time) }
     end
   end
 
