@@ -8,7 +8,7 @@
 		[<%= status.project? ? link_to(status.project.name, status.project) : :Out %>]
 	</td>
 	<td>
-		<%=h status.message %>
+		<%= link_to h(status.message), status %>
 		<% unless status.hours.zero? -%>(<%= pluralize status.hours, 'hour' %>)<% end -%>
 	</td>
 	<td><%= nice_timer_for status %></td>
