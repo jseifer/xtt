@@ -31,7 +31,7 @@ module AuthenticatedSystem
     #    current_user.login != "bob"
     #  end
     def authorized?
-      logged_in? && group.users.include?(current_user)
+      logged_in?
     end
 
     # Filter method to enforce a login requirement.
