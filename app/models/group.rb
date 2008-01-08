@@ -2,8 +2,8 @@ class Group < ActiveRecord::Base
   validates_presence_of :name
   validates_uniqueness_of :name
   
-  # has_many :memberships
-  has_many :users, :order => 'login', :dependent => :destroy do
+  has_many :memberships, :dependent => :delete_all
+  has_many :users, :order => 'login', :through => :memberships do
     def include?(user)
       loaded? ? @target.include?(user) : exists?(user.id)
     end
