@@ -3,7 +3,6 @@
 
 function zebra(host) {
   host = $(host);
-  alert('host');
   $A(host.getElementsByTagName('tr')).each(function(element,i){
     element.removeClassName('alternate')
     if (i % 2 == 1) element.addClassName('alternate')

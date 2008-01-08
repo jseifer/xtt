@@ -14,5 +14,5 @@
 
 <div class="inset">
   <h2>Change to something else</h2>
-<%= render :partial => "statuses/form", :locals => { :status => @user.statuses.build } %>
+<%= render :partial => "statuses/form", :locals => { :user => @user, :status => @user.statuses.build } %>
 </div>

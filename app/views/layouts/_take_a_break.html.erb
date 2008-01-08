@@ -1,0 +1,10 @@
+<% form_for current_user.statuses.new, 
+	   :url    => user_statuses_path(current_user),
+	   :method => :post do |f| -%>
+	<%= f.hidden_field :project_id %>
+	<p>
+	  Take a break
+		<%= f.text_field :message %>
+    <%= submit_tag :Out %>
+  </p>
+<% end -%>

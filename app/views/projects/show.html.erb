@@ -6,7 +6,7 @@
 
 <table id="<%= dom_id(@project) %>_statuses">
 <% @project.statuses.each do |status| -%>
-	<tr class="alternate">
+	<tr>
 	  <td><%= link_to h(status.user.login), status.user %></td>
 	  <td><%=h status.message %></td>
 	  <td><%= status.created_at.strftime("%Y-%h-%d %H:%M")%></td>
@@ -14,7 +14,5 @@
 	</tr>
 <% end -%>
 </table>
-
-<script type="text/javascript">zebra('<%= dom_id(@project) %>_statuses')</script>
 
 <p><%= link_to 'Statuses', project_statuses_path(@project) %></p>
