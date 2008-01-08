@@ -6,12 +6,18 @@ describe Membership do
   end
   
   it "knows arbitrary users are not group members" do
-    groups(:default).users.should_not include(users(:default))
+    groups(:default).owner_id = nil
+    groups(:default).users.include?(users(:default)).should == false
+  end
+  
+  it "recognizes group owners as members" do
+    groups(:default).users.include?(users(:default)).should == true
   end
   
   it "adds users as group members" do
+    groups(:default).owner_id = nil
     Membership.create! :user => users(:default), :group => groups(:default)
-    groups(:default).users.should include(users(:default))
+    groups(:default).users.include?(users(:default)).should == true
   end
 
   it "doesn't allow duplicates" do
