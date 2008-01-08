@@ -1,6 +1,7 @@
 <h1>Projects</h1>
 
 <% @projects.each do |project| -%>
+<div class="card">
   <h2><%= link_to h(project.name), project %></h2>
   <span class="timer"><%= nice_time project.statuses.sum_accurate_time %></span>
   <%= project.hours %>
@@ -14,7 +15,10 @@
 	    </tr>
 	    <% end # status -%>
     </table>
-	  <% end %>
+  <% end %>
+</div>
 <% end -%>
 
-<p><%= link_to 'New Project', new_project_path %></p>
+<div class="card" id="new_card">
+  <h2><%= link_to 'New Project', new_project_path %></h2>
+</div>

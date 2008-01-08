@@ -14,6 +14,7 @@
   <% if logged_in? -%>
   	<%= link_to 'Projects', projects_path %>
   	<%= link_to 'Statuses', user_statuses_path(current_user) %>
+  	<%= link_to 'Everyone', users_path %>
 
     <div class="login">
       <%= link_to h(current_user.login), current_user %>
@@ -43,16 +44,9 @@
   <div id="foot">
   <% if logged_in? %>
     <% if status = current_user.statuses.latest and status.project %>
-    <% form_for current_user.statuses.new, 
-    	   :url    => user_statuses_path(current_user),
-    	   :method => :post do |f| -%>
-    	<%= f.hidden_field :project_id %>
-    	<p>
-    	  Take a break
-    		<%= f.text_field :message %>
-        <%= submit_tag :Out %>
-      </p>
-    <% end -%>
+    <%= render :partial => "layouts/take_a_break" %>
+    <% else %>
+    <%= render :partial => "layouts/work_on_something" %>
     <% end %>
   <% end %>
   </div>

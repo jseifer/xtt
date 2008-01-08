@@ -20,7 +20,7 @@ module ApplicationHelper
   </script>
 JS
   end
-    "<span class=\"timer\" id=\"timer_#{dom_id status}\">#{nice_time status.accurate_time}</span>"
+    "<span style=\"display:none\" id=\"timer_#{dom_id status}\">#{status.created_at.to_f}</span><span class=\"timer\">#{nice_time(status.accurate_time)}</span>"
   end
     
 

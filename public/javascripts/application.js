@@ -19,13 +19,14 @@ function nice_time(seconds) {
 
 function timerIncrement(dom) {
   dom = $(dom);
-  var seconds = 0;
-  var value = dom.innerHTML.split(":").reverse();
-  value.push(0); value.push(0);
-  
-  seconds = parseInt(value[0]) + 1;
-  seconds += parseInt(value[1]) * 60;
-  seconds += parseInt(value[2]) * 3600;
+  var seconds = parseInt(dom.innerHTML);
+  var d = new Date();
+  var epoch = (d.getTime() - d.getMilliseconds()) / 1000;
 
-  dom.innerHTML = nice_time(seconds);
+  dom.nextSibling.innerHTML = nice_time(epoch - seconds);
 }
+
+document.observe('contentloaded', function() {
+  alert('table');
+  //document.getElementsByTagName('table').each(zebra) //function(table){ zebra(table)  })
+});

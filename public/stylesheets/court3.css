@@ -29,7 +29,6 @@ h1,h2,h3,h4,h5{
 #content { 
   padding: 20px;
   background-color: #fff;
-  margin: 0 5px;
 }
 
 
@@ -72,8 +71,23 @@ td {
 
 
 a:link {
-  color: #aaa;
+  color: #333;
 }
 a:visited {
-  color: #88a;
+  color: #338;
+}
+a:hover {
+  color: #000;
+}
+
+
+div.card {
+  background-color: #ff9;
+  margin: 10px 0;
+  padding: 10px;
+  width: auto;
+}
+
+div#new_card {
+  background-color: #9f9;
 }
