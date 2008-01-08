@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 6) do
+ActiveRecord::Schema.define(:version => 7) do
 
   create_table "groups", :force => true do |t|
     t.string   "name"
@@ -22,10 +22,11 @@ ActiveRecord::Schema.define(:version => 6) do
     t.boolean  "billable"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "group_id"
+    t.integer  "parent_id"
+    t.string   "parent_type"
   end
 
-  add_index "projects", ["name", "group_id"], :name => "index_projects_on_name_and_group_id"
+  add_index "projects", ["name", "parent_id", "parent_type"], :name => "index_projects_on_name_and_parent"
 
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
@@ -52,9 +53,6 @@ ActiveRecord::Schema.define(:version => 6) do
     t.datetime "activated_at"
     t.string   "state",                                   :default => "passive"
     t.datetime "deleted_at"
-    t.integer  "group_id"
   end
-
-  add_index "users", ["login", "group_id"], :name => "index_projects_on_login_and_group_id"
 
 end

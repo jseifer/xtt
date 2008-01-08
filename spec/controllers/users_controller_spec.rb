@@ -3,11 +3,6 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe UsersController do
   define_models :users
 
-  before do
-    @group = groups(:default)
-    controller.stub!(:group).and_return(@group)
-  end
-
   it 'allows signup' do
     pending "on hold, need to use invitations instead"
     lambda do

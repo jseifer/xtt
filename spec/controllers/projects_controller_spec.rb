@@ -6,10 +6,8 @@ describe ProjectsController, "GET #index" do
   act! { get :index }
 
   before do
-    @group  = groups(:default)
     @projects = []
-    @group.stub!(:projects).and_return(@projects)
-    controller.stub!(:group).and_return(@group)
+    Project.stub!(:all).and_return(@projects)
     controller.stub!(:login_required)
   end
   
@@ -32,10 +30,8 @@ describe ProjectsController, "GET #show" do
   act! { get :show, :id => 1 }
 
   before do
-    @group = groups(:default)
     @project = projects(:default)
-    @group.stub!(:projects).and_return([])
-    @group.projects.stub!(:find).with('1').and_return(@project)
+    Project.stub!(:find).with('1').and_return(@project)
     controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
@@ -80,11 +76,8 @@ describe ProjectsController, "GET #edit" do
   act! { get :edit, :id => 1 }
   
   before do
-    @group = groups(:default)
     @project = projects(:default)
-    @group.stub!(:projects).and_return([])
-    @group.projects.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:group).and_return(@group)
+    Project.stub!(:find).with('1').and_return(@project)
     controller.stub!(:login_required)
   end
 
@@ -98,14 +91,14 @@ describe ProjectsController, "POST #create" do
     @project = mock_model Project, :new_record? => false, :errors => []
     @group = groups(:default)
     @group.stub!(:projects).and_return([])
+    Group.stub!(:find).with('2').and_return(@group)
     @group.projects.stub!(:build).with(@attributes).and_return(@project)
-    controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
   
   describe ProjectsController, "(successful creation)" do
     define_models
-    act! { post :create, :project => @attributes }
+    act! { post :create, :group_id => 2, :project => @attributes }
 
     before do
       @project.stub!(:save).and_return(true)
@@ -118,7 +111,7 @@ describe ProjectsController, "POST #create" do
 
   describe ProjectsController, "(unsuccessful creation)" do
     define_models
-    act! { post :create, :project => @attributes }
+    act! { post :create, :group_id => 2, :project => @attributes }
 
     before do
       @project.stub!(:save).and_return(false)
@@ -131,7 +124,7 @@ describe ProjectsController, "POST #create" do
   
   describe ProjectsController, "(successful creation, xml)" do
     define_models
-    act! { post :create, :project => @attributes, :format => 'xml' }
+    act! { post :create, :group_id => 2, :project => @attributes, :format => 'xml' }
 
     before do
       @project.stub!(:save).and_return(true)
@@ -145,7 +138,7 @@ describe ProjectsController, "POST #create" do
   
   describe ProjectsController, "(unsuccessful creation, xml)" do
     define_models
-    act! { post :create, :project => @attributes, :format => 'xml' }
+    act! { post :create, :group_id => 2, :project => @attributes, :format => 'xml' }
 
     before do
       @project.stub!(:save).and_return(false)
@@ -160,10 +153,8 @@ end
 describe ProjectsController, "PUT #update" do
   before do
     @attributes = {}
-    @group = groups(:default)
     @project = projects(:default)
-    @group.stub!(:projects).and_return([])
-    @group.projects.stub!(:find).with('1').and_return(@project)
+    Project.stub!(:find).with('1').and_return(@project)
     controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
@@ -226,12 +217,9 @@ describe ProjectsController, "DELETE #destroy" do
   act! { delete :destroy, :id => 1 }
   
   before do
-    @group = groups(:default)
     @project = projects(:default)
     @project.stub!(:destroy)
-    @group.stub!(:projects).and_return([])
-    @group.projects.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:group).and_return(@group)
+    Project.stub!(:find).with('1').and_return(@project)
     controller.stub!(:login_required)
   end
 

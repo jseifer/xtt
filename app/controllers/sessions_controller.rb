@@ -9,7 +9,7 @@ class SessionsController < ApplicationController
     if logged_in?
       if params[:remember_me] == "1"
         self.current_user.remember_me
-        cookies[:auth_token] = { :value => self.current_user.remember_token , :expires => self.current_user.remember_token_expires_at }
+        cookies[:auth_token] = { :value => current_user.remember_token , :expires => current_user.remember_token_expires_at }
       end
       redirect_back_or_default('/')
       flash[:notice] = "Logged in successfully"

@@ -9,6 +9,7 @@ describe Group do
   define_models
   
   it "checks user existence" do
+    pending "waiting on group memberships"
     groups(:default).users.include?(users(:default)).should == true
     User.update_all :group_id => nil
     groups(:default).users.include?(users(:default)).should == false

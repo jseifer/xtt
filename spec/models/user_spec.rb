@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe_validations_for User, 
-  :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire', :group_id => 5 do
-    presence_of :login, :password, :password_confirmation, :email, :group_id
+  :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' do
+    presence_of :login, :password, :password_confirmation, :email
 end
 
 describe User do
@@ -89,7 +89,6 @@ describe User do
 
 protected
   def create_user(options = {})
-    groups(options.delete(:group) || :default).users.create(
-      { :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
+    User.create({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
   end
 end
