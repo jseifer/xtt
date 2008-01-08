@@ -2,9 +2,9 @@ class User < ActiveRecord::Base
   concerned_with :authentication, :state_machine
   include Status::Methods
   
-  validates_presence_of :account_id
+  validates_presence_of :group_id
   
-  belongs_to :account
+  belongs_to :group
   
   has_many :projects, :through => :statuses do
     def latest

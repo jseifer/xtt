@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
   before_filter :login_required
 
   def index
-    @projects = account.projects
+    @projects = group.projects
 
     respond_to do |format|
       format.html # index.html.erb
@@ -11,7 +11,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = account.projects.find(params[:id])
+    @project = group.projects.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -29,11 +29,11 @@ class ProjectsController < ApplicationController
   end
 
   def edit
-    @project = account.projects.find(params[:id])
+    @project = group.projects.find(params[:id])
   end
 
   def create
-    @project = account.projects.build(params[:project])
+    @project = group.projects.build(params[:project])
 
     respond_to do |format|
       if @project.save
@@ -48,7 +48,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    @project = account.projects.find(params[:id])
+    @project = group.projects.find(params[:id])
 
     respond_to do |format|
       if @project.update_attributes(params[:project])
@@ -63,7 +63,7 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
-    @project = account.projects.find(params[:id])
+    @project = group.projects.find(params[:id])
     @project.destroy
 
     respond_to do |format|

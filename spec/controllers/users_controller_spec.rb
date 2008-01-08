@@ -4,8 +4,8 @@ describe UsersController do
   define_models :users
 
   before do
-    @account = accounts(:default)
-    controller.stub!(:account).and_return(@account)
+    @group = groups(:default)
+    controller.stub!(:group).and_return(@group)
   end
 
   it 'allows signup' do

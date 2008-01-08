@@ -9,25 +9,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 5) do
+ActiveRecord::Schema.define(:version => 6) do
 
-  create_table "accounts", :force => true do |t|
-    t.string   "host"
+  create_table "groups", :force => true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "accounts", ["host"], :name => "index_accounts_on_host"
 
   create_table "projects", :force => true do |t|
     t.string   "name"
     t.boolean  "billable"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "account_id"
+    t.integer  "group_id"
   end
 
-  add_index "projects", ["name", "account_id"], :name => "index_projects_on_name_and_account_id"
+  add_index "projects", ["name", "group_id"], :name => "index_projects_on_name_and_group_id"
 
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
@@ -54,9 +52,9 @@ ActiveRecord::Schema.define(:version => 5) do
     t.datetime "activated_at"
     t.string   "state",                                   :default => "passive"
     t.datetime "deleted_at"
-    t.integer  "account_id"
+    t.integer  "group_id"
   end
 
-  add_index "users", ["login", "account_id"], :name => "index_users_on_login_and_account_id"
+  add_index "users", ["login", "group_id"], :name => "index_projects_on_login_and_group_id"
 
 end

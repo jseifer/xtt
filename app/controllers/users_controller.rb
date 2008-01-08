@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   before_filter :find_user, :only => [:show, :suspend, :unsuspend, :destroy, :purge]
 
   def index
-    @users = account.users
+    @users = group.users
   end
 
   def show
@@ -17,7 +17,7 @@ class UsersController < ApplicationController
 
   def create
     cookies.delete :auth_token
-    @user = account.users.build(params[:user])
+    @user = group.users.build(params[:user])
     @user.save!
     self.current_user = @user
     redirect_back_or_default('/')
@@ -27,7 +27,7 @@ class UsersController < ApplicationController
   end
 
   def activate
-    self.current_user = params[:activation_code].blank? ? :false : account.users.find_by_activation_code(params[:activation_code])
+    self.current_user = params[:activation_code].blank? ? :false : group.users.find_by_activation_code(params[:activation_code])
     if logged_in? && !current_user.active?
       current_user.activate!
       flash[:notice] = "Signup complete!"
@@ -57,6 +57,6 @@ class UsersController < ApplicationController
 
 protected
   def find_user
-    @user = account.users.find(params[:id])
+    @user = group.users.find(params[:id])
   end
 end

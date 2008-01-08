@@ -4,8 +4,8 @@ describe SessionsController do
   define_models
 
   before do
-    @account = accounts(:default)
-    controller.stub!(:account).and_return(@account)
+    @group = groups(:default)
+    controller.stub!(:group).and_return(@group)
   end
 
   it 'logins and redirects' do

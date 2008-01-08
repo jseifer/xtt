@@ -6,10 +6,10 @@ describe ProjectsController, "GET #index" do
   act! { get :index }
 
   before do
-    @account  = accounts(:default)
+    @group  = groups(:default)
     @projects = []
-    @account.stub!(:projects).and_return(@projects)
-    controller.stub!(:account).and_return(@account)
+    @group.stub!(:projects).and_return(@projects)
+    controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
   
@@ -32,11 +32,11 @@ describe ProjectsController, "GET #show" do
   act! { get :show, :id => 1 }
 
   before do
-    @account = accounts(:default)
+    @group = groups(:default)
     @project = projects(:default)
-    @account.stub!(:projects).and_return([])
-    @account.projects.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:account).and_return(@account)
+    @group.stub!(:projects).and_return([])
+    @group.projects.stub!(:find).with('1').and_return(@project)
+    controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
   
@@ -80,11 +80,11 @@ describe ProjectsController, "GET #edit" do
   act! { get :edit, :id => 1 }
   
   before do
-    @account = accounts(:default)
+    @group = groups(:default)
     @project = projects(:default)
-    @account.stub!(:projects).and_return([])
-    @account.projects.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:account).and_return(@account)
+    @group.stub!(:projects).and_return([])
+    @group.projects.stub!(:find).with('1').and_return(@project)
+    controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
 
@@ -96,10 +96,10 @@ describe ProjectsController, "POST #create" do
   before do
     @attributes = {}
     @project = mock_model Project, :new_record? => false, :errors => []
-    @account = accounts(:default)
-    @account.stub!(:projects).and_return([])
-    @account.projects.stub!(:build).with(@attributes).and_return(@project)
-    controller.stub!(:account).and_return(@account)
+    @group = groups(:default)
+    @group.stub!(:projects).and_return([])
+    @group.projects.stub!(:build).with(@attributes).and_return(@project)
+    controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
   
@@ -160,11 +160,11 @@ end
 describe ProjectsController, "PUT #update" do
   before do
     @attributes = {}
-    @account = accounts(:default)
+    @group = groups(:default)
     @project = projects(:default)
-    @account.stub!(:projects).and_return([])
-    @account.projects.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:account).and_return(@account)
+    @group.stub!(:projects).and_return([])
+    @group.projects.stub!(:find).with('1').and_return(@project)
+    controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
   
@@ -226,12 +226,12 @@ describe ProjectsController, "DELETE #destroy" do
   act! { delete :destroy, :id => 1 }
   
   before do
-    @account = accounts(:default)
+    @group = groups(:default)
     @project = projects(:default)
     @project.stub!(:destroy)
-    @account.stub!(:projects).and_return([])
-    @account.projects.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:account).and_return(@account)
+    @group.stub!(:projects).and_return([])
+    @group.projects.stub!(:find).with('1').and_return(@project)
+    controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
 

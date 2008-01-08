@@ -1,9 +1,9 @@
 class Project < ActiveRecord::Base
   include Status::Methods
   
-  validates_presence_of :account_id, :name
+  validates_presence_of :group_id, :name
 
-  belongs_to :account
+  belongs_to :group
   
   has_finder :all, :order => 'name'
 

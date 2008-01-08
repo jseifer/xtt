@@ -1,7 +1,7 @@
 <ul>
-<% @accounts.each do |account| -%>
-	<li><%= link_to h(account.host + ".#{request.domain}"), account %></li>
+<% @groups.each do |group| -%>
+	<li><%= link_to h(group.name + ".#{request.domain}"), group %></li>
 <% end -%>
 </ul>
 
-<p><%= link_to 'New Account', new_account_path %></p>
+<p><%= link_to 'New Group', new_group_path %></p>
