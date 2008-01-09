@@ -1,21 +1,18 @@
 class GroupProjectsController < ProjectsController
-  before_filter :login_required, :only => [:new, :create]
+  skip_before_filter :find_project
+  prepend_before_filter :find_group,  :only => [:index, :new, :create]
 
   def index
-    @projects = current_user.projects
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml  => @projects }
-    end
+    @projects = @group.projects
+    super
   end
 
-  def new
-    
-  end
+  # inherit
+  # def new
   
   def create
-    
+    @project ||= @group.projects.build(params[:project])
+    super
   end
   
   def show
@@ -26,6 +23,15 @@ class GroupProjectsController < ProjectsController
     redirect_to edit_project_path(params[:id])
   end
   
-  alias_method update  edit
-  alias_method destroy edit
+  alias update  edit
+  alias destroy edit
+
+protected
+  def find_group
+    @group = Group.find params[:group_id]
+  end
+  
+  def authorized?
+    logged_in? && (admin? || @group.owner == current_user)
+  end
 end

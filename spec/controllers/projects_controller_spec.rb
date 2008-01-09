@@ -24,29 +24,6 @@ describe ProjectsController, "GET #index" do
     it_assigns :projects
     it_renders :xml, :projects
   end
-  
-  #describe ProjectsController, "(/groups/1/projects)" do
-  #  define_models :users
-  #  act! { get :index, :group_id => 1 }
-  #  it_assigns :projects, :group
-  #  it_renders :template, :index
-  #
-  #  before do
-  #    @projects = []
-  #    @user  = users(:default)
-  #    @group = groups(:default)
-  #    Group.stub!(:find).with('1').and_return(@group)
-  #    @group.stub!(:projects).and_return(@projects)
-  #    controller.stub!(:current_user).and_return(@user)
-  #    controller.stub!(:login_required)
-  #  end
-  #  
-  #  #it "doesn't provide access to other groups" do
-  #  #  @user = users(:pending)
-  #  #  controller.stub!(:logged_in?).and_return(false)
-  #  #  acting.should redirect_to projects_path
-  #  #end
-  #end
 end
 
 describe ProjectsController, "GET #show" do
@@ -71,20 +48,6 @@ describe ProjectsController, "GET #show" do
 
     it_renders :xml, :project
   end
-
-  #describe ProjectsController, "(/users/1/projects/1)" do
-  #  define_models
-  #  act! { get :show, :user_id => 1, :id => 1 }
-  #  it_assigns :project => nil
-  #  it_redirects_to { project_path(1) }
-  #end
-  #
-  #describe ProjectsController, "(/groups/1/projects/1)" do
-  #  define_models
-  #  act! { get :show, :group_id => 1, :id => 1 }
-  #  it_assigns :project => nil
-  #  it_redirects_to { project_path(1) }
-  #end
 end
 
 describe ProjectsController, "GET #new" do
@@ -128,16 +91,15 @@ describe ProjectsController, "POST #create" do
   before do
     @attributes = {}
     @project = mock_model Project, :new_record? => false, :errors => []
-    @group = groups(:default)
-    @group.stub!(:projects).and_return([])
-    Group.stub!(:find).with('2').and_return(@group)
-    @group.projects.stub!(:build).with(@attributes).and_return(@project)
+    @user = mock_model User, :projects => []
+    @user.projects.stub!(:build).with(@attributes).and_return(@project)
+    controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
   end
   
   describe ProjectsController, "(successful creation)" do
     define_models
-    act! { post :create, :group_id => 2, :project => @attributes }
+    act! { post :create, :project => @attributes }
 
     before do
       @project.stub!(:save).and_return(true)
@@ -150,7 +112,7 @@ describe ProjectsController, "POST #create" do
 
   describe ProjectsController, "(unsuccessful creation)" do
     define_models
-    act! { post :create, :group_id => 2, :project => @attributes }
+    act! { post :create, :project => @attributes }
 
     before do
       @project.stub!(:save).and_return(false)
@@ -163,7 +125,7 @@ describe ProjectsController, "POST #create" do
   
   describe ProjectsController, "(successful creation, xml)" do
     define_models
-    act! { post :create, :group_id => 2, :project => @attributes, :format => 'xml' }
+    act! { post :create, :project => @attributes, :format => 'xml' }
 
     before do
       @project.stub!(:save).and_return(true)
@@ -177,7 +139,7 @@ describe ProjectsController, "POST #create" do
   
   describe ProjectsController, "(unsuccessful creation, xml)" do
     define_models
-    act! { post :create, :group_id => 2, :project => @attributes, :format => 'xml' }
+    act! { post :create, :project => @attributes, :format => 'xml' }
 
     before do
       @project.stub!(:save).and_return(false)

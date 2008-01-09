@@ -31,6 +31,10 @@ ModelStubbing.define_models :users do
     stub :nonmember, :login => 'nonmember',      :email => 'nonmember@example.com'
   end
   
+  model Project do
+    stub :user, :parent => all_stubs(:user), :parent_type => 'User'
+  end
+  
   model Membership do
     stub :user => all_stubs(:user), :group => all_stubs(:group)
     stub :admin, :user => all_stubs(:admin_user)
