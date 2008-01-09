@@ -2,8 +2,22 @@ class ProjectsController < ApplicationController
   before_filter :find_project, :only => [:show, :edit, :update, :destroy]
   before_filter :login_required
 
+  # /projects - List user projects
+  # /groups/:group_id/projects - List group projects
+  # /users/:user_id/projects - Invalid, redirect to /projects
   def index
-    @projects = Project.all
+    if params[:user_id]
+      redirect_to projects_path and return
+    elsif params[:group_id]
+      @group = Group.find params[:group_id]
+      if admin? || @group.users.include?(current_user)
+        @projects = @group.projects
+      else
+        redirect_to projects_path and return
+      end
+    else
+      @projects = current_user.projects
+    end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -70,7 +84,11 @@ class ProjectsController < ApplicationController
 
 protected
   def find_project
-    @project = Project.find(params[:id])
+    if params[:user_id] || params[:group_id]
+      redirect_to project_path(params[:id])
+    else
+      @project = Project.find(params[:id])
+    end
   end
   
   def authorized?
