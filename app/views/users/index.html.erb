@@ -1,22 +1,3 @@
 <h1>What's Everyone Doing?</h1>
 
-<table>
-  <tbody>
-<% @users.each do |user| -%>
-	  <tr>
-	    <td><%= link_to h(user.login), user %></td>
-	    <td>
-        <% if status = user.statuses.latest -%>
-        <p><%=h status.message %> 
-          <% if status.project %>
-            in <%= link_to h(status.project.name), status.project %>,
-          <% else %>
-            (Out),
-          <% end %>
-          <%= nice_timer_for status %>
-        <% end -%>
-	    </td>
-	  </tr>
-<% end -%>
-  </tbody>
-</table>
+<p>PERSONAL USER DASHBOARD.  list user's statuses, and sidebar of shared groups?</p>

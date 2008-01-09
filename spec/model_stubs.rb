@@ -19,6 +19,8 @@ ModelStubbing.define_models do
   model Status do
     stub :user => all_stubs(:user), :message => 'foo', :state => 'processed', :hours => 5, :created_at => current_time - 2.days, :project => all_stubs(:project)
   end
+  
+  model Membership
 end
 
 ModelStubbing.define_models :users do 
@@ -26,6 +28,11 @@ ModelStubbing.define_models :users do
     stub :admin,     :login => 'admin-user',     :email => 'admin-user@example.com', :remember_token => 'blah', :admin => true
     stub :pending,   :login => 'pending-user',   :email => 'pending-user@example.com',   :state => 'pending', :activated_at => nil, :remember_token => 'asdf', :activation_code => 'abcdef'
     stub :suspended, :login => 'suspended-user', :email => 'suspended-user@example.com', :state => 'suspended', :remember_token => 'dfdfd'
+  end
+  
+  model Membership do
+    stub :user => all_stubs(:user), :group => all_stubs(:group)
+    stub :admin, :user => all_stubs(:admin_user)
   end
 end
 

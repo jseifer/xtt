@@ -1,21 +1,23 @@
 class UsersController < ApplicationController
+  before_filter :find_user, :only => [:show, :edit, :update, :suspend, :unsuspend, :destroy, :purge]
   before_filter :login_required,       :only => [:index, :show, :edit, :update]
   before_filter :admin_required,       :only => [:suspend, :unsuspend, :destroy, :purge]
-  before_filter :find_user, :only => [:show, :edit, :update, :suspend, :unsuspend, :destroy, :purge]
 
+  # private user dashboard 
   def index
-    @users = User.all
   end
 
+  # user status page
   def show
     @status = @user.statuses.latest
   end
 
-  # render new.rhtml
+  # user signup
   def new
     @user = User.new
   end
 
+  # user signup
   def create
     cookies.delete :auth_token
     @user = User.new(params[:user])
@@ -27,6 +29,7 @@ class UsersController < ApplicationController
     render :action => 'new'
   end
 
+  # user activation
   def activate
     self.current_user = params[:activation_code].blank? ? :false : User.find_by_activation_code(params[:activation_code])
     if current_user != :false && !current_user.active?
@@ -36,9 +39,11 @@ class UsersController < ApplicationController
     redirect_back_or_default('/')
   end
   
+  # private user editing
   def edit
   end
   
+  # private user editing
   def update
     respond_to do |format|
       if @user.update_attributes(params[:user])
@@ -52,21 +57,25 @@ class UsersController < ApplicationController
     end
   end
 
+  # admin only
   def suspend
     @user.suspend! 
     redirect_to users_path
   end
 
+  # admin only
   def unsuspend
     @user.unsuspend! 
     redirect_to users_path
   end
 
+  # admin only
   def destroy
     @user.delete!
     redirect_to users_path
   end
 
+  # admin only
   def purge
     @user.destroy
     redirect_to users_path
@@ -75,5 +84,11 @@ class UsersController < ApplicationController
 protected
   def find_user
     @user = User.find(params[:id])
+  end
+  
+  def authorized?
+    return false unless logged_in?
+    return true if admin?
+    @user.nil? || @user == current_user
   end
 end
