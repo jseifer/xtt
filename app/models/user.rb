@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
   concerned_with :authentication, :state_machine
-  include Status::Methods, ProjectParent
+  include Status::Methods, Project::Parent
   
   before_create { |u| u.admin = true if User.count.zero? }
   

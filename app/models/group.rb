@@ -1,5 +1,5 @@
 class Group < ActiveRecord::Base
-  include ProjectParent
+  include Project::Parent
 
   validates_presence_of :name, :owner_id
   validates_uniqueness_of :name
