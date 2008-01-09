@@ -33,7 +33,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @parent  = (params[:user_id] && User.find(params[:user_id])) || (params[:group_id] && Group.find(params[:group_id]))
+    @parent  = (params[:user_id] && User.find(params[:user_id])) || (params[:group_id] && Group.find(params[:group_id]) || current_user)
     @project = @parent.projects.build(params[:project])
 
     respond_to do |format|
