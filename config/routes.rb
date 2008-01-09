@@ -1,7 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'users', :action => 'index'
 
-  map.resources :statuses, :projects
+  map.resources :statuses
+  map.resources :projects, :has_many => :statuses
   map.resources :groups, :has_many => [:statuses, :projects]
   map.resources :users, :member => { :suspend   => :put,
                                      :unsuspend => :put,

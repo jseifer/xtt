@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_filter :login_required,       :only => [:index, :show, :edit, :update]
   before_filter :admin_required,       :only => [:suspend, :unsuspend, :destroy, :purge]
-  before_filter :find_user, :only => [:show, :suspend, :unsuspend, :destroy, :purge]
+  before_filter :find_user, :only => [:show, :edit, :update, :suspend, :unsuspend, :destroy, :purge]
 
   def index
     @users = User.all
@@ -13,6 +13,7 @@ class UsersController < ApplicationController
 
   # render new.rhtml
   def new
+    @user = User.new
   end
 
   def create
@@ -33,6 +34,22 @@ class UsersController < ApplicationController
       flash[:notice] = "Signup complete!"
     end
     redirect_back_or_default('/')
+  end
+  
+  def edit
+  end
+  
+  def update
+    respond_to do |format|
+      if @user.update_attributes(params[:user])
+        flash[:notice] = 'Project was successfully updated.'
+        format.html { redirect_to(@user) }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml  => @user.errors, :status => :unprocessable_entity }
+      end
+    end
   end
 
   def suspend
