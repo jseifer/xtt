@@ -52,7 +52,6 @@ describe UsersController do
     get :activate, :activation_code => users(:pending).activation_code
     response.should redirect_to('/')
     User.authenticate(users(:pending).login, 'test').should == users(:pending)
-    flash[:notice].should_not be_nil
   end
   
   it 'does not activate user without key' do

@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+  before_filter :find_project, :only => [:show, :edit, :update, :destroy]
   before_filter :login_required
 
   def index
@@ -11,8 +12,6 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @project = Project.find(params[:id])
-
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml  => @project }
@@ -29,7 +28,6 @@ class ProjectsController < ApplicationController
   end
 
   def edit
-    @project = Project.find(params[:id])
   end
 
   def create
@@ -49,8 +47,6 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    @project = Project.find(params[:id])
-
     respond_to do |format|
       if @project.update_attributes(params[:project])
         flash[:notice] = 'Project was successfully updated.'
@@ -64,12 +60,20 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
-    @project = Project.find(params[:id])
     @project.destroy
 
     respond_to do |format|
       format.html { redirect_to(projects_url) }
       format.xml  { head :ok }
     end
+  end
+
+protected
+  def find_project
+    @project = Project.find(params[:id])
+  end
+  
+  def authorized?
+    logged_in? && (admin? || @project.nil? || @project.editable_by?(current_user))
   end
 end

@@ -1,21 +1,16 @@
 class GroupsController < ApplicationController
-  # TEMPORARY UNTIL REAL SIGNUP IS ADDED
-  before_filter :admin_required
+  before_filter :find_group, :only => [:show, :edit, :update, :destroy]
+  before_filter :login_required
 
   def index
     @groups = Group.find(:all)
   end
 
   def show
-    @group = Group.find(params[:id])
   end
 
   def new
     @group = Group.new
-  end
-
-  def edit
-    @group = Group.find(params[:id])
   end
 
   def create
@@ -28,8 +23,10 @@ class GroupsController < ApplicationController
     end
   end
 
+  def edit
+  end
+
   def update
-    @group = Group.find(params[:id])
     if @group.update_attributes(params[:group])
       flash[:notice] = 'Group was successfully updated.'
       redirect_to @group
@@ -39,8 +36,16 @@ class GroupsController < ApplicationController
   end
 
   def destroy
-    @group = Group.find(params[:id])
     @group.destroy
     redirect_to groups_path
+  end
+
+protected
+  def find_group
+    @group = Group.find(params[:id])
+  end
+  
+  def authorized?
+    logged_in? && (admin? || @group.nil? || @group.users.include?(current_user))
   end
 end

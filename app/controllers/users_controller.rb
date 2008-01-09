@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  before_filter :login_required, :only => [:show, :edit]
-  before_filter :admin_required, :only => [:suspend, :unsuspend, :destroy, :purge]
+  before_filter :login_required,       :only => [:index, :show, :edit, :update]
+  before_filter :admin_required,       :only => [:suspend, :unsuspend, :destroy, :purge]
   before_filter :find_user, :only => [:show, :suspend, :unsuspend, :destroy, :purge]
 
   def index
@@ -28,7 +28,7 @@ class UsersController < ApplicationController
 
   def activate
     self.current_user = params[:activation_code].blank? ? :false : User.find_by_activation_code(params[:activation_code])
-    if logged_in? && !current_user.active?
+    if current_user != :false && !current_user.active?
       current_user.activate!
       flash[:notice] = "Signup complete!"
     end

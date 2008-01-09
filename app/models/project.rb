@@ -7,4 +7,9 @@ class Project < ActiveRecord::Base
   
   has_finder :all, :order => 'name'
 
+  def editable_by?(user)
+    user && 
+      (parent_type == User.name && parent_id == user.id) ||
+      (parent_type == Group.name && parent.users.include?(user))
+  end
 end

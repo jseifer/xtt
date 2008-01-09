@@ -3,7 +3,7 @@ module AuthenticatedSystem
     # Returns true or false if the user is logged in.
     # Preloads @current_user with the user model if they're logged in.
     def logged_in?
-      current_user != :false
+      current_user != :false && current_user.active?
     end
 
     # Accesses the current user from the session.  Set it to :false if login fails
@@ -33,6 +33,10 @@ module AuthenticatedSystem
     def authorized?
       logged_in?
     end
+    
+    def admin?
+      logged_in? && current_user.admin?
+    end
 
     # Filter method to enforce a login requirement.
     #
@@ -53,7 +57,7 @@ module AuthenticatedSystem
     end
     
     def admin_required
-      access_denied
+      admin? || access_denied
     end
 
     # Redirect as appropriate when an access request fails.

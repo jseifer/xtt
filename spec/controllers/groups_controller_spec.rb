@@ -8,7 +8,7 @@ describe GroupsController, "GET #index" do
   before do
     @groups = []
     Group.stub!(:find).with(:all).and_return(@groups)
-    controller.stub!(:admin_required)
+    controller.stub!(:login_required)
   end
   
   it_assigns :groups
@@ -23,7 +23,7 @@ describe GroupsController, "GET #show" do
   before do
     @group  = groups(:default)
     Group.stub!(:find).with('1').and_return(@group)
-    controller.stub!(:admin_required)
+    controller.stub!(:login_required)
   end
   
   it_assigns :group
@@ -35,7 +35,7 @@ describe GroupsController, "GET #new" do
   act! { get :new }
   before do
     @group  = Group.new
-    controller.stub!(:admin_required)
+    controller.stub!(:login_required)
   end
 
   it "assigns @group" do
@@ -53,7 +53,7 @@ describe GroupsController, "GET #edit" do
   before do
     @group  = groups(:default)
     Group.stub!(:find).with('1').and_return(@group)
-    controller.stub!(:admin_required)
+    controller.stub!(:login_required)
   end
 
   it_assigns :group
@@ -65,7 +65,7 @@ describe GroupsController, "POST #create" do
     @attributes = {}
     @group = mock_model Group, :new_record? => false, :errors => []
     Group.stub!(:new).with(@attributes).and_return(@group)
-    controller.stub!(:admin_required)
+    controller.stub!(:login_required)
   end
   
   describe GroupsController, "(successful creation)" do
@@ -74,7 +74,7 @@ describe GroupsController, "POST #create" do
 
     before do
       @group.stub!(:save).and_return(true)
-      controller.stub!(:admin_required)
+      controller.stub!(:login_required)
     end
     
     it_assigns :group, :flash => { :notice => :not_nil }
@@ -87,7 +87,7 @@ describe GroupsController, "POST #create" do
 
     before do
       @group.stub!(:save).and_return(false)
-      controller.stub!(:admin_required)
+      controller.stub!(:login_required)
     end
     
     it_assigns :group
@@ -100,7 +100,7 @@ describe GroupsController, "PUT #update" do
     @attributes = {}
     @group = groups(:default)
     Group.stub!(:find).with('1').and_return(@group)
-    controller.stub!(:admin_required)
+    controller.stub!(:login_required)
   end
   
   describe GroupsController, "(successful save)" do
@@ -109,7 +109,7 @@ describe GroupsController, "PUT #update" do
 
     before do
       @group.stub!(:save).and_return(true)
-      controller.stub!(:admin_required)
+      controller.stub!(:login_required)
     end
     
     it_assigns :group, :flash => { :notice => :not_nil }
@@ -122,7 +122,7 @@ describe GroupsController, "PUT #update" do
 
     before do
       @group.stub!(:save).and_return(false)
-      controller.stub!(:admin_required)
+      controller.stub!(:login_required)
     end
     
     it_assigns :group
@@ -138,7 +138,7 @@ describe GroupsController, "DELETE #destroy" do
     @group = groups(:default)
     @group.stub!(:destroy)
     Group.stub!(:find).with('1').and_return(@group)
-    controller.stub!(:admin_required)
+    controller.stub!(:login_required)
   end
 
   it_assigns :group
