@@ -14,6 +14,16 @@ describe_access_for GroupsController do
     it_allows(:delete, :destroy) { {:id       => groups(:default) } }
   end
   
+  as :nonmember do
+    it_allows(:get,  :index)
+    it_allows(:get,  :new)
+    it_allows(:post, :create)
+    it_restricts(:get,    :edit)    { {:id       => groups(:default) } }
+    it_restricts(:get,    :show)    { {:id       => groups(:default) } }
+    it_restricts(:put,    :update)  { {:id       => groups(:default) } }
+    it_restricts(:delete, :destroy) { {:id       => groups(:default) } }
+  end
+  
   as :anon, :pending, :suspended do
     it_restricts(:get,  :index)
     it_restricts(:get,  :new)

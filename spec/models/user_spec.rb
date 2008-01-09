@@ -100,7 +100,11 @@ describe User do
     users(:default).deleted_at.should_not be_nil
     users(:default).should be_deleted
   end
-
+  
+  it 'finds owned groups' do
+    users(:default).owned_groups.should == [groups(:default)]
+  end
+  
 protected
   def create_user(options = {})
     User.create({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))

@@ -17,7 +17,8 @@ Spec::Runner.configure do |config|
 
   # Sets the current user in the session from the user fixtures.
   def login_as(user)
-    @request.session[:user] = user ? users(user).id : nil
+    controller.stub!(:login_required)
+    controller.stub!(:current_user).and_return(@user = user ? users(user) : :false)
   end
 
   def authorize_as(user)

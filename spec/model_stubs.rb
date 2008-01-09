@@ -28,6 +28,7 @@ ModelStubbing.define_models :users do
     stub :admin,     :login => 'admin-user',     :email => 'admin-user@example.com', :remember_token => 'blah', :admin => true
     stub :pending,   :login => 'pending-user',   :email => 'pending-user@example.com',   :state => 'pending', :activated_at => nil, :remember_token => 'asdf', :activation_code => 'abcdef'
     stub :suspended, :login => 'suspended-user', :email => 'suspended-user@example.com', :state => 'suspended', :remember_token => 'dfdfd'
+    stub :nonmember, :login => 'nonmember',      :email => 'nonmember@example.com'
   end
   
   model Membership do

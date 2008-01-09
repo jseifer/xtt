@@ -6,9 +6,9 @@ describe GroupsController, "GET #index" do
   act! { get :index }
 
   before do
-    controller.stub!(:login_required)
+    login_as :default
     @groups = []
-    Group.stub!(:find).with(:all).and_return(@groups)
+    @user.stub!(:groups).and_return(@groups)
   end
   
   it_assigns :groups
@@ -31,7 +31,7 @@ describe GroupsController, "GET #show" do
   act! { get :show, :id => 1 }
 
   before do
-    controller.stub!(:login_required)
+    login_as :default
     @group  = groups(:default)
     Group.stub!(:find).with('1').and_return(@group)
   end
@@ -54,7 +54,7 @@ describe GroupsController, "GET #new" do
   define_models :users
   act! { get :new }
   before do
-    controller.stub!(:login_required)
+    login_as :default
     @group  = Group.new
   end
 
@@ -80,7 +80,7 @@ describe GroupsController, "GET #edit" do
   act! { get :edit, :id => 1 }
   
   before do
-    controller.stub!(:login_required)
+    login_as :default
     @group  = groups(:default)
     Group.stub!(:find).with('1').and_return(@group)
   end
@@ -91,10 +91,10 @@ end
 
 describe GroupsController, "POST #create" do
   before do
-    controller.stub!(:login_required)
+    login_as :default
     @attributes = {}
     @group = mock_model Group, :new_record? => false, :errors => []
-    Group.stub!(:new).with(@attributes).and_return(@group)
+    @user.owned_groups.stub!(:build).with(@attributes).and_return(@group)
   end
   
   describe GroupsController, "(successful creation)" do
@@ -150,7 +150,7 @@ end
 
 describe GroupsController, "PUT #update" do
   before do
-    controller.stub!(:login_required)
+    login_as :default
     @attributes = {}
     @group = groups(:default)
     Group.stub!(:find).with('1').and_return(@group)
@@ -211,7 +211,7 @@ describe GroupsController, "DELETE #destroy" do
   act! { delete :destroy, :id => 1 }
   
   before do
-    controller.stub!(:login_required)
+    login_as :default
     @group = groups(:default)
     @group.stub!(:destroy)
     Group.stub!(:find).with('1').and_return(@group)

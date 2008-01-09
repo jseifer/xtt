@@ -3,7 +3,7 @@ class GroupsController < ApplicationController
   before_filter :login_required
   
   def index
-    @groups = Group.find(:all)
+    @groups = current_user.groups
 
     respond_to do |format|
       format.html # index.html.erb
@@ -31,7 +31,7 @@ class GroupsController < ApplicationController
   end
 
   def create
-    @group = Group.new(params[:group])
+    @group = current_user.owned_groups.build(params[:group])
 
     respond_to do |format|
       if @group.save
