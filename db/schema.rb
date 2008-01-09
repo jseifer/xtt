@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 9) do
+ActiveRecord::Schema.define(:version => 10) do
 
   create_table "groups", :force => true do |t|
     t.string   "name"
@@ -59,6 +59,7 @@ ActiveRecord::Schema.define(:version => 9) do
     t.datetime "activated_at"
     t.string   "state",                                   :default => "passive"
     t.datetime "deleted_at"
+    t.boolean  "admin",                                   :default => false
   end
 
 end

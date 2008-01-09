@@ -8,6 +8,20 @@ end
 describe User do
   define_models :users
 
+  describe "being bootstrapped" do
+    define_models :bootstrap, :copy => false do
+      model User
+    end
+  
+    it "creates initial user as admin" do
+      create_user.should be_admin
+    end
+  end
+
+  it 'creates users as !admin' do
+    create_user.should_not be_admin
+  end
+
   it 'being created increments User.count' do
     method(:create_user).should change(User, :count).by(1)
   end
