@@ -105,6 +105,12 @@ describe User do
     users(:default).owned_groups.should == [groups(:default)]
   end
   
+  it 'adds self as a member to the owned_group after creation' do
+    group = users(:default).owned_groups.create(:name => 'Ninjas')
+    users(:default).groups.should include(group)
+    group.memberships.should_not be_empty
+  end
+  
 protected
   def create_user(options = {})
     User.create({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))

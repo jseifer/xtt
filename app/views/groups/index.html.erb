@@ -1,6 +1,6 @@
 <ul>
 <% @groups.each do |group| -%>
-	<li><%= link_to h(group.name + ".#{request.domain}"), group %></li>
+	<li><%= link_to h(group.name), group %></li>
 <% end -%>
 </ul>
 
