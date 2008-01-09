@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   before_create { |u| u.admin = true if User.count.zero? }
   
   has_many :groups, :through => :memberships
-  has_many :recent_projects, :through => :statuses, :class_name => Project.name do
+  has_many :recent_projects, :through => :statuses, :class_name => Project.name, :source => :project do
     def latest
       @latest ||= find(:first)
     end
