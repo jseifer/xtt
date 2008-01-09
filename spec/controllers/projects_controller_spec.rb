@@ -25,34 +25,28 @@ describe ProjectsController, "GET #index" do
     it_renders :xml, :projects
   end
   
-  describe ProjectsController, "(/users/1/projects)" do
-    act! { get :index, :user_id => 1 }
-    it_assigns :projects => nil
-    it_redirects_to { projects_path }
-  end
-  
-  describe ProjectsController, "(/groups/1/projects)" do
-    define_models :users
-    act! { get :index, :group_id => 1 }
-    it_assigns :projects, :group
-    it_renders :template, :index
-
-    before do
-      @projects = []
-      @user  = users(:default)
-      @group = groups(:default)
-      Group.stub!(:find).with('1').and_return(@group)
-      @group.stub!(:projects).and_return(@projects)
-      controller.stub!(:current_user).and_return(@user)
-      controller.stub!(:login_required)
-    end
-    
-    #it "doesn't provide access to other groups" do
-    #  @user = users(:pending)
-    #  controller.stub!(:logged_in?).and_return(false)
-    #  acting.should redirect_to projects_path
-    #end
-  end
+  #describe ProjectsController, "(/groups/1/projects)" do
+  #  define_models :users
+  #  act! { get :index, :group_id => 1 }
+  #  it_assigns :projects, :group
+  #  it_renders :template, :index
+  #
+  #  before do
+  #    @projects = []
+  #    @user  = users(:default)
+  #    @group = groups(:default)
+  #    Group.stub!(:find).with('1').and_return(@group)
+  #    @group.stub!(:projects).and_return(@projects)
+  #    controller.stub!(:current_user).and_return(@user)
+  #    controller.stub!(:login_required)
+  #  end
+  #  
+  #  #it "doesn't provide access to other groups" do
+  #  #  @user = users(:pending)
+  #  #  controller.stub!(:logged_in?).and_return(false)
+  #  #  acting.should redirect_to projects_path
+  #  #end
+  #end
 end
 
 describe ProjectsController, "GET #show" do

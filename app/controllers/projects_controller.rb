@@ -4,20 +4,8 @@ class ProjectsController < ApplicationController
 
   # /projects - List user projects
   # /groups/:group_id/projects - List group projects
-  # /users/:user_id/projects - Invalid, redirect to /projects
   def index
-    if params[:user_id]
-      redirect_to projects_path and return
-    elsif params[:group_id]
-      @group = Group.find params[:group_id]
-      if admin? || @group.users.include?(current_user)
-        @projects = @group.projects
-      else
-        redirect_to projects_path and return
-      end
-    else
-      @projects = current_user.projects
-    end
+    @projects = current_user.projects
 
     respond_to do |format|
       format.html # index.html.erb
@@ -83,12 +71,12 @@ class ProjectsController < ApplicationController
   end
 
 protected
+  def find_parent
+    redirect_to 
+  end
+  
   def find_project
-    if params[:user_id] || params[:group_id]
-      redirect_to project_path(params[:id])
-    else
-      @project = Project.find(params[:id])
-    end
+    @project = Project.find(params[:id])
   end
   
   def authorized?
