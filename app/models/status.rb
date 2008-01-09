@@ -41,6 +41,13 @@ class Status < ActiveRecord::Base
   def editable_by?(user)
     user && user_id == user.id
   end
+  
+  def followup_time=(new_time)
+    followup.update_attribute :created_at, new_time
+  end
+  def followup_time
+    followup.created_at
+  end
 
 protected
   def calculate_hours
