@@ -11,6 +11,14 @@ describe Status do
     statuses(:default).followup.should == statuses(:pending)
   end
   
+  it "adjusts followup time with accesor" do
+    time = 5.minutes.from_now
+    statuses(:pending).created_at.should_not == time
+    statuses(:default).followup_time = time
+    statuses(:default).save
+    statuses(:pending).reload.created_at.should == time
+  end
+  
   it "#next retrieves previous status" do
     statuses(:pending).previous.should == statuses(:default)
   end
