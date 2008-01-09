@@ -2,15 +2,17 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'users', :action => 'index'
 
   map.resources :statuses
-  map.resources :projects, :has_many => :statuses
-  map.resources :groups, :has_many => :statuses do |group|
+  map.resources :projects do |project|
+    project.resources :statuses, :controller => 'project_statuses'
+  end
+  map.resources :groups do |group|
     group.resources :projects, :controller => 'group_projects'
+    group.resources :statuses, :controller => 'group_statuses'
   end
   
   map.resources :users, :member => { :suspend   => :put,
                                      :unsuspend => :put,
-                                     :purge     => :delete },
-                        :has_many => [:statuses]
+                                     :purge     => :delete }
   map.resource :session, :settings
 
   map.activate '/activate/:activation_code', :controller => 'users',    :action => 'activate', :activation_code => nil
