@@ -1,3 +1,24 @@
-<h1><%=h @group.name %></h1>
+<h1>Group: <%=h @group.name %></h1>
 
+<h2>Members</h2>
+<ul>
+<% @group.users.each do |member| %>
+  <%= h(member.login) %>
+  <% if member == @group.owner %>
+  [owner]
+  <% else %>
+  __remove__
+  <% end %>
+<% end %>
+</ul>
 
+__add user__
+
+<h2>Projects</h2>
+<ul>
+<% @group.projects.each do |project| %>
+  <li><%= link_to(h(project.name), project) %></li>
+<% end %>
+</ul>
+
+__add project__
