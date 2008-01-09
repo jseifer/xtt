@@ -11,8 +11,8 @@ describe GroupsController, "GET #index" do
     controller.stub!(:admin_required)
   end
   
-  it.assigns :groups
-  it.renders :template, :index
+  it_assigns :groups
+  it_renders :template, :index
 end
 
 describe GroupsController, "GET #show" do
@@ -26,8 +26,8 @@ describe GroupsController, "GET #show" do
     controller.stub!(:admin_required)
   end
   
-  it.assigns :group
-  it.renders :template, :show
+  it_assigns :group
+  it_renders :template, :show
 end
 
 describe GroupsController, "GET #new" do
@@ -43,7 +43,7 @@ describe GroupsController, "GET #new" do
     assigns[:group].should be_new_record
   end
   
-  it.renders :template, :new
+  it_renders :template, :new
 end
 
 describe GroupsController, "GET #edit" do
@@ -56,8 +56,8 @@ describe GroupsController, "GET #edit" do
     controller.stub!(:admin_required)
   end
 
-  it.assigns :group
-  it.renders :template, :edit
+  it_assigns :group
+  it_renders :template, :edit
 end
 
 describe GroupsController, "POST #create" do
@@ -77,8 +77,8 @@ describe GroupsController, "POST #create" do
       controller.stub!(:admin_required)
     end
     
-    it.assigns :group, :flash => { :notice => :not_nil }
-    it.redirects_to { group_path(@group) }
+    it_assigns :group, :flash => { :notice => :not_nil }
+    it_redirects_to { group_path(@group) }
   end
 
   describe GroupsController, "(unsuccessful creation)" do
@@ -90,8 +90,8 @@ describe GroupsController, "POST #create" do
       controller.stub!(:admin_required)
     end
     
-    it.assigns :group
-    it.renders :template, :new
+    it_assigns :group
+    it_renders :template, :new
   end
 end
 
@@ -112,8 +112,8 @@ describe GroupsController, "PUT #update" do
       controller.stub!(:admin_required)
     end
     
-    it.assigns :group, :flash => { :notice => :not_nil }
-    it.redirects_to { group_path(@group) }
+    it_assigns :group, :flash => { :notice => :not_nil }
+    it_redirects_to { group_path(@group) }
   end
 
   describe GroupsController, "(unsuccessful save)" do
@@ -125,8 +125,8 @@ describe GroupsController, "PUT #update" do
       controller.stub!(:admin_required)
     end
     
-    it.assigns :group
-    it.renders :template, :edit
+    it_assigns :group
+    it_renders :template, :edit
   end
 end
 
@@ -141,6 +141,6 @@ describe GroupsController, "DELETE #destroy" do
     controller.stub!(:admin_required)
   end
 
-  it.assigns :group
-  it.redirects_to { groups_path }
+  it_assigns :group
+  it_redirects_to { groups_path }
 end
