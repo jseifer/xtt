@@ -1,3 +1,5 @@
+// script.aculo.us dragdrop.js v1.8.0_pre1, Fri Oct 12 21:34:51 +0200 2007
+
 // Copyright (c) 2005-2007 Thomas Fuchs (http://script.aculo.us, http://mir.aculo.us)
 //           (c) 2005-2007 Sammi Williams (http://www.oriontransfer.co.nz, sammi@oriontransfer.co.nz)
 // 
@@ -222,7 +224,10 @@ var Draggables = {
 
 /*--------------------------------------------------------------------------*/
 
-var Draggable = Class.create({
+var Draggable = Class.create();
+Draggable._dragging    = { };
+
+Draggable.prototype = {
   initialize: function(element) {
     var defaults = {
       handle: false,
@@ -565,13 +570,12 @@ var Draggable = Class.create({
     }
     return { top: T, left: L, width: W, height: H };
   }
-});
-
-Draggable._dragging = { };
+}
 
 /*--------------------------------------------------------------------------*/
 
-var SortableObserver = Class.create({
+var SortableObserver = Class.create();
+SortableObserver.prototype = {
   initialize: function(element, observer) {
     this.element   = $(element);
     this.observer  = observer;
@@ -587,7 +591,7 @@ var SortableObserver = Class.create({
     if(this.lastValue != Sortable.serialize(this.element))
       this.observer(this.element)
   }
-});
+}
 
 var Sortable = {
   SERIALIZE_RULE: /^[^_\-](?:[A-Za-z0-9\-\_]*)[_](.*)$/,
@@ -712,7 +716,7 @@ var Sortable = {
 
     (options.elements || this.findElements(element, options) || []).each( function(e,i) {
       var handle = options.handles ? $(options.handles[i]) :
-        (options.handle ? $(e).select('.' + options.handle)[0] : e); 
+        (options.handle ? $(e).getElementsByClassName(options.handle)[0] : e); 
       options.draggables.push(
         new Draggable(e, Object.extend(options_for_draggable, { handle: handle })));
       Droppables.add(e, options_for_droppable);
