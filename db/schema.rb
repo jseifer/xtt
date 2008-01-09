@@ -9,25 +9,30 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 5) do
+ActiveRecord::Schema.define(:version => 10) do
 
-  create_table "accounts", :force => true do |t|
-    t.string   "host"
+  create_table "groups", :force => true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "owner_id"
   end
 
-  add_index "accounts", ["host"], :name => "index_accounts_on_host"
+  create_table "memberships", :force => true do |t|
+    t.integer "group_id"
+    t.integer "user_id"
+  end
 
   create_table "projects", :force => true do |t|
     t.string   "name"
     t.boolean  "billable"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "account_id"
+    t.integer  "parent_id"
+    t.string   "parent_type"
   end
 
-  add_index "projects", ["name", "account_id"], :name => "index_projects_on_name_and_account_id"
+  add_index "projects", ["name", "parent_id", "parent_type"], :name => "index_projects_on_name_and_parent"
 
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
@@ -54,9 +59,7 @@ ActiveRecord::Schema.define(:version => 5) do
     t.datetime "activated_at"
     t.string   "state",                                   :default => "passive"
     t.datetime "deleted_at"
-    t.integer  "account_id"
+    t.boolean  "admin",                                   :default => false
   end
-
-  add_index "users", ["login", "account_id"], :name => "index_users_on_login_and_account_id"
 
 end

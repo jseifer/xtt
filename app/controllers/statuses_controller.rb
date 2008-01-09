@@ -1,8 +1,8 @@
 class StatusesController < ApplicationController
+  before_filter :find_record,    :only => :index
+  before_filter :find_user,      :only => [:new, :create]
+  before_filter :find_status,    :only => [:show, :edit, :update, :destroy]
   before_filter :login_required
-  before_filter :find_record, :only => :index
-  before_filter :find_user,   :only => [:new, :create]
-  before_filter :find_status, :only => [:show, :update, :destroy]
 
   # USER SCOPE
   
@@ -73,6 +73,20 @@ class StatusesController < ApplicationController
   end
   
 protected
+  def authorized?
+    return false unless logged_in?
+    return true  if admin?
+    if @status
+      @status.editable_by?(current_user)
+    elsif @user
+      @user == current_user
+    elsif @project
+      @project.editable_by?(current_user)
+    else
+      false
+    end
+  end
+
   def find_record
     @record = 
       if params[:user_id]
@@ -92,6 +106,5 @@ protected
   # login_required has your back
   def find_status
     @status = Status.find(params[:id])
-    !logged_in? || @status.editable_by?(current_user) || access_denied
   end
 end

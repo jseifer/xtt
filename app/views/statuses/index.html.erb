@@ -16,4 +16,4 @@
 <% end -%>
 </table>
 
-<%= render :partial => "statuses/form", :locals => { :status => @user.statuses.build } if @user %>
+<%= render :partial => "statuses/form", :locals => { :user => @user, :status => @user.statuses.build } if @user %>

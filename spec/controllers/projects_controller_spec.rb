@@ -6,23 +6,21 @@ describe ProjectsController, "GET #index" do
   act! { get :index }
 
   before do
-    @account  = accounts(:default)
     @projects = []
-    @account.stub!(:projects).and_return(@projects)
-    controller.stub!(:account).and_return(@account)
+    Project.stub!(:all).and_return(@projects)
     controller.stub!(:login_required)
   end
   
-  it.assigns :projects
-  it.renders :template, :index
+  it_assigns :projects
+  it_renders :template, :index
 
   describe ProjectsController, "(xml)" do
     define_models
     
     act! { get :index, :format => 'xml' }
 
-    it.assigns :projects
-    it.renders :xml, :projects
+    it_assigns :projects
+    it_renders :xml, :projects
   end
 end
 
@@ -32,23 +30,21 @@ describe ProjectsController, "GET #show" do
   act! { get :show, :id => 1 }
 
   before do
-    @account = accounts(:default)
     @project = projects(:default)
-    @account.stub!(:projects).and_return([])
-    @account.projects.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:account).and_return(@account)
+    Project.stub!(:find).with('1').and_return(@project)
+    controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
   
-  it.assigns :project
-  it.renders :template, :show
+  it_assigns :project
+  it_renders :template, :show
   
   describe ProjectsController, "(xml)" do
     define_models
     
     act! { get :show, :id => 1, :format => 'xml' }
 
-    it.renders :xml, :project
+    it_renders :xml, :project
   end
 end
 
@@ -65,13 +61,13 @@ describe ProjectsController, "GET #new" do
     assigns[:project].should be_new_record
   end
   
-  it.renders :template, :new
+  it_renders :template, :new
   
   describe ProjectsController, "(xml)" do
     define_models
     act! { get :new, :format => 'xml' }
 
-    it.renders :xml, :project
+    it_renders :xml, :project
   end
 end
 
@@ -80,58 +76,55 @@ describe ProjectsController, "GET #edit" do
   act! { get :edit, :id => 1 }
   
   before do
-    @account = accounts(:default)
     @project = projects(:default)
-    @account.stub!(:projects).and_return([])
-    @account.projects.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:account).and_return(@account)
+    Project.stub!(:find).with('1').and_return(@project)
     controller.stub!(:login_required)
   end
 
-  it.assigns :project
-  it.renders :template, :edit
+  it_assigns :project
+  it_renders :template, :edit
 end
 
 describe ProjectsController, "POST #create" do
   before do
     @attributes = {}
     @project = mock_model Project, :new_record? => false, :errors => []
-    @account = accounts(:default)
-    @account.stub!(:projects).and_return([])
-    @account.projects.stub!(:build).with(@attributes).and_return(@project)
-    controller.stub!(:account).and_return(@account)
+    @group = groups(:default)
+    @group.stub!(:projects).and_return([])
+    Group.stub!(:find).with('2').and_return(@group)
+    @group.projects.stub!(:build).with(@attributes).and_return(@project)
     controller.stub!(:login_required)
   end
   
   describe ProjectsController, "(successful creation)" do
     define_models
-    act! { post :create, :project => @attributes }
+    act! { post :create, :group_id => 2, :project => @attributes }
 
     before do
       @project.stub!(:save).and_return(true)
       controller.stub!(:login_required)
     end
     
-    it.assigns :project, :flash => { :notice => :not_nil }
-    it.redirects_to { project_path(@project) }
+    it_assigns :project, :flash => { :notice => :not_nil }
+    it_redirects_to { project_path(@project) }
   end
 
   describe ProjectsController, "(unsuccessful creation)" do
     define_models
-    act! { post :create, :project => @attributes }
+    act! { post :create, :group_id => 2, :project => @attributes }
 
     before do
       @project.stub!(:save).and_return(false)
       controller.stub!(:login_required)
     end
     
-    it.assigns :project
-    it.renders :template, :new
+    it_assigns :project
+    it_renders :template, :new
   end
   
   describe ProjectsController, "(successful creation, xml)" do
     define_models
-    act! { post :create, :project => @attributes, :format => 'xml' }
+    act! { post :create, :group_id => 2, :project => @attributes, :format => 'xml' }
 
     before do
       @project.stub!(:save).and_return(true)
@@ -139,32 +132,30 @@ describe ProjectsController, "POST #create" do
       controller.stub!(:login_required)
     end
     
-    it.assigns :project, :headers => { :Location => lambda { project_url(@project) } }
-    it.renders :xml, :project, :status => :created
+    it_assigns :project, :headers => { :Location => lambda { project_url(@project) } }
+    it_renders :xml, :project, :status => :created
   end
   
   describe ProjectsController, "(unsuccessful creation, xml)" do
     define_models
-    act! { post :create, :project => @attributes, :format => 'xml' }
+    act! { post :create, :group_id => 2, :project => @attributes, :format => 'xml' }
 
     before do
       @project.stub!(:save).and_return(false)
       controller.stub!(:login_required)
     end
     
-    it.assigns :project
-    it.renders :xml, "project.errors", :status => :unprocessable_entity
+    it_assigns :project
+    it_renders :xml, "project.errors", :status => :unprocessable_entity
   end
 end
 
 describe ProjectsController, "PUT #update" do
   before do
     @attributes = {}
-    @account = accounts(:default)
     @project = projects(:default)
-    @account.stub!(:projects).and_return([])
-    @account.projects.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:account).and_return(@account)
+    Project.stub!(:find).with('1').and_return(@project)
+    controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
   
@@ -177,8 +168,8 @@ describe ProjectsController, "PUT #update" do
       controller.stub!(:login_required)
     end
     
-    it.assigns :project, :flash => { :notice => :not_nil }
-    it.redirects_to { project_path(@project) }
+    it_assigns :project, :flash => { :notice => :not_nil }
+    it_redirects_to { project_path(@project) }
   end
 
   describe ProjectsController, "(unsuccessful save)" do
@@ -190,8 +181,8 @@ describe ProjectsController, "PUT #update" do
       controller.stub!(:login_required)
     end
     
-    it.assigns :project
-    it.renders :template, :edit
+    it_assigns :project
+    it_renders :template, :edit
   end
   
   describe ProjectsController, "(successful save, xml)" do
@@ -203,8 +194,8 @@ describe ProjectsController, "PUT #update" do
       controller.stub!(:login_required)
     end
     
-    it.assigns :project
-    it.renders :blank
+    it_assigns :project
+    it_renders :blank
   end
   
   describe ProjectsController, "(unsuccessful save, xml)" do
@@ -216,8 +207,8 @@ describe ProjectsController, "PUT #update" do
       controller.stub!(:login_required)
     end
     
-    it.assigns :project
-    it.renders :xml, "project.errors", :status => :unprocessable_entity
+    it_assigns :project
+    it_renders :xml, "project.errors", :status => :unprocessable_entity
   end
 end
 
@@ -226,23 +217,20 @@ describe ProjectsController, "DELETE #destroy" do
   act! { delete :destroy, :id => 1 }
   
   before do
-    @account = accounts(:default)
     @project = projects(:default)
     @project.stub!(:destroy)
-    @account.stub!(:projects).and_return([])
-    @account.projects.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:account).and_return(@account)
+    Project.stub!(:find).with('1').and_return(@project)
     controller.stub!(:login_required)
   end
 
-  it.assigns :project
-  it.redirects_to { projects_path }
+  it_assigns :project
+  it_redirects_to { projects_path }
   
   describe ProjectsController, "(xml)" do
     define_models
     act! { delete :destroy, :id => 1, :format => 'xml' }
 
-    it.assigns :project
-    it.renders :blank
+    it_assigns :project
+    it_renders :blank
   end
 end
