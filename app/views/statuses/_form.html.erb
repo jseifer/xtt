@@ -1,6 +1,6 @@
 <% status.project = user.recent_projects.latest if status.new_record? -%>
 <% form_for status, 
-	   :url    => status.new_record? ? user_statuses_path(user) : status_path(status),
+	   :url    => status.new_record? ? statuses_path : status_path(status),
 	   :method => status.new_record? ? :post : :put \
 	 do |f| -%>
 	<p>
