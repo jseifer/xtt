@@ -1,5 +1,5 @@
 <% form_for current_user.statuses.new, 
-	   :url    => user_statuses_path(current_user),
+	   :url    => statuses_path,
 	   :method => :post do |f| -%>
 	<%= f.hidden_field :project_id %>
 	<p>
