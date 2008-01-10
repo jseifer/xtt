@@ -6,6 +6,12 @@ class Status < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
   
+  has_finder :for_group, lambda { |group| { :conditions => ['projects.parent_id = ? and projects.parent_type = ?', group.id, Group.name], 
+      :joins => "INNER JOIN projects ON statuses.project_id = projects.id", :extend => LatestExtension} } 
+
+  has_finder :for_project, lambda { |project| { :conditions => {:project_id => project.id}, :extend => LatestExtension } }
+  has_finder :without_project, :conditions => {:project_id => nil}, :extend => LatestExtension
+  
   acts_as_state_machine :initial => :pending
   state :pending, :enter => :process_previous
   state :processed
@@ -45,6 +51,7 @@ class Status < ActiveRecord::Base
   def followup_time=(new_time)
     followup.update_attribute :created_at, new_time
   end
+
   def followup_time
     followup.created_at
   end

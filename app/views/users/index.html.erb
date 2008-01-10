@@ -1,3 +1,12 @@
 <h1>What's Everyone Doing?</h1>
 
-<p>PERSONAL USER DASHBOARD.  list user's statuses, and sidebar of shared groups?</p>
+<p><%=h current_user.statuses.latest.message %></p>
+
+<% current_user.groups.each do |group| -%>
+	<h3><%= link_to h(group.name), group %></h3>
+	<ul>
+	<% group.users.each do |user| -%>
+		<li><%=h user.login %>: <%=h user.statuses.for_group(group).latest.message %></li>
+	<% end -%>
+	</ul>
+<% end -%>
