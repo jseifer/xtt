@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   # /projects - List user projects
   # /groups/:group_id/projects - List group projects
   def index
-    @projects = current_user.projects
+    @projects = current_user.all_projects
 
     respond_to do |format|
       format.html # index.html.erb
@@ -33,7 +33,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @parent  = (params[:user_id] && User.find(params[:user_id])) || (params[:group_id] && Group.find(params[:group_id]) || current_user)
+    @parent  = (params[:group_id] && current_user.groups.find(params[:group_id])) || current_user
     @project = @parent.projects.build(params[:project])
 
     respond_to do |format|
