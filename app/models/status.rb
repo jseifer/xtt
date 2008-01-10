@@ -35,6 +35,7 @@ class Status < ActiveRecord::Base
   end
 
   def accurate_time
+    raise "No created_at" if created_at.nil?
     (followup ? followup.created_at : Time.now) - created_at
   end
   
@@ -43,10 +44,24 @@ class Status < ActiveRecord::Base
   end
   
   def followup_time=(new_time)
-    followup.update_attribute :created_at, new_time
+    followup.update_attribute :created_at, round_time(new_time)
   end
   def followup_time
-    followup.created_at
+    t = followup.created_at.to_f
+    round_time(t)
+  end
+
+  def fixed_created_at
+    round_time created_at
+    #round_time(read_attribute(:created_at).utc)
+  end
+  def fixed_created_at=(new_time)
+    write_attribute :created_at, round_time(new_time)
+  end
+  
+  def round_time(t)
+    t = t.to_f
+    Time.at(t - (t%300)).utc
   end
 
 protected
