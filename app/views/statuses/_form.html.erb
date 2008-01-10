@@ -10,5 +10,43 @@
 <% if !status.new_record? && status.processed? -%>
 	<p><label>Hours: <%= f.text_field :hours, :maxlength => 7 %></label></p>
 <% end -%>
+
+  <div style="border:1px solid #aaa;padding:10px;margin:10px 0">
+    <p>Adjust Start time: <%= f.text_field :fixed_created_at %></p>
+    <% if prev = f.object.previous %>
+    <p>This will alter the finish time of <%= link_to h(prev.message), prev %> (<%= nice_time(prev.accurate_time) %>)</p>
+    <% end %>
+  </div>
+
+  <div style="border:1px solid #aaa;padding:10px;margin:10px 0">
+  <% if f.object.followup %>
+    <p>Adjust end time: <%= f.text_field :followup_time %><p>
+
+    <%= f.object.created_at %><br />
+    <%= f.object.followup_time %>
+    <p>This will change the start time of <%= link_to h(f.object.followup.message), f.object.followup %> (<%= nice_time f.object.followup.accurate_time %>)
+    <% end #followup -%>
+  </div>
+
+  <%#= render :partial => "layouts/slider", :locals => { :name => "track1" } %>
+  <%#= render :partial => "layouts/slider", :locals => { :name => "track2" } %>
+
+  <% objects = [ f.object.previous, f.object ] %>
+  <% 3.times { objects << objects[-1].followup if objects[-1] } %>
+  <% objects.compact! %>
+
+  <% object_vals = objects.map {|o| o.accurate_time.to_f }%>
+  <% @prev_cell = 0 %>
+  <% total = object_vals.sum %>
+  <% min = (object_vals[0] / total) * 800 %>
+
+  <%= render :partial => "layouts/slider", :locals => { :name => "track", :sliders => objects.map { |o| o.created_at.to_f }, :endpoint => objects[-1].accurate_time.to_f } %>
+
+  <div style="width:800px;display:block;background-color:#eee;position:relative;clear:both;height:300px">
+    <%= render :partial => "cell", :collection => objects, :locals => { :total => total, :min => min } %>
+  </div>
+  
+
+  <p><%= nice_time f.object.accurate_time %>
 	<p><%= submit_tag :Update %></p>
 <% end -%>

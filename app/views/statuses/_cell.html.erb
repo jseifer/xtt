@@ -1,0 +1,16 @@
+<% if cell %>
+
+<% size = ((cell.accurate_time.to_f)/total)*800 %>
+<% left = @prev_cell %>
+<div style="position:absolute;left:<%= left %>px; width:<%= size %>px; background-color:#fff; margin:3px; opacity:0.5">
+  <% if size > 20 %>
+    <%= link_to h(cell.message), cell %><br />
+    <%= nice_time cell.accurate_time %>
+  <% else %>
+    <%= link_to h("x"), cell, :alt => h(cell.message), :title => h(cell.message) %><br />
+  <% end %>
+</div>
+<% @prev_cell += size %><br>
+<% else %>
+<div>Nothing</div>
+<% end %>

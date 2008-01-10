@@ -10,6 +10,7 @@
 	  <td><%= link_to h(status.user.login), status.user %></td>
 	  <td><%=h status.message %></td>
 	  <td><%= status.created_at.strftime("%Y-%h-%d %H:%M")%></td>
+	  <td><%= link_to "edit", status %></td>
 	  <td><%= nice_timer_for status %> <% unless status.hours.zero? -%>(<%= pluralize status.hours, 'hour' %>)<% end -%></td>
 	</tr>
 <% end -%>
