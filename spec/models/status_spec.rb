@@ -8,35 +8,34 @@ describe Status do
   end
   
   it "#next retrieves followup status" do
-    statuses(:default).followup.should == statuses(:pending)
+    statuses(:in_project).followup.should == statuses(:pending)
   end
   
   it "adjusts followup time with accesor" do
     time = 5.minutes.from_now
     statuses(:pending).created_at.should_not == time
-    statuses(:default).followup_time = time
-    statuses(:default).save
+    statuses(:in_project).followup_time = time
+    statuses(:in_project).save
     statuses(:pending).reload.created_at.should == time
   end
   
   it "#next retrieves previous status" do
-    statuses(:pending).previous.should == statuses(:default)
+    statuses(:pending).previous.should == statuses(:in_project)
   end
   
   it "is billable if project is billable" do
     projects(:default).should be_billable
-    statuses(:default).project.should == projects(:default)
-    statuses(:default).should be_billable
+    statuses(:in_project).project.should == projects(:default)
+    statuses(:in_project).should be_billable
   end
   
   it "is not billable if project is not billable" do
     projects(:default).update_attribute(:billable, false)
-    statuses(:default).project.should == projects(:default)
-    statuses(:default).should_not be_billable
+    statuses(:in_project).project.should == projects(:default)
+    statuses(:in_project).should_not be_billable
   end
   
   it "is not billable if there is no project" do
-    Status.update_all :project_id => nil
     statuses(:default).reload.should_not be_billable
   end
 end
@@ -69,14 +68,14 @@ describe Status, "being created" do
     @status.should be_pending
     @new.save!
     @status.reload.should be_processed
-    @status.hours.should == 5
+    @status.hours.to_f.should == 5.0
   end
 end
 
 describe Status, "in pending state" do
   define_models :copy => :statuses do
     model Status do
-      stub :new, :message => 'howdy', :created_at => (current_time - 2.hours)
+      stub :new, :message => 'howdy', :created_at => (current_time - 2.hours), :project => all_stubs(:project)
     end
   end
   
@@ -141,6 +140,40 @@ describe Status, 'permissions' do
   
   it "restrict nil user from editing" do
     @status.should_not be_editable_by(nil)
+  end
+end
+
+describe Status, "(filtering)" do
+  define_models
+
+  it "finds statuses by user" do
+    users(:default).statuses.should == [statuses(:in_project), statuses(:default)]
+  end
+  
+  it "finds statuses by group" do
+    #puts "AHHH #{statuses(:default).id} / #{statuses(:in_project).id}"
+    Status.for_group(groups(:default)).should == [statuses(:in_project)]
+  end
+  
+  it "finds statuses by project" do
+    projects(:default).statuses.should == [statuses(:in_project)]
+    Status.for_project(projects(:default)).should == [statuses(:in_project)]
+  end
+  
+  it "finds statuses without project" do
+    Status.without_project.should == [statuses(:default)]
+  end
+  
+  it "finds user statuses by group" do
+    users(:default).statuses.for_group(groups(:default)).should == [statuses(:in_project)]
+  end
+  
+  it "finds user statuses by project" do
+    users(:default).statuses.for_project(projects(:default)).should == [statuses(:in_project)]
+  end
+  
+  it "finds user statuses without project" do
+    users(:default).statuses.without_project.should == [statuses(:default)]
   end
 end
 

@@ -1,0 +1,6 @@
+unless @membership.new_record?
+  page.insert_html :bottom, 'users', :partial => 'groups/user', :object => @user
+  page['new_member'].replace_html :partial => 'groups/new_member'
+else
+  alert('that user is already a member of this group')
+end

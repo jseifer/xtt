@@ -3,11 +3,6 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe UsersController do
   define_models :users
 
-  before do
-    @account = accounts(:default)
-    controller.stub!(:account).and_return(@account)
-  end
-
   it 'allows signup' do
     pending "on hold, need to use invitations instead"
     lambda do
@@ -57,7 +52,6 @@ describe UsersController do
     get :activate, :activation_code => users(:pending).activation_code
     response.should redirect_to('/')
     User.authenticate(users(:pending).login, 'test').should == users(:pending)
-    flash[:notice].should_not be_nil
   end
   
   it 'does not activate user without key' do

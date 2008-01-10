@@ -1,13 +1,11 @@
 class StatusesController < ApplicationController
+  before_filter :find_status,    :only => [:show, :edit, :update, :destroy]
   before_filter :login_required
-  before_filter :find_record, :only => :index
-  before_filter :find_user,   :only => [:new, :create]
-  before_filter :find_status, :only => [:show, :update, :destroy]
 
   # USER SCOPE
   
   def index
-    @statuses = @record.statuses
+    @statuses ||= current_user.statuses
 
     respond_to do |format|
       format.html # index.html.erb
@@ -25,12 +23,12 @@ class StatusesController < ApplicationController
   end
 
   def create
-    @status = @user.statuses.build(params[:status])
+    @status = current_user.statuses.build(params[:status])
 
     respond_to do |format|
       if @status.save
         flash[:notice] = 'Status was successfully created.'
-        format.html { redirect_to(@user) }
+        format.html { redirect_to root_path }
         format.xml  { render :xml  => @status, :status => :created, :location => @status }
       else
         format.html { render :action => "new" }
@@ -73,25 +71,11 @@ class StatusesController < ApplicationController
   end
   
 protected
-  def find_record
-    @record = 
-      if params[:user_id]
-        find_user
-      elsif params[:project_id]
-        @project = Project.find(params[:project_id])
-      else
-        raise ActiveRecord::RecordNotfound
-      end
+  def authorized?
+    logged_in? && (admin? || @status.nil? || @status.editable_by?(current_user))
   end
-  
-  def find_user
-    @user = User.find(params[:user_id])
-  end
-  
-  # skip anon users for specs
-  # login_required has your back
+
   def find_status
     @status = Status.find(params[:id])
-    !logged_in? || @status.editable_by?(current_user) || access_denied
   end
 end

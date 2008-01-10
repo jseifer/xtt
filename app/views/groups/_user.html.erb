@@ -1,0 +1,9 @@
+<li id='<%= dom_id(user) %>'>
+<%= h(user.login) %>
+<% if user == @group.owner %>
+[owner]
+<% else %>
+<% membership = (user.memberships & @group.memberships).first %>
+<%= link_to_remote "remove", :url => "/memberships/#{membership.id}.js", :method => :delete %>
+<% end %>
+</li>

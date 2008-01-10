@@ -1,14 +1,20 @@
 class User < ActiveRecord::Base
   concerned_with :authentication, :state_machine
-  include Status::Methods
+  include Status::Methods, Project::Parent
   
-  validates_presence_of :account_id
+  def all_projects
+    @all_projects ||= projects + groups.collect {|group| group.projects }.flatten
+  end
   
-  belongs_to :account
+  before_create { |u| u.admin = true if User.count.zero? }
   
-  has_many :projects, :through => :statuses do
+  has_many :groups, :through => :memberships
+  has_many :owned_groups, :class_name => 'Group', :foreign_key => :owner_id
+  has_many :recent_projects, :through => :statuses, :class_name => Project.name, :source => :project do
     def latest
       @latest ||= find(:first)
     end
   end
+  
+  has_finder :all, :order => 'login'
 end

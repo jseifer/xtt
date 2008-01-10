@@ -1,0 +1,32 @@
+<h1>Group: <%=h @group.name %></h1>
+
+<h2>Members</h2>
+<ul id='users'>
+<%= render :partial => 'user', :collection => @group.users %>
+</ul>
+
+<div id='new_member' class='container'>
+  <%= render :partial => 'new_member' %>
+</div>
+
+<%= render :partial => @group %>
+
+<h2>Projects</h2>
+<ul>
+<% @group.projects.each do |project| %>
+  <li><%= link_to(h(project.name), project) %></li>
+<% end %>
+</ul>
+
+<div class='container'>
+  <%= link_to_function 'new project', 'InlineForm.toggleAdd(this)', :class => 'showlink' %>
+  
+  <div class='formWrapper' style='display:none'>
+    <% form_for Project.new, :url => group_projects_path(@group) do |f| %>
+      <%= render :partial => 'projects/form', :object => f %>
+      
+      <%= f.submit "Create Project" %>
+      or <%= link_to_function 'cancel', 'InlineForm.toggleAdd(this)' %>
+    <% end %>
+  </div>
+</div>

@@ -1,12 +1,26 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe_validations_for User, 
-  :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire', :account_id => 5 do
-    presence_of :login, :password, :password_confirmation, :email, :account_id
+  :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' do
+    presence_of :login, :password, :password_confirmation, :email
 end
 
 describe User do
   define_models :users
+
+  describe "being bootstrapped" do
+    define_models :bootstrap, :copy => false do
+      model User
+    end
+  
+    it "creates initial user as admin" do
+      create_user.should be_admin
+    end
+  end
+
+  it 'creates users as !admin' do
+    create_user.should_not be_admin
+  end
 
   it 'being created increments User.count' do
     method(:create_user).should change(User, :count).by(1)
@@ -86,10 +100,24 @@ describe User do
     users(:default).deleted_at.should_not be_nil
     users(:default).should be_deleted
   end
-
+  
+  it 'finds owned groups' do
+    users(:default).owned_groups.should == [groups(:default)]
+  end
+  
+  it 'adds self as a member to the owned_group after creation' do
+    group = users(:default).owned_groups.create(:name => 'Ninjas')
+    users(:default).groups.should include(group)
+    group.memberships.should_not be_empty
+  end
+  
+  it 'collects owned projects and group projects in #all_projects' do
+    users(:default).all_projects.should include(projects(:default))
+    users(:default).all_projects.should include(projects(:another))
+  end
+  
 protected
   def create_user(options = {})
-    accounts(options.delete(:account) || :default).users.create(
-      { :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
+    User.create({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
   end
 end
