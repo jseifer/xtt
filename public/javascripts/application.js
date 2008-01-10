@@ -26,6 +26,14 @@ function timerIncrement(dom) {
   dom.nextSibling.innerHTML = nice_time(epoch - seconds);
 }
 
+InlineForm = {
+  toggleAddInline: function(container) {
+    container = $(container);
+    container.down('a.showlink').toggle();
+    container.down('div.formWrapper').toggle();
+  }
+}
+
 document.observe('contentloaded', function() {
   alert('table');
   //document.getElementsByTagName('table').each(zebra) //function(table){ zebra(table)  })
