@@ -28,6 +28,8 @@
   </div>
 </div>
 
+<%= render :partial => @group %>
+
 <h2>Projects</h2>
 <ul>
 <% @group.projects.each do |project| %>
@@ -39,7 +41,7 @@
   <%= link_to_function 'new project', 'InlineForm.toggleAdd(this)', :class => 'showlink' %>
   
   <div class='formWrapper' style='display:none'>
-    <% form_for Project.new, :url => group_projects_url(@group) do |f| %>
+    <% form_for Project.new, :url => group_projects_path(@group) do |f| %>
       <%= render :partial => 'projects/form', :object => f %>
       
       <%= f.submit "Create Project" %>

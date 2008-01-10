@@ -18,8 +18,8 @@ ModelStubbing.define_models do
   end
   
   model Status do
-    stub :user => all_stubs(:user), :message => 'foo', :state => 'processed', :hours => 5, :created_at => current_time - 2.days
-    stub :in_project, :created_at => current_time - 47.hours, :project => all_stubs(:project)
+    stub :user => all_stubs(:user), :message => 'default', :state => 'processed', :hours => 5, :created_at => current_time - 2.days
+    stub :in_project, :message => 'in-project', :created_at => current_time - 47.hours, :project => all_stubs(:project)
   end
   
   model Membership
