@@ -27,8 +27,8 @@ function timerIncrement(dom) {
 }
 
 InlineForm = {
-  toggleAddInline: function(container) {
-    container = $(container);
+  toggleAdd: function(ele) {
+    container = $(ele).up('.container');
     container.down('a.showlink').toggle();
     container.down('div.formWrapper').toggle();
   }

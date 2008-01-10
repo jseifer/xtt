@@ -12,7 +12,21 @@
 <% end %>
 </ul>
 
-__add user__
+<div class='container'>
+  <%= link_to_function 'add a new member', 'InlineForm.toggleAdd(this)', :class => 'showlink' %>
+  
+  <div class='formWrapper' style='display:none'>
+    <% form_for Membership.new, :url => group_memberships_url(@group) do |f| %>
+      <% users = User.find(:all) - @group.users %>
+      <select name='membership[user_id]'>
+        <%= options_from_collection_for_select users, :id, :login %>
+      </select>
+      
+      <%= f.submit "Add User" %>
+      or <%= link_to_function 'cancel', 'InlineForm.toggleAdd(this)' %>
+    <% end %>
+  </div>
+</div>
 
 <h2>Projects</h2>
 <ul>
@@ -21,16 +35,15 @@ __add user__
 <% end %>
 </ul>
 
-<div id='new_project_container'>
-  <%= link_to_function 'new project', 'InlineForm.toggleAddInline("new_project_container")', :class => 'showlink' %>
+<div class='container'>
+  <%= link_to_function 'new project', 'InlineForm.toggleAdd(this)', :class => 'showlink' %>
   
   <div class='formWrapper' style='display:none'>
     <% form_for Project.new, :url => group_projects_url(@group) do |f| %>
-      <%= hidden_field_tag :group_id, @group.id %>
       <%= render :partial => 'projects/form', :object => f %>
       
       <%= f.submit "Create Project" %>
-      or <%= link_to_function 'cancel', 'InlineForm.toggleAddInline("new_project_container")' %>
+      or <%= link_to_function 'cancel', 'InlineForm.toggleAdd(this)' %>
     <% end %>
   </div>
 </div>
