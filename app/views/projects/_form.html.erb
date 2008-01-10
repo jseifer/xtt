@@ -1,3 +1,21 @@
 
 	<p><%= form.text_field :name %></p>
+	
 	<p><label><%= form.check_box :billable %> Billable?</label></p>
+	
+	<% if false %>
+	<% unless form.object.new_record? %>
+	<p>
+	  <label>Reassign Owner</label>
+	  <select name='group_id'>
+	    <option value=''>Me</option>
+	    <optgroup label="groups" value='groups'>
+	    <% current_user.groups.each do |group| %>
+	      <%= content_tag :option, group.name, :value => group.id %>
+	    <% end %>
+	    </optgroup>
+	  </select>
+	</p>
+	<% end %>
+	<% end %>
+	

@@ -2,7 +2,7 @@
 
 <% @projects.each do |project| -%>
 <div class="card">
-  <h2><%= link_to h(project.name), project %></h2>
+  <h2><%= link_to h(project.name_with_parent), project %></h2>
   <span class="timer"><%= nice_time project.statuses.sum_accurate_time %></span>
   <%= project.hours %>
   <% if statuses = project.statuses.select {|s| s.followup.nil? } and statuses.any? %>

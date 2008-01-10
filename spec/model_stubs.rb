@@ -14,6 +14,7 @@ ModelStubbing.define_models do
   
   model Project do
     stub :name => 'project', :billable => true, :parent => all_stubs(:group), :parent_type => "Group"
+    stub :another, :parent => all_stubs(:user), :parent_type => "User"
   end
   
   model Status do

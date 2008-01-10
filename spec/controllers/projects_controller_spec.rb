@@ -8,7 +8,7 @@ describe ProjectsController, "GET #index" do
   before do
     @projects = []
     @user = mock("User")
-    @user.stub!(:projects).and_return(@projects)
+    @user.stub!(:all_projects).and_return(@projects)
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
   end
@@ -88,7 +88,9 @@ describe ProjectsController, "GET #edit" do
 end
 
 describe ProjectsController, "POST #create" do
+  define_models :users
   before do
+    login_as :default
     @attributes = {}
     @project = mock_model Project, :new_record? => false, :errors => []
     @user = mock_model User, :projects => []
@@ -103,7 +105,6 @@ describe ProjectsController, "POST #create" do
 
     before do
       @project.stub!(:save).and_return(true)
-      controller.stub!(:login_required)
     end
     
     it_assigns :project, :flash => { :notice => :not_nil }
@@ -116,21 +117,32 @@ describe ProjectsController, "POST #create" do
 
     before do
       @project.stub!(:save).and_return(false)
-      controller.stub!(:login_required)
     end
     
     it_assigns :project
     it_renders :template, :new
   end
   
-  describe ProjectsController, "(successful creation, xml)" do
+  describe ProjectsController, "(successful creation, owned by current_user)" do
     define_models
+    act! { post :create, :project => @attributes }
+
+    before do
+      @user.projects.stub!(:build).with(@attributes).and_return(@project)
+      @project.stub!(:save).and_return(true)
+    end
+    
+    it_assigns :project, :flash => { :notice => :not_nil }
+    it_redirects_to { project_path(@project) }
+  end
+  
+  describe ProjectsController, "(successful creation, xml)" do
+    define_models :users
     act! { post :create, :project => @attributes, :format => 'xml' }
 
     before do
       @project.stub!(:save).and_return(true)
       @project.stub!(:to_xml).and_return("mocked content")
-      controller.stub!(:login_required)
     end
     
     it_assigns :project, :headers => { :Location => lambda { project_url(@project) } }
@@ -143,7 +155,6 @@ describe ProjectsController, "POST #create" do
 
     before do
       @project.stub!(:save).and_return(false)
-      controller.stub!(:login_required)
     end
     
     it_assigns :project

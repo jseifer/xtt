@@ -2,6 +2,10 @@ class User < ActiveRecord::Base
   concerned_with :authentication, :state_machine
   include Status::Methods, Project::Parent
   
+  def all_projects
+    @all_projects ||= projects + groups.collect {|group| group.projects }.flatten
+  end
+  
   before_create { |u| u.admin = true if User.count.zero? }
   
   has_many :groups, :through => :memberships

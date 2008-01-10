@@ -3,7 +3,7 @@ class ProjectsController < ApplicationController
   before_filter :login_required
 
   def index
-    @projects ||= current_user.projects
+    @projects ||= current_user.all_projects
 
     respond_to do |format|
       format.html # index.html.erb
