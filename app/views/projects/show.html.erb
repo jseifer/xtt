@@ -1,3 +1,6 @@
+<% if @project.parent.is_a?(Group) %>
+<%= link_to h(@project.parent.name), @project.parent %>
+<% end %>
 <h1><%=h @project.name %></h1>
 
 <% if @status -%>

@@ -21,4 +21,16 @@ __add user__
 <% end %>
 </ul>
 
-__add project__
+<div id='new_project_container'>
+  <%= link_to_function 'new project', 'InlineForm.toggleAddInline("new_project_container")', :class => 'showlink' %>
+  
+  <div class='formWrapper' style='display:none'>
+    <% form_for Project.new do |f| %>
+      <%= hidden_field_tag :group_id, @group.id %>
+      <%= render :partial => 'projects/form', :object => f %>
+      
+      <%= f.submit "Create Project" %>
+      or <%= link_to_function 'cancel', 'InlineForm.toggleAddInline("new_project_container")' %>
+    <% end %>
+  </div>
+</div>

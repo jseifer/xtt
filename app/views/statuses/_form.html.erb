@@ -4,7 +4,7 @@
 	   :method => status.new_record? ? :post : :put \
 	 do |f| -%>
 	<p>
-		<%= f.select :project_id, Project.all.collect! { |p| [p.name, p.id] }, :include_blank => '[Out]' %>
+		<%= f.select :project_id, current_user.all_projects.collect { |p| [p.name_with_parent, p.id] }, :include_blank => '[Out]' %>
 		<%= f.text_field :message %>
 	</p>
 <% if !status.new_record? && status.processed? -%>
