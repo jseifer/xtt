@@ -1,31 +1,12 @@
 <h1>Group: <%=h @group.name %></h1>
 
 <h2>Members</h2>
-<ul>
-<% @group.users.each do |member| %>
-  <%= h(member.login) %>
-  <% if member == @group.owner %>
-  [owner]
-  <% else %>
-  __remove__
-  <% end %>
-<% end %>
+<ul id='users'>
+<%= render :partial => 'user', :collection => @group.users %>
 </ul>
 
-<div class='container'>
-  <%= link_to_function 'add a new member', 'InlineForm.toggleAdd(this)', :class => 'showlink' %>
-  
-  <div class='formWrapper' style='display:none'>
-    <% form_for Membership.new, :url => group_memberships_url(@group) do |f| %>
-      <% users = User.find(:all) - @group.users %>
-      <select name='membership[user_id]'>
-        <%= options_from_collection_for_select users, :id, :login %>
-      </select>
-      
-      <%= f.submit "Add User" %>
-      or <%= link_to_function 'cancel', 'InlineForm.toggleAdd(this)' %>
-    <% end %>
-  </div>
+<div id='new_member' class='container'>
+  <%= render :partial => 'new_member' %>
 </div>
 
 <%= render :partial => @group %>
