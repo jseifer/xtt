@@ -14,6 +14,8 @@
 
 __add user__
 
+<%= render :partial => @group %>
+
 <h2>Projects</h2>
 <ul>
 <% @group.projects.each do |project| %>
@@ -25,7 +27,7 @@ __add user__
   <%= link_to_function 'new project', 'InlineForm.toggleAddInline("new_project_container")', :class => 'showlink' %>
   
   <div class='formWrapper' style='display:none'>
-    <% form_for Project.new, :url => group_projects_url(@group) do |f| %>
+    <% form_for Project.new, :url => group_projects_path(@group) do |f| %>
       <%= hidden_field_tag :group_id, @group.id %>
       <%= render :partial => 'projects/form', :object => f %>
       

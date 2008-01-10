@@ -1,0 +1,6 @@
+<!-- just an example of how this might be shared -->
+	<ul>
+	<% group.users.each do |user| -%>
+		<li><%=h user.login %>: <%=h user.statuses.for_group(group).latest.message %></li>
+	<% end -%>
+	</ul>

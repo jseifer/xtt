@@ -151,6 +151,7 @@ describe Status, "(filtering)" do
   end
   
   it "finds statuses by group" do
+    #puts "AHHH #{statuses(:default).id} / #{statuses(:in_project).id}"
     Status.for_group(groups(:default)).should == [statuses(:in_project)]
   end
   

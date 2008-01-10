@@ -4,9 +4,5 @@
 
 <% current_user.groups.each do |group| -%>
 	<h3><%= link_to h(group.name), group %></h3>
-	<ul>
-	<% group.users.each do |user| -%>
-		<li><%=h user.login %>: <%=h user.statuses.for_group(group).latest.message %></li>
-	<% end -%>
-	</ul>
+	<%= render :partial => 'groups/group', :locals => {:group => group} %>
 <% end -%>
