@@ -7,6 +7,10 @@ class Group < ActiveRecord::Base
   belongs_to :owner, :class_name => User.name
   after_create Proc.new {|g| g.memberships.create(:user => g.owner) }
   
-  has_many :users, :order => 'login', :through => :memberships
+  has_many :users, :order => 'login', :through => :memberships do
+    def include?(user)
+      proxy_owner.owner_id == user.id || (loaded? ? @target.incldue?(user) : exists?(user.id))
+    end
+  end
   
 end
