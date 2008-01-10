@@ -2,8 +2,6 @@ class ProjectsController < ApplicationController
   before_filter :find_project, :only => [:show, :edit, :update, :destroy]
   before_filter :login_required
 
-  # /projects - List user projects
-  # /groups/:group_id/projects - List group projects
   def index
     @projects = current_user.all_projects
 
@@ -29,12 +27,8 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def edit
-  end
-
   def create
-    @parent  = (params[:group_id] && current_user.groups.find(params[:group_id])) || current_user
-    @project = @parent.projects.build(params[:project])
+    @project = current_user.projects.build(params[:project])
 
     respond_to do |format|
       if @project.save
@@ -46,6 +40,9 @@ class ProjectsController < ApplicationController
         format.xml  { render :xml  => @project.errors, :status => :unprocessable_entity }
       end
     end
+  end
+
+  def edit
   end
 
   def update
@@ -71,10 +68,6 @@ class ProjectsController < ApplicationController
   end
 
 protected
-  def find_parent
-    redirect_to 
-  end
-  
   def find_project
     @project = Project.find(params[:id])
   end

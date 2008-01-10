@@ -5,54 +5,30 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe StatusesController, "GET #index for user" do
   define_models
 
-  act! { get :index, :user_id => users(:default).id }
+  act! { get :index }
 
   before do
-    @record   = @user = users(:default)
     @statuses = [statuses(:default)]
-    controller.stub!(:login_required)
+    login_as :default
+    @user.stub!(:statuses).and_return(@statuses)
   end
   
-  it_assigns :statuses, :record, :user
+  it_assigns :statuses
   it_renders :template, :index
 
   describe StatusesController, "(xml)" do
     define_models
     
-    act! { get :index, :user_id => users(:default).id, :format => 'xml' }
+    act! { get :index, :format => 'xml' }
 
-    it_assigns :statuses, :record, :user
-    it_renders :xml, :statuses
-  end
-end
-
-describe StatusesController, "GET #index for project" do
-  define_models
-
-  act! { get :index, :project_id => projects(:default).id }
-
-  before do
-    @record   = @project = projects(:default)
-    @statuses = [statuses(:default)]
-    controller.stub!(:login_required)
-  end
-  
-  it_assigns :statuses, :record, :project
-  it_renders :template, :index
-
-  describe StatusesController, "(xml)" do
-    define_models
-    
-    act! { get :index, :project_id => projects(:default).id, :format => 'xml' }
-
-    it_assigns :statuses, :record, :project
+    it_assigns :statuses
     it_renders :xml, :statuses
   end
 end
 
 describe StatusesController, "GET #new" do
   define_models
-  act! { get :new, :user_id => users(:default).id }
+  act! { get :new }
   before do
     @status  = Status.new
     controller.stub!(:login_required)
@@ -67,7 +43,7 @@ describe StatusesController, "GET #new" do
   
   describe StatusesController, "(xml)" do
     define_models
-    act! { get :new, :user_id => users(:default).id, :format => 'xml' }
+    act! { get :new, :format => 'xml' }
 
     it_renders :xml, :status
   end
@@ -77,54 +53,52 @@ describe StatusesController, "POST #create" do
   before do
     @attributes = {:message => 'foo'}
     @status = Status.new(@attributes)
-    @user = users(:default)
+    login_as :default
     @user.stub!(:statuses).and_return([])
     @user.statuses.stub!(:before).and_return(nil)
     @user.statuses.stub!(:build).and_return(@status)
     @status.user = @user
-    User.stub!(:find).with(@user.id.to_s).and_return(@user)
-    controller.stub!(:login_required)
   end
   
   describe StatusesController, "(successful creation)" do
     define_models
-    act! { post :create, :user_id => users(:default).id, :status => @attributes }
+    act! { post :create, :status => @attributes }
     
-    it_assigns :user, :status, :flash => { :notice => :not_nil }
-    it_redirects_to { user_path(@user) }
+    it_assigns :status, :flash => { :notice => :not_nil }
+    it_redirects_to { root_path }
   end
 
   describe StatusesController, "(unsuccessful creation)" do
     define_models
-    act! { post :create, :user_id => users(:default).id, :status => @attributes }
+    act! { post :create, :status => @attributes }
 
     before do
       @status.message = nil
       controller.stub!(:login_required)
     end
     
-    it_assigns :user, :status
+    it_assigns :status
     it_renders :template, :new
   end
   
   describe StatusesController, "(successful creation, xml)" do
     define_models
-    act! { post :create, :user_id => users(:default).id, :status => @attributes, :format => 'xml' }
+    act! { post :create, :status => @attributes, :format => 'xml' }
     
-    it_assigns :user, :status, :headers => { :Location => lambda { status_url(@status) } }
+    it_assigns :status, :headers => { :Location => lambda { status_url(@status) } }
     it_renders :xml, :status, :status => :created
   end
   
   describe StatusesController, "(unsuccessful creation, xml)" do
     define_models
-    act! { post :create, :user_id => users(:default).id, :status => @attributes, :format => 'xml' }
+    act! { post :create, :status => @attributes, :format => 'xml' }
 
     before do
       @status.message = nil
       controller.stub!(:login_required)
     end
     
-    it_assigns :user, :status
+    it_assigns :status
     it_renders :xml, "status.errors", :status => :unprocessable_entity
   end
 end
