@@ -9,7 +9,7 @@ ActionController::Routing::Routes.draw do |map|
     group.resources :projects, :controller => 'group_projects'
     group.resources :statuses, :controller => 'group_statuses'
   end
-  
+  map.resources :memberships  
   map.resources :users, :member => { :suspend   => :put,
                                      :unsuspend => :put,
                                      :purge     => :delete }
