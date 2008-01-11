@@ -41,7 +41,7 @@ class Status < ActiveRecord::Base
   end
 
   def accurate_time
-    raise "No created_at" if created_at.nil?
+    return if created_at.nil?
     (followup ? followup.created_at : Time.now) - created_at
   end
   

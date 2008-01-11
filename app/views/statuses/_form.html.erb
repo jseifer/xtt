@@ -40,7 +40,7 @@
   <%= render :partial => "layouts/slider", :locals => { :name => "track", :sliders => objects.map { |o| o.created_at.to_f }, :endpoint => objects[-1].accurate_time.to_f } %>
 
   <div style="width:800px;display:block;background-color:#eee;position:relative;clear:both;height:300px">
-    <%= render :partial => "cell", :collection => objects, :locals => { :total => total, :min => min } %>
+    <%= render :partial => "statuses/cell", :collection => objects, :locals => { :total => total, :min => min } %>
   </div>
   
 
