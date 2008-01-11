@@ -10,8 +10,8 @@ describe <%= controller_class_name %>Controller, "GET #index" do
     <%= class_name %>.stub!(:find).with(:all).and_return(@<%= table_name %>)
   end
   
-  it.assigns :<%= table_name %>
-  it.renders :template, :index
+  it_assigns :<%= table_name %>
+  it_renders :template, :index
 
 <% %w(xml json).each do |format| 
 %>  describe <%= controller_class_name %>Controller, "(<%= format %>)" do
@@ -19,8 +19,8 @@ describe <%= controller_class_name %>Controller, "GET #index" do
     
     act! { get :index, :format => '<%= format %>' }
 
-    it.assigns :<%= table_name %>
-    it.renders :<%= format %>, :<%= table_name %>
+    it_assigns :<%= table_name %>
+    it_renders :<%= format %>, :<%= table_name %>
   end
 
 <% end %>
@@ -36,8 +36,8 @@ describe <%= controller_class_name %>Controller, "GET #show" do
     <%= class_name %>.stub!(:find).with('1').and_return(@<%= file_name %>)
   end
   
-  it.assigns :<%= file_name %>
-  it.renders :template, :show
+  it_assigns :<%= file_name %>
+  it_renders :template, :show
   
 <% %w(xml json).each do |format| 
 %>  describe <%= controller_class_name %>Controller, "(<%= format %>)" do
@@ -45,7 +45,7 @@ describe <%= controller_class_name %>Controller, "GET #show" do
     
     act! { get :show, :id => 1, :format => '<%= format %>' }
 
-    it.renders :<%= format %>, :<%= file_name %>
+    it_renders :<%= format %>, :<%= file_name %>
   end
 
 <% end %>
@@ -63,30 +63,17 @@ describe <%= controller_class_name %>Controller, "GET #new" do
     assigns[:<%= file_name %>].should be_new_record
   end
   
-  it.renders :template, :new
+  it_renders :template, :new
   
 <% %w(xml json).each do |format| 
 %>  describe <%= controller_class_name %>Controller, "(<%= format %>)" do
     # fixture definition
     act! { get :new, :format => '<%= format %>' }
 
-    it.renders :<%= format %>, :<%= file_name %>
+    it_renders :<%= format %>, :<%= file_name %>
   end
 
 <% end %>
-end
-
-describe <%= controller_class_name %>Controller, "GET #edit" do
-  # fixture definition
-  act! { get :edit, :id => 1 }
-  
-  before do
-    @<%= file_name %>  = <%= table_name %>(:default)
-    <%= class_name %>.stub!(:find).with('1').and_return(@<%= file_name %>)
-  end
-
-  it.assigns :<%= file_name %>
-  it.renders :template, :edit
 end
 
 describe <%= controller_class_name %>Controller, "POST #create" do
@@ -104,8 +91,8 @@ describe <%= controller_class_name %>Controller, "POST #create" do
       @<%= file_name %>.stub!(:save).and_return(true)
     end
     
-    it.assigns :<%= file_name %>, :flash => { :notice => :not_nil }
-    it.redirects_to { <%= file_name %>_path(@<%= file_name %>) }
+    it_assigns :<%= file_name %>, :flash => { :notice => :not_nil }
+    it_redirects_to { <%= file_name %>_path(@<%= file_name %>) }
   end
 
   describe <%= controller_class_name %>Controller, "(unsuccessful creation)" do
@@ -116,8 +103,8 @@ describe <%= controller_class_name %>Controller, "POST #create" do
       @<%= file_name %>.stub!(:save).and_return(false)
     end
     
-    it.assigns :<%= file_name %>
-    it.renders :template, :new
+    it_assigns :<%= file_name %>
+    it_renders :template, :new
   end
   
 <% %w(xml json).each do |format| 
@@ -130,8 +117,8 @@ describe <%= controller_class_name %>Controller, "POST #create" do
       @<%= file_name %>.stub!(:to_<%= format %>).and_return("mocked content")
     end
     
-    it.assigns :<%= file_name %>, :headers => { :Location => lambda { <%= file_name %>_url(@<%= file_name %>) } }
-    it.renders :<%= format %>, :<%= file_name %>, :status => :created
+    it_assigns :<%= file_name %>, :headers => { :Location => lambda { <%= file_name %>_url(@<%= file_name %>) } }
+    it_renders :<%= format %>, :<%= file_name %>, :status => :created
   end
   
   describe <%= controller_class_name %>Controller, "(unsuccessful creation, <%= format %>)" do
@@ -142,11 +129,24 @@ describe <%= controller_class_name %>Controller, "POST #create" do
       @<%= file_name %>.stub!(:save).and_return(false)
     end
     
-    it.assigns :<%= file_name %>
-    it.renders :<%= format %>, "<%= file_name %>.errors", :status => :unprocessable_entity
+    it_assigns :<%= file_name %>
+    it_renders :<%= format %>, "<%= file_name %>.errors", :status => :unprocessable_entity
   end
 
 <% end %>end
+
+describe <%= controller_class_name %>Controller, "GET #edit" do
+  # fixture definition
+  act! { get :edit, :id => 1 }
+  
+  before do
+    @<%= file_name %>  = <%= table_name %>(:default)
+    <%= class_name %>.stub!(:find).with('1').and_return(@<%= file_name %>)
+  end
+
+  it_assigns :<%= file_name %>
+  it_renders :template, :edit
+end
 
 describe <%= controller_class_name %>Controller, "PUT #update" do
   before do
@@ -163,8 +163,8 @@ describe <%= controller_class_name %>Controller, "PUT #update" do
       @<%= file_name %>.stub!(:save).and_return(true)
     end
     
-    it.assigns :<%= file_name %>, :flash => { :notice => :not_nil }
-    it.redirects_to { <%= file_name %>_path(@<%= file_name %>) }
+    it_assigns :<%= file_name %>, :flash => { :notice => :not_nil }
+    it_redirects_to { <%= file_name %>_path(@<%= file_name %>) }
   end
 
   describe <%= controller_class_name %>Controller, "(unsuccessful save)" do
@@ -175,8 +175,8 @@ describe <%= controller_class_name %>Controller, "PUT #update" do
       @<%= file_name %>.stub!(:save).and_return(false)
     end
     
-    it.assigns :<%= file_name %>
-    it.renders :template, :edit
+    it_assigns :<%= file_name %>
+    it_renders :template, :edit
   end
   
 <% %w(xml json).each do |format| 
@@ -188,8 +188,8 @@ describe <%= controller_class_name %>Controller, "PUT #update" do
       @<%= file_name %>.stub!(:save).and_return(true)
     end
     
-    it.assigns :<%= file_name %>
-    it.renders :blank
+    it_assigns :<%= file_name %>
+    it_renders :blank
   end
   
   describe <%= controller_class_name %>Controller, "(unsuccessful save, <%= format %>)" do
@@ -200,8 +200,8 @@ describe <%= controller_class_name %>Controller, "PUT #update" do
       @<%= file_name %>.stub!(:save).and_return(false)
     end
     
-    it.assigns :<%= file_name %>
-    it.renders :<%= format %>, "<%= file_name %>.errors", :status => :unprocessable_entity
+    it_assigns :<%= file_name %>
+    it_renders :<%= format %>, "<%= file_name %>.errors", :status => :unprocessable_entity
   end
 
 <% end %>end
@@ -216,16 +216,16 @@ describe <%= controller_class_name %>Controller, "DELETE #destroy" do
     <%= class_name %>.stub!(:find).with('1').and_return(@<%= file_name %>)
   end
 
-  it.assigns :<%= file_name %>
-  it.redirects_to { <%= table_name %>_path }
+  it_assigns :<%= file_name %>
+  it_redirects_to { <%= table_name %>_path }
   
 <% %w(xml json).each do |format| 
 %>  describe <%= controller_class_name %>Controller, "(<%= format %>)" do
     # fixture definition
     act! { delete :destroy, :id => 1, :format => '<%= format %>' }
 
-    it.assigns :<%= file_name %>
-    it.renders :blank
+    it_assigns :<%= file_name %>
+    it_renders :blank
   end
 
 <% end %>
