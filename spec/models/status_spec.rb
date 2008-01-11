@@ -38,6 +38,11 @@ describe Status do
   it "is not billable if there is no project" do
     statuses(:default).reload.should_not be_billable
   end
+  
+  it "rounds down to the nearest 5 minutes" do
+    statuses(:default).fixed_created_at = "2008-01-01 15:34:00 UTC"
+    statuses(:default).created_at.should == Time.parse("2008-01-01 15:30:00 UTC")
+  end
 end
 
 describe Status, "being created" do
