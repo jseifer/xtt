@@ -8,10 +8,11 @@ class User < ActiveRecord::Base
   
   belongs_to :last_status_project, :class_name => "Project"
   belongs_to :last_status, :class_name => "Status"
+  has_many :owned_projects, :order => 'projects.name', :class_name => 'Project'
 
   has_many :memberships, :dependent => :delete_all
   has_many :projects, :order => 'projects.name', :through => :memberships
-  has_many :owned_projects, :order => 'projects.name', :class_name => 'Project'
+  
   has_many :recent_projects, :through => :statuses, :class_name => Project.name, :source => :project do
     def latest
       @latest ||= find(:first)
@@ -19,4 +20,9 @@ class User < ActiveRecord::Base
   end
 
   has_finder :all, :order => 'login'
+  
+  def related_users
+    @related_users ||= User.find :all, :conditions => ['users.id != ? and memberships.project_id IN (?)', id, memberships.collect(&:project_id).uniq],
+      :order => 'last_status_at desc', :joins => "INNER JOIN memberships ON users.id = memberships.user_id", :select => "DISTINCT users.*"
+  end
 end
