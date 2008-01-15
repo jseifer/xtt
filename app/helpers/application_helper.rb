@@ -1,26 +1,26 @@
 # Methods added to this helper will be available to all templates in the application.
+require 'ostruct'
+
 module ApplicationHelper
 
-  def nice_time(seconds)
-    seconds = seconds.to_i
-    return '0' unless seconds > 0
-    hours   = seconds / 1.hour
-    seconds = seconds % 1.hour
-    minutes = seconds / 1.minute
-    seconds = seconds % 1.minute
-    (hours > 0 ? "#{hours}:" : '') + ('%02d:%02d' % [minutes, seconds])
+  def sidebar_box(name, &block)
+    sbox = OpenStruct.new
+    sbox.name= name
+    yield sbox
+    render :file => '/components/sidebar_box', :locals => {:sbox => sbox}
   end
-
-  def nice_timer_for(status)
-    if status.followup.nil?
-      (@content_for_head ||= "")
-      @content_for_head += <<-JS
-  <script type='text/javascript'>
-    new PeriodicalExecuter(function() { timerIncrement('timer_#{dom_id(status)}') }, 1);
-  </script>
-JS
-    end
-    "<span style=\"display:none\" id=\"timer_#{dom_id status}\">#{status.created_at.to_f}</span><span class=\"timer\">#{nice_time(status.accurate_time)}</span>"
+  
+  # Doesn't work.  Requries a Level 6 in Rails Voodoo. 
+  def main_box(name, &block)
+    mbox = ContentBox.new(name)
+    yield mbox
+    render :file => '/components/main_box', :locals => {:mbox => mbox}
+  end
+  
+  def fullscreen_box(name, &block)
+    fbox = FullScreenBox.new(name)
+    yield fbox
+    render :file => '/components/fullscreen_box', :locals => {:fbox => fbox}
   end
   
 

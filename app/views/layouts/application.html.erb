@@ -1,55 +1,50 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <%= stylesheet_link_tag 'court3' %>
-  <%= javascript_include_tag :defaults, 'slider' %>
-  <%= yield :head %>
+	<title>XTT</title>
+	<%= stylesheet_link_tag 'screen' %>
+	<script src="javascripts/prototype.js" type="text/javascript" charset="utf-8"></script>
 </head>
-
 <body>
-  <div id="menu">
-  <% if logged_in? -%>
-  	<%= link_to 'Projects', projects_path %>
-  	<%= link_to 'Statuses', statuses_path %>
-  	<%= link_to 'Everyone', users_path %>
-
-    <div class="login">
-      <%= link_to h(current_user.login), current_user %>
-      <% if status = current_user.statuses.latest %>
-        is currently: <%= link_to h(status.message), status %>
-        <% if project = status.project %>
-        <%= link_to h(project.name), project %>
-        <% else %>
-        (Out)
-        <% end %>
-      <% end %>
-      &raquo;
-    	<%= link_to 'Logout', logout_path %>
+  <!-- header -->
+  <div id="header">
+    <div id="header-cnt">
+      <h1><a href=""><img src="images/xtt-logo.png" alt="XTT (extra time tracking)" /></a></h1>
     </div>
-  <% else -%>
-    <div class="login">
-  	  <%= link_to 'Login', login_path %>
-  	  <%= link_to 'Signup', signup_path %>
-  	</div>
-  <% end -%>
+    <div id="header-nav">
+      <ul class="clearfix">
+        <li><a href="index.html" title="Me">Timeline</a></li>
+      </ul>
+    </div>
+    <div id="header-meta">
+      Signed in as <a href="/poochpoint/account">Justin Palmer</a> 
+      <a href="#">Help</a>
+      <a href="#">Sign Out</a>
+    </div>
   </div>
-  
-  <div id="content">
-  <%= yield %>
+  <!-- /header -->
+  <!-- wrapper -->
+  <div id="wrapper">
+    <!-- contents -->
+    <div id="content" class="clearfix">
+      <!-- main -->
+      <div id="main">
+        <%= yield %>
+      </div>
+      <!-- /main -->
+    
+      <!-- sidebar -->
+      <div id="sidebar">
+        <%= yield :sidebar %>    
+      </div>
+      <!-- /sidebar -->
+    
+    </div>
+    <!-- /contents -->
   </div>
-
-  <div id="foot">
-  <% if logged_in? %>
-    <% if status = current_user.statuses.latest and status.project %>
-    <%= render :partial => "layouts/take_a_break" %>
-    <% else %>
-    <%= render :partial => "layouts/work_on_something" %>
-    <% end %>
-  <% end %>
-  </div>
-
+  <!-- /wrapper -->
 </body>
 </html>

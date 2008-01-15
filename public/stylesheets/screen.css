@@ -1,0 +1,330 @@
+body {
+  margin: 0;
+  text-align: center;
+  padding: 0;
+  font: normal 12px/1.5em "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: #d7d7d7;
+  color: #313131;
+}
+
+ul, li, form, input, dt, dl, dd, ol, div, p, 
+blockquote, h1, h2, h3, h4, h5, h6, a, pre,
+code {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #379;
+}
+
+a:hover {
+  color: #333;
+}
+
+/* @group Utilities */
+
+img { border: 0; }
+
+.clearfix:after {
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden;
+}
+
+.clearfix {display: inline-table;}
+
+/* Hides from IE-mac \*/
+* html .clearfix {height: 1%;}
+.clearfix {display: block;}
+/* End hide from IE-mac */
+
+/* @end */
+
+/* @group Shared typography */
+
+.quiet {
+  color: #777;
+}
+
+/* @end */
+
+/* @group Structure */
+
+#header {
+  text-align: left;
+  background-color: #333;
+  border-bottom: 5px solid #555;
+}
+
+#wrapper {
+  margin: 0 9px;
+}
+
+#content {
+  width: 1000px;
+  margin: 24px auto 12px auto;
+  text-align: left;
+  color: #8f8370;
+}
+
+#main {
+  width: 624px;
+  float: left;
+  color: #444;
+}
+
+#sidebar {
+  float: right;
+  width: 366px;
+  color: #444;
+}
+
+/* @group header */
+#header {
+  position: relative;
+}
+
+#header-cnt {
+  padding: 12px;
+}
+
+#header-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #414141;
+  font-size: 82%;
+}
+
+#header-nav ul {
+/*  margin-left: 12px;
+*/}
+
+#header-nav li {
+  display: inline;
+}
+
+#header-nav li a {
+  border-right: 1px solid #424242;
+  width: 80px;
+  text-align: center;
+  display: block;
+  float: left;
+  padding: 8px;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #ccc;
+}
+
+#header-nav li a:hover {
+  background-color: #222;
+  color: #fff;
+}
+
+#header-meta {
+  position: absolute;
+  right: 18px;
+  top: 2px;
+  font-size: 92%;
+  color: #777;
+}
+
+#header-meta a {
+  color: #bbb;
+  margin-right: 10px;
+}
+
+#header-meta a:hover {
+  color: #fff;
+}
+
+/* @end */
+
+/* @group Main */
+
+.mblock {
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  background: #f7f7f7;  
+  margin-bottom: 9px;
+}
+
+.mblock-hdr {
+  position: relative;
+  font-weight: bold;
+  padding: 8px 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.mblock-footer, .sbox-footer {
+  padding: 8px 12px;
+  border-top: 1px solid #D8D6CC;
+  font-weight: bold;
+  text-align: right;
+}
+
+.mblock-hdr h3 {
+  font-size: 100%;
+}
+
+.mblock-cnt {
+  padding: 18px;
+}
+
+.mblock.special {
+  background-color: #cacaca;
+}
+
+.mblock.special .mblock-hdr {
+  border-bottom: 1px solid #aaa;
+}
+
+.mblock.special h4 a {
+  color: #333;
+}
+
+.mblock.special p.quiet {
+  color: #555;
+}
+
+.mblock.special .datetime {
+  color: #777;
+}
+
+.media-list li {
+  border-bottom: 1px solid #ededed;
+  border-top: 1px solid #f7f7f7;
+  padding: 9px 0;
+  list-style: none;
+}
+
+.special .media-list li {
+  border-bottom: 1px solid #aaa;
+  border-top: 1px solid #ddd;
+}
+
+.media-list li:first-child {
+  border-top: none;
+}
+
+.media-list li.last, 
+.text-list li.last {
+  border-bottom: none !important;
+}
+
+.media-item.status-form {
+  padding-top: 0;
+}
+
+.thumbnail {
+  padding: 5px;
+  background-color: #fff;
+}
+
+.media {
+  float: left;
+}
+
+.media-item h4 {
+  font-weight: normal;
+}
+
+.media-item a {
+  font-weight: bold;
+}
+
+.media-content {
+  margin-left: 63px;
+}
+
+.media-item .datetime {
+  font-size: 92%;
+  color: #999;
+  float: right;
+}
+
+/* @end */
+
+
+/* @group sidebar */
+.sbox {
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  background: #f7f7f7;
+  padding: 8px;
+  margin-bottom: 9px;
+}
+
+.sbox-wrapper {
+  border: 1px solid #ddd;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
+.sbox h3 {
+  font-weight: bold;
+  font-size: 100%;
+  padding: 8px 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.sbox-content {
+  padding: 8px;
+  background-color: #f2f2f2;
+}
+
+.sbox-content.nopad {
+  padding: 0;
+}
+
+.sbox .ttl {
+  font-weight: bold;
+  display: block;
+}
+
+.text-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.text-list li {
+  padding: 5px 8px;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+.text-list li a {
+  display: block;
+}
+
+.text-list .desc {
+  color: #656565;
+}
+
+.text-list .rmeta {
+  color: #888;
+  float: right;
+  font-size: 92%;
+}
+
+.invite {
+  background-color: #390;
+  font-weight: bold;
+  color: #fff;
+  font-size: 110%;
+}
+
+/* @end */
+
+/* @group forms */
+
+.status-entry {
+  font-size: 140%;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+/* @end */
