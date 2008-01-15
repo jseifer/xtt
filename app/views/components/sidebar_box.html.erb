@@ -1,0 +1,13 @@
+<% content_for :sidebar do %>
+<div id="sbox-<%= sbox.name %>" class="sbox">
+  <div class="sbox-wrapper">
+    <h3><%= sbox.title %></h3>
+    <div class="sbox-content <%= sbox.content_classes %>">
+      <%= sbox.content %>
+    </div>
+    <% unless sbox.footer.blank? %>
+    <div class="sbox-footer"><%= sbox.footer %></div>
+    <% end %>
+  </div>
+</div>
+<% end %>

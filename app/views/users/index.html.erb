@@ -1,8 +1,123 @@
-<h1>What's Everyone Doing?</h1>
+<div class="mblock special">
+  <div class="mblock-hdr">
+    What are you working on?
+  </div>
+  <div class="mblock-cnt">
+    <ul class="media-list">
+      <li class="media-item status-form">
+        <textarea class="status-entry" rows="2" cols="55"></textarea>
+      </li>
+      <li class="media-item clearfix last">
+        <div class="media">
+          <img src="images/technoweenie.jpg" alt="Courtenay" class="thumbnail" />
+        </div>
+        <div class="media-content">
+          <h4 class="media-title"><a href="/video/2323">You're working on Beast</a></h4>
+          <p class="quiet">Implemented some altered beast fool.</p>
+          <span class="datetime">35 minutes ago</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
 
-<p><%=h current_user.statuses.latest.message %></p>
 
-<% current_user.groups.each do |group| -%>
-	<h3><%= link_to h(group.name), group %></h3>
-	<%= render :partial => 'groups/group', :locals => {:group => group} %>
-<% end -%>
+
+<div class="mblock">
+  <div class="mblock-hdr">
+    <h3>What's everyone else working on?</h3>
+  </div>
+  <div class="mblock-cnt">
+    <ul id="timeline" class="media-list">
+      <li class="media-item clearfix">
+        <div class="media">
+          <img src="images/courtenay.jpg" alt="Courtenay" class="thumbnail" />
+        </div>
+        <div class="media-content">
+          <h4 class="media-title"><a href="/video/2323">Courtenay is out to lunch</a></h4>
+          <p class="quiet">Going to get some sushi at Sinju.</p>
+          <span class="datetime">35 minutes ago</span>
+        </div>
+      </li>
+      <li class="media-item clearfix">
+        <div class="media">
+          <img src="images/justin.jpg" alt="Justin" class="thumbnail" />
+        </div>
+        <div class="media-content">
+          <h4 class="media-title"><a href="/video/2323">Justin is working on Digisynd</a></h4>
+          <p class="quiet">Implemented a footer.</p>
+          <span class="datetime">5 minutes ago</span>
+        </div>
+      </li>
+      <li class="media-item clearfix last">
+        <div class="media">
+          <img src="images/mattly.jpg" alt="Mattly" class="thumbnail" />
+        </div>
+        <div class="media-content">
+          <h4 class="media-title"><a href="/video/2323">Mattly is working on XTT</a></h4>
+          <p class="quiet">Creating some killer shit.</p>
+          <span class="datetime">5 minutes ago</span>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="mblock-footer">
+    <a href="#">5 other people haven't worked today &raquo;</a>
+  </div>
+</div>
+
+<% content_for :sidebar do %>
+  <div class="sbox invite">
+    Justin has invited you to join XTT.
+  </div>
+  
+  <div class="sbox invite">
+    Matt has invited you to join rails_fu.
+  </div>
+<% end %>
+
+<% sidebar_box('projects') do |sbox| %>
+  <% sbox.title = "Projects" %>
+  <% sbox.content_classes = "nopad" %>
+  <% sbox.footer = %(<a href="#">Archived Projects &raquo;</a>) %>
+  <% sbox.content = capture do %>
+  <ul class="text-list">
+    <li>
+      <a href="#">
+        <span class="ttl">Digisynd</span>
+        <span class="desc">20 hours today by 3 people</span>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span class="ttl">Lighthouse</span>
+        <span class="desc">2 hours today by 1 person</span>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span class="ttl">Warehouse</span>
+        <span class="desc">20 hours today by 3 people</span>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span class="ttl">Beast</span>
+        <span class="desc">20 hours today by 3 people</span>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span class="ttl">Plugins</span>
+        <span class="desc">20 hours today by 3 people</span>
+      </a>
+    </li>
+    <li class="last">
+      <a href="#">
+        <span class="ttl">Portland Ruby Hackfest</span>
+        <span class="desc">50 hours today by 3 people</span>
+      </a>
+    </li>
+  </ul>
+  <% end %>
+<% end %>
