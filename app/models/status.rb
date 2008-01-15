@@ -60,7 +60,7 @@ class Status < ActiveRecord::Base
     #round_time(read_attribute(:created_at).utc)
   end
   def fixed_created_at=(new_time)
-    write_attribute :created_at, round_time(new_time)
+    write_attribute :created_at, round_time(Time.parse(new_time))
   end
   
   def round_time(t)
