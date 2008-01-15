@@ -3,21 +3,27 @@
     What are you working on?
   </div>
   <div class="mblock-cnt">
+		<% form_for current_user.statuses.build do |f| -%>
     <ul class="media-list">
       <li class="media-item status-form">
-        <textarea class="status-entry" rows="2" cols="55"></textarea>
+				<%= f.text_area :message, :rows => 2, :cols => 55, :class => 'status-entry' %>
       </li>
       <li class="media-item clearfix last">
         <div class="media">
-          <img src="images/technoweenie.jpg" alt="Courtenay" class="thumbnail" />
+          <%= gravatar_for current_user %>
         </div>
+			<% if current_user.last_status -%>
         <div class="media-content">
-          <h4 class="media-title"><a href="/video/2323">You're working on Beast</a></h4>
-          <p class="quiet">Implemented some altered beast fool.</p>
-          <span class="datetime">35 minutes ago</span>
+				<% if current_user.last_status_project -%>
+          <h4 class="media-title"><a href="/video/2323">You're working on <%= link_to_project current_user.last_status_project %></a></h4>
+				<% end -%>
+          <p class="quiet"><%=h current_user.last_status_message %></p>
+          <span class="datetime"><%= time_ago_in_words current_user.last_status_at %></span>
         </div>
+			<% end -%>
       </li>
     </ul>
+		<% end -%>
   </div>
 </div>
 
@@ -82,42 +88,14 @@
   <% sbox.footer = %(<a href="#">Archived Projects &raquo;</a>) %>
   <% sbox.content = capture do %>
   <ul class="text-list">
+	<% current_user.projects.each do |project| -%>
     <li>
       <a href="#">
-        <span class="ttl">Digisynd</span>
+        <span class="ttl"><%= link_to_project project %></span>
         <span class="desc">20 hours today by 3 people</span>
       </a>
     </li>
-    <li>
-      <a href="#">
-        <span class="ttl">Lighthouse</span>
-        <span class="desc">2 hours today by 1 person</span>
-      </a>
-    </li>
-    <li>
-      <a href="#">
-        <span class="ttl">Warehouse</span>
-        <span class="desc">20 hours today by 3 people</span>
-      </a>
-    </li>
-    <li>
-      <a href="#">
-        <span class="ttl">Beast</span>
-        <span class="desc">20 hours today by 3 people</span>
-      </a>
-    </li>
-    <li>
-      <a href="#">
-        <span class="ttl">Plugins</span>
-        <span class="desc">20 hours today by 3 people</span>
-      </a>
-    </li>
-    <li class="last">
-      <a href="#">
-        <span class="ttl">Portland Ruby Hackfest</span>
-        <span class="desc">50 hours today by 3 people</span>
-      </a>
-    </li>
+	<% end -%>
   </ul>
   <% end %>
 <% end %>
