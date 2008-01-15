@@ -1,34 +1,30 @@
-<div class="mblock special">
-  <div class="mblock-hdr">
-    What are you working on?
-  </div>
-  <div class="mblock-cnt">
-		<% form_for current_user.statuses.build do |f| -%>
+<% box(:special, 'overview') do |box| %>
+  <% box.title = "What are you working on?" %>
+  <% box.content = capture do %>
+    <% form_for current_user.statuses.build do |f| -%>
     <ul class="media-list">
       <li class="media-item status-form">
-				<%= f.text_area :message, :rows => 2, :cols => 55, :class => 'status-entry' %>
-				<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
+  			<%= f.text_area :message, :rows => 2, :cols => 55, :class => 'status-entry' %>
+  			<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
       </li>
       <li class="media-item clearfix last">
         <div class="media">
           <%= gravatar_for current_user %>
         </div>
-			<% if current_user.last_status -%>
+  		<% if current_user.last_status -%>
         <div class="media-content">
-				<% if current_user.last_status_project -%>
+  			<% if current_user.last_status_project -%>
           <h4 class="media-title"><a href="/video/2323">You're working on <%= link_to_project current_user.last_status_project %></a></h4>
-				<% end -%>
+  			<% end -%>
           <p class="quiet"><%=h current_user.last_status_message %></p>
           <span class="datetime"><%= time_ago_in_words current_user.last_status_at %> ago</span>
         </div>
-			<% end -%>
+  		<% end -%>
       </li>
     </ul>
-		<% end -%>
-  </div>
-</div>
-
-
+  	<% end -%>
+  <% end %>
+<% end %>
 
 <div class="mblock">
   <div class="mblock-hdr">
@@ -55,17 +51,8 @@
   </div>
 </div>
 
-<% content_for :sidebar do %>
-  <div class="sbox invite">
-    Justin has invited you to join XTT.
-  </div>
-  
-  <div class="sbox invite">
-    Matt has invited you to join rails_fu.
-  </div>
-<% end %>
 
-<% sidebar_box('projects') do |sbox| %>
+<% box(:sidebar, 'projects') do |sbox| %>
   <% sbox.title = "Projects" %>
   <% sbox.content_classes = "nopad" %>
   <% if current_user.archived_projects %>
