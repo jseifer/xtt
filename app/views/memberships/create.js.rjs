@@ -1,6 +1,5 @@
-unless @membership.new_record?
-  page.insert_html :bottom, 'users', :partial => 'groups/user', :object => @user
-  page['new_member'].replace_html :partial => 'groups/new_member'
+if @membership.new_record?
+  page.alert('that user is already a member of this group')
 else
-  alert('that user is already a member of this group')
+  page.alert('Done!  RJS NotImplementedError')
 end

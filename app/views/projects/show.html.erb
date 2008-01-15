@@ -10,15 +10,14 @@
   </div>
   <div class="mblock-cnt">
     <ul id="timeline" class="media-list">
-		<% @project.users.each do |user| -%>
+		<% @project.statuses.each do |status| -%>
       <li class="media-item clearfix">
         <div class="media">
-          <img src="images/courtenay.jpg" alt="Courtenay" class="thumbnail" />
+          <%= gravatar_for status.user %>
         </div>
         <div class="media-content">
-          <h4 class="media-title"><a href="/video/2323"><%= link_to_user user %> is working on <%= link_to_project user.last_status_project %></a></h4>
-          <p class="quiet"><%=h user.last_status_message %></p>
-          <span class="datetime"><%= time_ago_in_words user.last_status_at %> ago</span>
+          <p class="quiet"><%= status_for status %></p>
+          <span class="datetime"><%= status_at status %></span>
         </div>
       </li>
 		<% end -%>
@@ -28,3 +27,17 @@
     <a href="#">5 other people haven't worked today &raquo;</a>
   </div>
 </div>
+
+<% sidebar_box('projects') do |sbox| %>
+  <% sbox.title = "Invitations" %>
+  <% sbox.content_classes = "nopad" %>
+  <% sbox.content = capture do %>
+		<% form_for @project.memberships.build do |f| -%>
+			<div>
+				<%= f.select :user_id, (User.find(:all) - @project.users).collect { |p| [p.login, p.id] } %>
+				<%= f.submit :Invite %>
+				<%= f.hidden_field :project_id %>
+			</div>
+		<% end -%>
+  <% end %>
+<% end %>

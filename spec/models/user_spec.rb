@@ -9,7 +9,7 @@ describe User do
   define_models :users
 
   describe "being bootstrapped" do
-    define_models :bootstrap, :copy => false do
+    define_models :copy => false do
       model User
     end
   
@@ -35,6 +35,34 @@ describe User do
     it "stores last status project" do
       @user.last_status_project_id = @project.id
       @user.last_status_project.should == @project
+    end
+  end
+  
+  describe "#related_users" do
+    define_models :copy => false do
+      model User do
+        stub :login => 'default'
+        stub :thing_1, :login => 'thing_1', :last_status_at => current_time - 5.days
+        stub :thing_2, :login => 'thing_2', :last_status_at => current_time - 3.days
+        stub :the_cat, :login => 'the_cat'
+      end
+      
+      model Project do
+        stub :default, :name => 'default'
+        stub :other, :name => 'other'
+      end
+      
+      model Membership do
+        stub :default, :user => all_stubs(:user), :project => all_stubs(:project)
+        stub :other, :project => all_stubs(:other_project)
+        stub :thing_1, :user => all_stubs(:thing_1_user)
+        stub :thing_1_on_other, :user => all_stubs(:thing_1_user), :project => all_stubs(:other_project)
+        stub :thing_2, :user => all_stubs(:thing_2_user), :project => all_stubs(:other_project)
+      end
+    end
+    
+    it "sorts #last_status_at" do
+      users(:default).related_users.should == [users(:thing_2), users(:thing_1)]
     end
   end
 
