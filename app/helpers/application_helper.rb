@@ -1,5 +1,6 @@
 # Methods added to this helper will be available to all templates in the application.
 require 'ostruct'
+require 'md5'
 
 module ApplicationHelper
 
@@ -23,5 +24,7 @@ module ApplicationHelper
     render :file => '/components/fullscreen_box', :locals => {:fbox => fbox}
   end
   
-
+  def gravatar_for(user)
+    image_tag "http://www.gravatar.com/avatar.php?gravatar_id=#{MD5.hexdigest user.email}&rating=R&size=48"
+  end
 end

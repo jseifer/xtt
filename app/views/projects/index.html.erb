@@ -3,7 +3,7 @@
 <% @projects.each do |project| -%>
 <div class="card">
   <h2><%= link_to h(project.name), project %></h2>
-  <span class="timer"><%= nice_time project.statuses.sum_accurate_time %></span>
+  <span class="timer"><%= project.statuses.sum_accurate_time %></span>
   <%= project.hours %>
   <% if statuses = project.statuses.select {|s| s.followup.nil? } and statuses.any? %>
 	  <table>
@@ -11,7 +11,7 @@
 	    <tr>
 	      <td><%= link_to h(status.user.login), status.user %></td>
 	      <td><%=h status.message %></td>
-	      <td><%= nice_timer_for status %></td>
+	      <% if false %><td><%= nice_timer_for status %></td><% end -%>
 	    </tr>
 	    <% end # status -%>
     </table>

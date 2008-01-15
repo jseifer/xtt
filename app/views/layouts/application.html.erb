@@ -16,13 +16,13 @@
     </div>
     <div id="header-nav">
       <ul class="clearfix">
-        <li><a href="index.html" title="Me">Timeline</a></li>
+        <li><%= link_to 'Timeline', root_path %></li>
       </ul>
     </div>
     <div id="header-meta">
-      Signed in as <a href="/poochpoint/account">Justin Palmer</a> 
+      Signed in as <%= link_to h(current_user.login), current_user %>
       <a href="#">Help</a>
-      <a href="#">Sign Out</a>
+      <%= link_to 'Log Out', logout_path %>
     </div>
   </div>
   <!-- /header -->
