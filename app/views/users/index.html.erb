@@ -7,6 +7,7 @@
     <ul class="media-list">
       <li class="media-item status-form">
 				<%= f.text_area :message, :rows => 2, :cols => 55, :class => 'status-entry' %>
+				<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
       </li>
       <li class="media-item clearfix last">
         <div class="media">
@@ -85,9 +86,12 @@
 <% sidebar_box('projects') do |sbox| %>
   <% sbox.title = "Projects" %>
   <% sbox.content_classes = "nopad" %>
+  <% if current_user.archived_projects %>
   <% sbox.footer = %(<a href="#">Archived Projects &raquo;</a>) %>
+  <% end rescue '' %>
   <% sbox.content = capture do %>
   <ul class="text-list">
+  <% if current_user.projects.any? %>
 	<% current_user.projects.each do |project| -%>
     <li>
       <a href="<%= url_for project %>">
@@ -96,6 +100,14 @@
       </a>
     </li>
 	<% end -%>
+	<% else %>
+	<li class="last">
+	  <a href="#">
+	    <span class="ttl">You don't have any projects</span>
+	    <span class="desc">Create one now?</span>
+	  </a>
+	</li>
+	<% end %>
   </ul>
   <% end %>
 <% end %>

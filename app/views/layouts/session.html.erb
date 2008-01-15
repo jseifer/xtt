@@ -12,19 +12,11 @@
   <!-- header -->
   <div id="header">
     <div id="header-cnt">
-      <h1><a href=""><img src="images/xtt-logo.png" alt="XTT (extra time tracking)" /></a></h1>
+      <h1><a href=""><%= image_tag 'xtt-logo.png' %></a></h1>
     </div>
     <div id="header-nav">
       <ul class="clearfix">
-        <li><%= link_to 'Timeline', root_path %></li>
       </ul>
-    </div>
-    <div id="header-meta">
-      <% if logged_in? %>
-      Signed in as <%= link_to h(current_user.login), current_user %>
-      <a href="#">Help</a>
-      <%= link_to 'Log Out', logout_path %>
-      <% end %>
     </div>
   </div>
   <!-- /header -->
