@@ -5,16 +5,16 @@ describe Membership do
     model Membership
   end
   
-  it "knows arbitrary users are not group members" do
+  it "knows arbitrary users are not project members" do
     projects(:default).user_id = nil
     projects(:default).users.include?(users(:default)).should == false
   end
   
-  it "recognizes group owners as members" do
+  it "recognizes project owners as members" do
     projects(:default).users.include?(users(:default)).should == true
   end
   
-  it "adds users as group members" do
+  it "adds users as project members" do
     projects(:default).user_id = nil
     Membership.create! :user => users(:default), :project => projects(:default)
     projects(:default).users.include?(users(:default)).should == true

@@ -18,10 +18,6 @@ class Project < ActiveRecord::Base
   def editable_by?(user)
     users.include?(user)
   end
-  
-  def name_with_parent
-    (parent.is_a?(User) ? '' : "#{parent.name}: ") + name
-  end
 
 protected
   def create_membership

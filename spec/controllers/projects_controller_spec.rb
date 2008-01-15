@@ -34,7 +34,6 @@ describe ProjectsController, "GET #show" do
   before do
     @project = projects(:default)
     Project.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
   
@@ -167,7 +166,6 @@ describe ProjectsController, "PUT #update" do
     @attributes = {}
     @project = projects(:default)
     Project.stub!(:find).with('1').and_return(@project)
-    controller.stub!(:group).and_return(@group)
     controller.stub!(:login_required)
   end
   

@@ -1,7 +1,7 @@
 <% status.project = user.recent_projects.latest if status.new_record? -%>
 <% form_for status do |f| -%>
 	<p>
-		<%= f.select :project_id, current_user.all_projects.collect { |p| [p.name_with_parent, p.id] }, :include_blank => '[Out]' %>
+		<%= f.select :project_id, current_user.projects.collect { |p| [p.name, p.id] }, :include_blank => '[Out]' %>
 		<%= f.text_field :message %>
 	</p>
 <% if !status.new_record? && status.processed? -%>
