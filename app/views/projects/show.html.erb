@@ -1,22 +1,30 @@
-<% if @project.parent.is_a?(Group) %>
-<%= link_to h(@project.parent.name), @project.parent %>
-<% end %>
-<h1><%=h @project.name %></h1>
+<div class="mblock special">
+  <div class="mblock-hdr">
+    <%=h @project.name %>
+  </div>
+</div>
 
-<% if @status -%>
-<p><strong>Currently...</strong> <%=h @status.message %></p>
-<% end -%>
-
-<table id="<%= dom_id(@project) %>_statuses">
-<% @project.statuses.each do |status| -%>
-	<tr>
-	  <td><%= link_to h(status.user.login), status.user %></td>
-	  <td><%=h status.message %></td>
-	  <td><%= status.created_at.strftime("%Y-%h-%d %H:%M")%></td>
-	  <td><%= link_to "edit", status %></td>
-	  <td><%= nice_timer_for status %> <% unless status.hours.zero? -%>(<%= pluralize status.hours, 'hour' %>)<% end -%></td>
-	</tr>
-<% end -%>
-</table>
-
-<p><%= link_to 'Statuses', project_statuses_path(@project) %></p>
+<div class="mblock">
+  <div class="mblock-hdr">
+    <h3>What's everyone working on?</h3>
+  </div>
+  <div class="mblock-cnt">
+    <ul id="timeline" class="media-list">
+		<% @project.users.each do |user| -%>
+      <li class="media-item clearfix">
+        <div class="media">
+          <img src="images/courtenay.jpg" alt="Courtenay" class="thumbnail" />
+        </div>
+        <div class="media-content">
+          <h4 class="media-title"><a href="/video/2323"><%= link_to_user user %> is working on <%= link_to_project user.last_status_project %></a></h4>
+          <p class="quiet"><%=h user.last_status_message %></p>
+          <span class="datetime"><%= time_ago_in_words user.last_status_at %> ago</span>
+        </div>
+      </li>
+		<% end -%>
+    </ul>
+  </div>
+  <div class="mblock-footer">
+    <a href="#">5 other people haven't worked today &raquo;</a>
+  </div>
+</div>
