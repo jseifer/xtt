@@ -1,8 +1,16 @@
-<div class="mblock special">
-  <div class="mblock-hdr">
-    <%=h @project.name %>
-  </div>
-</div>
+<% box(:special, 'project-header') do |box| %>
+  <% box.title = "What are you doing on #{h(@project.name)}?" %>
+  <% box.content = capture do %>
+    <% form_for current_user.statuses.build do |f| -%>
+      <ul class="media-list">
+        <li class="media-item status-form last">
+    			<%= f.text_area :message, :rows => 2, :cols => 55, :class => 'status-entry' %>
+    			<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
+        </li>
+      </ul>
+    <% end %>
+  <% end %>
+<% end %>
 
 <div class="mblock">
   <div class="mblock-hdr">
@@ -28,9 +36,8 @@
   </div>
 </div>
 
-<% sidebar_box('projects') do |sbox| %>
+<% box(:sidebar, 'invitations') do |sbox| %>
   <% sbox.title = "Invitations" %>
-  <% sbox.content_classes = "nopad" %>
   <% sbox.content = capture do %>
 		<% form_for @project.memberships.build do |f| -%>
 			<div>

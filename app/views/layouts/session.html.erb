@@ -6,7 +6,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>XTT</title>
 	<%= stylesheet_link_tag 'screen' %>
-	<%= javascript_include_tag 'prototype' %>
+	<script src="javascripts/prototype.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
   <!-- header -->
@@ -16,15 +16,7 @@
     </div>
     <div id="header-nav">
       <ul class="clearfix">
-        <li><%= link_to 'Timeline', root_path %></li>
       </ul>
-    </div>
-    <div id="header-meta">
-      <% if logged_in? %>
-      Signed in as <%= link_to h(current_user.login), current_user %>
-      <a href="#">Help</a>
-      <%= link_to 'Log Out', logout_path %>
-      <% end %>
     </div>
   </div>
   <!-- /header -->
@@ -34,7 +26,6 @@
     <div id="content" class="clearfix">
       <!-- main -->
       <div id="main">
-        <%= yield :special_box %>
         <%= yield %>
       </div>
       <!-- /main -->

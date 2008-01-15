@@ -325,6 +325,25 @@ img { border: 0; }
 .status-entry {
   font-size: 140%;
   font-family: Helvetica, Arial, sans-serif;
+  margin-bottom: 9px;
+  width: 100%;
+  border: 1px solid #999;
+  border-bottom-color: #bbb;
+  border-right-color: #bbb;
+}
+
+.btn {
+  height: 20px;
+  background: url(../images/btns/update.png) 0 0 no-repeat;
+  width: 80px;
+}
+
+.btn:hover {
+  background-position: 0 -20px;
+}
+
+p.btns {
+  text-align: right;
 }
 
 /* @end */
