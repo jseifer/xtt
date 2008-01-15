@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 12) do
+ActiveRecord::Schema.define(:version => 13) do
 
   create_table "memberships", :force => true do |t|
     t.integer "project_id"
@@ -24,9 +24,11 @@ ActiveRecord::Schema.define(:version => 12) do
     t.integer  "user_id"
   end
 
+  add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
+
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
-    t.decimal  "hours",      :default => 0.0
+    t.decimal  "hours",      :precision => 8, :scale => 2, :default => 0.0
     t.string   "message"
     t.string   "state"
     t.datetime "created_at"
@@ -50,6 +52,10 @@ ActiveRecord::Schema.define(:version => 12) do
     t.string   "state",                                   :default => "passive"
     t.datetime "deleted_at"
     t.boolean  "admin",                                   :default => false
+    t.integer  "last_status_project_id"
+    t.integer  "last_status_id"
+    t.string   "last_status_message"
+    t.datetime "last_status_at"
   end
 
 end

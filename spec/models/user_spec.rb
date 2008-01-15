@@ -17,6 +17,26 @@ describe User do
       create_user.should be_admin
     end
   end
+  
+  describe "cached status associations" do
+    define_models
+
+    before do
+      @user    = users(:default)
+      @status  = statuses(:default)
+      @project = projects(:default)
+    end
+    
+    it "stores last status" do
+      @user.last_status_id = @status.id
+      @user.last_status.should == @status
+    end
+    
+    it "stores last status project" do
+      @user.last_status_project_id = @project.id
+      @user.last_status_project.should == @project
+    end
+  end
 
   it 'creates users as !admin' do
     create_user.should_not be_admin

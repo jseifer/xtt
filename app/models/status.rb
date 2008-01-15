@@ -9,6 +9,8 @@ class Status < ActiveRecord::Base
   has_finder :for_project, lambda { |project| { :conditions => {:project_id => project.id}, :extend => LatestExtension } }
   has_finder :without_project, :conditions => {:project_id => nil}, :extend => LatestExtension
   
+  after_create :cache_user_status
+  
   acts_as_state_machine :initial => :pending
   state :pending, :enter => :process_previous
   state :processed
@@ -77,5 +79,9 @@ protected
   
   def process_previous
     previous.process! if previous && previous.pending?
+  end
+  
+  def cache_user_status
+    User.update_all ['last_status_project_id = ?, last_status_id = ?, last_status_message = ?, last_status_at = ?', project_id, id, message, created_at], ['id = ?', user_id]
   end
 end

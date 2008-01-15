@@ -75,6 +75,27 @@ describe Status, "being created" do
     @status.reload.should be_processed
     @status.hours.to_f.should == 5.0
   end
+  
+  it "caches User#last_status_id" do
+    @new.save!
+    @status.user.reload.last_status.should == @new
+  end
+  
+  it "caches User#last_status_message" do
+    @new.save!
+    @status.user.reload.last_status_message.should == @new.message
+  end
+  
+  it "caches User#last_status_project_id" do
+    @new.project = projects(:default)
+    @new.save!
+    @status.user.reload.last_status_project.should == @new.project
+  end
+  
+  it "caches User#last_status_at" do
+    @new.save!
+    @status.user.reload.last_status_at.should == @new.created_at
+  end
 end
 
 describe Status, "in pending state" do
