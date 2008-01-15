@@ -6,15 +6,15 @@ describe MembershipsController, "POST #create" do
   before do
     login_as :default
     @project = mock_model Project
-    Project.stub!(:find).with('1').and_return(@project)
-    @attributes = {:project => @project, :user => users(:nonmember)}
+    @attributes = {'project_id' => 1, 'user_id' => users(:nonmember).id}
     @membership = mock_model Membership, :new_record? => false, :errors => []
+    @membership.stub!(:project).and_return(@project)
     Membership.stub!(:new).with(@attributes).and_return(@membership)
   end
   
   describe MembershipsController, "(successful creation)" do
     define_models :users
-    act! { post :create, :project_id => 1, :user_id => users(:nonmember).id, :format => 'js' }
+    act! { post :create, :membership => { :project_id => 1, :user_id => users(:nonmember).id }, :format => 'js' }
 
     before do
       @membership.stub!(:save).and_return(true)
@@ -26,7 +26,7 @@ describe MembershipsController, "POST #create" do
 
   describe MembershipsController, "(unsuccessful creation)" do
     define_models :users
-    act! { post :create, :project_id => 1, :user_id => users(:nonmember).id, :format => 'js' }
+    act! { post :create, :membership => { :project_id => 1, :user_id => users(:nonmember).id }, :format => 'js' }
 
     before do
       @membership.stub!(:save).and_return(false)

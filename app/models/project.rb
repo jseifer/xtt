@@ -1,7 +1,7 @@
 class Project < ActiveRecord::Base
   include Status::Methods
   
-  validates_presence_of :user_id, :name
+  validates_presence_of :user_id, :name, :code
   
   belongs_to :user
   has_many :memberships, :dependent => :delete_all
@@ -11,6 +11,7 @@ class Project < ActiveRecord::Base
     end
   end
   
+  before_validation :create_code
   after_save :create_membership
   
   has_finder :all, :order => 'name'
@@ -22,5 +23,13 @@ class Project < ActiveRecord::Base
 protected
   def create_membership
     memberships.create :user_id => user_id
+  end
+  
+  def create_code
+    if code.blank?
+      self.code = name.to_s.dup
+      code.gsub!(/\W/, '')
+      code.downcase!
+    end
   end
 end

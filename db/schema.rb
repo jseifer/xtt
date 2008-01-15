@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 14) do
+ActiveRecord::Schema.define(:version => 15) do
 
   create_table "memberships", :force => true do |t|
     t.integer "project_id"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(:version => 14) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"
+    t.string   "code"
   end
 
   add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
