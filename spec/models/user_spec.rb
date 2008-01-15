@@ -66,6 +66,66 @@ describe User do
     end
   end
 
+  describe "#extract_code_and_message" do
+    before do
+      @user = User.new
+    end
+    
+    ['', ' '].each do |code|
+      it "extracts nil code from #{code.inspect}" do
+        @user.send(:extract_code_and_message, code + 'foo').should == [nil, "foo"]
+      end
+    end
+    
+    it "extracts nil code from '!'" do
+      @user.send(:extract_code_and_message, ' ! foo').should == ['', "foo"]
+    end
+    
+    it "strips whitespace from message" do
+      @user.send(:extract_code_and_message, " foo ").should == [nil, "foo"]
+    end
+    
+    ["!foo ", " !foo "].each do |code|
+      it "extracts 'foo' code from #{code.inspect}" do
+        @user.send(:extract_code_and_message, code + " bar ").should == %w(foo bar)
+      end
+    end
+  end
+  
+  describe "#post" do
+    define_models :users
+  
+    before do
+      @user = users(:default)
+    end
+    
+    it "creates valid status" do
+      lambda { @user.post "Foo" }.should change(Status, :count).by(1)
+    end
+    
+    it "creates and maintains current 'out' status" do
+      @status = @user.post "Foo"
+      @status.project.should be_nil
+    end
+    
+    it "creates and maintains current project" do
+      @user.last_status_project_id = projects(:default).id
+      @status = @user.post "Foo"
+      @status.project.should == projects(:default)
+    end
+    
+    it "changes project" do
+      @status = @user.post "!#{projects(:default).code} Foo"
+      @status.project.should == projects(:default)
+    end
+    
+    it "changes user status to 'out'" do
+      @user.last_status_project_id = projects(:default).id
+      @status = @user.post "! Foo"
+      @status.project.should be_nil
+    end
+  end
+
   it 'creates users as !admin' do
     create_user.should_not be_admin
   end

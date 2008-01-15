@@ -23,16 +23,16 @@ class StatusesController < ApplicationController
   end
 
   def create
-    @status = current_user.statuses.build(params[:status])
+    @status = current_user.post params[:status][:message]
 
     respond_to do |format|
-      if @status.save
+      if @status.new_record?
+        format.html { render :action => "new" }
+        format.xml  { render :xml  => @status.errors, :status => :unprocessable_entity }
+      else
         flash[:notice] = 'Status was successfully created.'
         format.html { redirect_to root_path }
         format.xml  { render :xml  => @status, :status => :created, :location => @status }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml  => @status.errors, :status => :unprocessable_entity }
       end
     end
   end

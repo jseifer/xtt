@@ -51,18 +51,19 @@ end
 
 describe StatusesController, "POST #create" do
   before do
-    @attributes = {:message => 'foo'}
+    @attributes = {'message' => 'foo'}
     @status = Status.new(@attributes)
     login_as :default
-    @user.stub!(:statuses).and_return([])
+    @user.stub!(:post).with('foo').and_return(@status)
     @user.statuses.stub!(:before).and_return(nil)
-    @user.statuses.stub!(:build).and_return(@status)
     @status.user = @user
   end
   
   describe StatusesController, "(successful creation)" do
     define_models
     act! { post :create, :status => @attributes }
+    
+    before { @status.stub!(:new_record?).and_return(false) }
     
     it_assigns :status, :flash => { :notice => :not_nil }
     it_redirects_to { root_path }
@@ -84,6 +85,8 @@ describe StatusesController, "POST #create" do
   describe StatusesController, "(successful creation, xml)" do
     define_models
     act! { post :create, :status => @attributes, :format => 'xml' }
+
+    before { @status.stub!(:new_record?).and_return(false) }
     
     it_assigns :status, :headers => { :Location => lambda { status_url(@status) } }
     it_renders :xml, :status, :status => :created
