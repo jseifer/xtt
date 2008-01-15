@@ -21,9 +21,9 @@ class User < ActiveRecord::Base
 
   has_finder :all, :order => 'login'
   
-  def post(message)
+  def post(message, forced_project = nil)
     code, message = extract_code_and_message(message)
-    project       = code.nil? ? last_status_project : projects.find_by_code(code)
+    project       = forced_project || (code.nil? ? last_status_project : projects.find_by_code(code))
     statuses.create :project => project, :message => message
   end
   

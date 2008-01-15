@@ -119,6 +119,16 @@ describe User do
       @status.project.should == projects(:default)
     end
     
+    it "ignores bad project" do
+      @status = @user.post "!asdf Foo"
+      @status.project.should be_nil
+    end
+    
+    it "uses forced project" do
+      @status = @user.post "!asdf Foo", projects(:default)
+      @status.project.should == projects(:default)
+    end
+    
     it "changes user status to 'out'" do
       @user.last_status_project_id = projects(:default).id
       @status = @user.post "! Foo"

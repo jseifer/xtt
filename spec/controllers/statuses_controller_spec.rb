@@ -54,7 +54,7 @@ describe StatusesController, "POST #create" do
     @attributes = {'message' => 'foo'}
     @status = Status.new(@attributes)
     login_as :default
-    @user.stub!(:post).with('foo').and_return(@status)
+    @user.stub!(:post).with('foo', nil).and_return(@status)
     @user.statuses.stub!(:before).and_return(nil)
     @status.user = @user
   end
@@ -64,6 +64,22 @@ describe StatusesController, "POST #create" do
     act! { post :create, :status => @attributes }
     
     before { @status.stub!(:new_record?).and_return(false) }
+    
+    it_assigns :status, :flash => { :notice => :not_nil }
+    it_redirects_to { root_path }
+  end
+  
+  describe StatusesController, "(successful creation with forced project" do
+    define_models
+    act! { post :create, :status => @attributes }
+    
+    before do
+      @user.stub!(:projects).and_return([])
+      @user.projects.stub!(:find_by_id).with(projects(:default).id.to_s).and_return(projects(:default))
+      @attributes['project_id'] = projects(:default).id.to_s
+      @user.should_receive(:post).with('foo', projects(:default)).and_return(@status)
+      @status.stub!(:new_record?).and_return(false)
+    end
     
     it_assigns :status, :flash => { :notice => :not_nil }
     it_redirects_to { root_path }

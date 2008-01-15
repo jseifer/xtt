@@ -23,7 +23,8 @@ class StatusesController < ApplicationController
   end
 
   def create
-    @status = current_user.post params[:status][:message]
+    @project = current_user.projects.find_by_id params[:status][:project_id] if params[:status][:project_id]
+    @status  = current_user.post params[:status][:message], @project
 
     respond_to do |format|
       if @status.new_record?
