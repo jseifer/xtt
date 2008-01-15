@@ -42,8 +42,8 @@
         </div>
         <div class="media-content">
           <h4 class="media-title"><a href="/video/2323"><%= link_to_user user %> <%= status_summary user.last_status_project %></a></h4>
-          <p class="quiet"><%=h user.last_status_message %></p>
-          <span class="datetime">35 minutes ago</span>
+          <p class="quiet"><%= status_for user %></p>
+          <span class="datetime"><%= status_at user %></span>
         </div>
       </li>
 		<% end -%>
