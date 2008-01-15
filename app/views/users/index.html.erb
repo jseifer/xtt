@@ -90,8 +90,8 @@
   <ul class="text-list">
 	<% current_user.projects.each do |project| -%>
     <li>
-      <a href="#">
-        <span class="ttl"><%= link_to_project project %></span>
+      <a href="<%= url_for project %>">
+        <span class="ttl"><%=h project.name %></span>
         <span class="desc">20 hours today by 3 people</span>
       </a>
     </li>
