@@ -8,7 +8,7 @@ describe ProjectsController, "GET #index" do
   before do
     @projects = []
     @user = mock("User")
-    @user.stub!(:all_projects).and_return(@projects)
+    @user.stub!(:projects).and_return(@projects)
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
   end
@@ -93,8 +93,8 @@ describe ProjectsController, "POST #create" do
     login_as :default
     @attributes = {}
     @project = mock_model Project, :new_record? => false, :errors => []
-    @user = mock_model User, :projects => []
-    @user.projects.stub!(:build).with(@attributes).and_return(@project)
+    @user = mock_model User, :owned_projects => []
+    @user.owned_projects.stub!(:build).with(@attributes).and_return(@project)
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
   end
@@ -128,7 +128,7 @@ describe ProjectsController, "POST #create" do
     act! { post :create, :project => @attributes }
 
     before do
-      @user.projects.stub!(:build).with(@attributes).and_return(@project)
+      @user.owned_projects.stub!(:build).with(@attributes).and_return(@project)
       @project.stub!(:save).and_return(true)
     end
     

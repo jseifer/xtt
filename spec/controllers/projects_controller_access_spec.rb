@@ -8,29 +8,29 @@ describe_access_for ProjectsController do
     it_allows(:get,    :index)
     it_allows(:get,    :new)
     it_allows(:post,   :create)
-    it_allows(:get,    :edit)    { {:id => projects(:user) } }
-    it_allows(:get,    :show)    { {:id => projects(:user) } }
-    it_allows(:put,    :update)  { {:id => projects(:user) } }
-    it_allows(:delete, :destroy) { {:id => projects(:user) } }
+    it_allows(:get,    :edit)    { {:id => projects(:default) } }
+    it_allows(:get,    :show)    { {:id => projects(:default) } }
+    it_allows(:put,    :update)  { {:id => projects(:default) } }
+    it_allows(:delete, :destroy) { {:id => projects(:default) } }
   end
   
   as :nonmember do
     it_allows(:get,       :index)
     it_allows(:get,       :new)
     it_allows(:post,      :create)
-    it_restricts(:get,    :edit)    { {:id => projects(:user) } }
-    it_restricts(:get,    :show)    { {:id => projects(:user) } }
-    it_restricts(:put,    :update)  { {:id => projects(:user) } }
-    it_restricts(:delete, :destroy) { {:id => projects(:user) } }
+    it_restricts(:get,    :edit)    { {:id => projects(:default) } }
+    it_restricts(:get,    :show)    { {:id => projects(:default) } }
+    it_restricts(:put,    :update)  { {:id => projects(:default) } }
+    it_restricts(:delete, :destroy) { {:id => projects(:default) } }
   end
   
   as :anon, :pending, :suspended do
     it_restricts(:get,    :index)
     it_restricts(:get,    :new)
     it_restricts(:post,   :create)
-    it_restricts(:get,    :edit)    { {:id => projects(:user) } }
-    it_restricts(:get,    :show)    { {:id => projects(:user) } }
-    it_restricts(:put,    :update)  { {:id => projects(:user) } }
-    it_restricts(:delete, :destroy) { {:id => projects(:user) } }
+    it_restricts(:get,    :edit)    { {:id => projects(:default) } }
+    it_restricts(:get,    :show)    { {:id => projects(:default) } }
+    it_restricts(:put,    :update)  { {:id => projects(:default) } }
+    it_restricts(:delete, :destroy) { {:id => projects(:default) } }
   end
 end

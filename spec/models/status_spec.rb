@@ -150,11 +150,6 @@ describe Status, "(filtering)" do
     users(:default).statuses.should == [statuses(:in_project), statuses(:default)]
   end
   
-  it "finds statuses by group" do
-    #puts "AHHH #{statuses(:default).id} / #{statuses(:in_project).id}"
-    Status.for_group(groups(:default)).should == [statuses(:in_project)]
-  end
-  
   it "finds statuses by project" do
     projects(:default).statuses.should == [statuses(:in_project)]
     Status.for_project(projects(:default)).should == [statuses(:in_project)]
@@ -162,10 +157,6 @@ describe Status, "(filtering)" do
   
   it "finds statuses without project" do
     Status.without_project.should == [statuses(:default)]
-  end
-  
-  it "finds user statuses by group" do
-    users(:default).statuses.for_group(groups(:default)).should == [statuses(:in_project)]
   end
   
   it "finds user statuses by project" do

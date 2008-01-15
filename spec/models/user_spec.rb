@@ -101,19 +101,14 @@ describe User do
     users(:default).should be_deleted
   end
   
-  it 'finds owned groups' do
-    users(:default).owned_groups.should == [groups(:default)]
+  it 'finds owned projects' do
+    users(:default).owned_projects.should == [projects(:another), projects(:default)]
   end
   
-  it 'adds self as a member to the owned_group after creation' do
-    group = users(:default).owned_groups.create(:name => 'Ninjas')
-    users(:default).groups.should include(group)
-    group.memberships.should_not be_empty
-  end
-  
-  it 'collects owned projects and group projects in #all_projects' do
-    users(:default).all_projects.should include(projects(:default))
-    users(:default).all_projects.should include(projects(:another))
+  it 'adds self as a member to the owned_projects after creation' do
+    project = users(:default).owned_projects.create(:name => 'Ninjas')
+    users(:default).projects.should include(project)
+    project.memberships.should_not be_empty
   end
   
 protected

@@ -7,14 +7,10 @@ ModelStubbing.define_models do
       :created_at => current_time - 5.days, :remember_token => 'foo-bar', :remember_token_expires_at => current_time + 5.days,
       :activation_code => '8f24789ae988411ccf33ab0c30fe9106fab32e9b', :activated_at => current_time - 4.days
   end
-
-  model Group do
-    stub :name => 'project', :owner => all_stubs(:user)
-  end
   
   model Project do
-    stub :name => 'project', :billable => true, :parent => all_stubs(:group), :parent_type => "Group"
-    stub :another, :parent => all_stubs(:user), :parent_type => "User"
+    stub :name => 'project', :billable => true, :user => all_stubs(:user)
+    stub :another, :name => 'another'
   end
   
   model Status do
@@ -34,11 +30,11 @@ ModelStubbing.define_models :users do
   end
   
   model Project do
-    stub :user, :parent => all_stubs(:user), :parent_type => 'User'
+    stub :user, :user => all_stubs(:pending_user)
   end
   
   model Membership do
-    stub :user => all_stubs(:user), :group => all_stubs(:group)
+    stub :user => all_stubs(:user), :project => all_stubs(:project)
     stub :admin, :user => all_stubs(:admin_user)
   end
 end

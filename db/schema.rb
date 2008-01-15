@@ -9,17 +9,10 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 10) do
-
-  create_table "groups", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "owner_id"
-  end
+ActiveRecord::Schema.define(:version => 12) do
 
   create_table "memberships", :force => true do |t|
-    t.integer "group_id"
+    t.integer "project_id"
     t.integer "user_id"
   end
 
@@ -28,15 +21,14 @@ ActiveRecord::Schema.define(:version => 10) do
     t.boolean  "billable"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "parent_id"
-    t.string   "parent_type"
+    t.integer  "user_id"
   end
 
-  add_index "projects", ["name", "parent_id", "parent_type"], :name => "index_projects_on_name_and_parent"
+  add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
 
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
-    t.decimal  "hours",      :default => 0.0
+    t.decimal  "hours",      :precision => 8, :scale => 2, :default => 0.0
     t.string   "message"
     t.string   "state"
     t.datetime "created_at"

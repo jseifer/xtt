@@ -1,10 +1,10 @@
 class MembershipsController < ApplicationController
-  before_filter :load_group
+  before_filter :load_project
   before_filter :login_required
   
   def create
     @user = User.find(params[:user_id])
-    @membership = Membership.create(:group => @group, :user => @user)
+    @membership = Membership.create(:project => @project, :user => @user)
 
     respond_to do |format|
       format.js
@@ -21,14 +21,13 @@ class MembershipsController < ApplicationController
     end
   end
   
-  protected
-  def load_group
+protected
+  def load_project
     @membership = Membership.find(params[:id]) if params[:id]
-    @group = @membership ? @membership.group : Group.find(params[:group_id])
+    @project = @membership ? @membership.project : Project.find(params[:project_id])
   end
   
   def authorized?
-    logged_in? && (admin? || @group.users.include?(current_user))
+    logged_in? && (admin? || @project.users.include?(current_user))
   end
-  
 end

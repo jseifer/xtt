@@ -3,7 +3,7 @@ class ProjectsController < ApplicationController
   before_filter :login_required
 
   def index
-    @projects ||= current_user.all_projects
+    @projects ||= current_user.projects
 
     respond_to do |format|
       format.html # index.html.erb
@@ -28,7 +28,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project ||= current_user.projects.build(params[:project])
+    @project ||= current_user.owned_projects.build(params[:project])
 
     respond_to do |format|
       if @project.save

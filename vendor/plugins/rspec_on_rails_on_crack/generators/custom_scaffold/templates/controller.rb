@@ -29,10 +29,6 @@ class <%= controller_class_name %>Controller < ApplicationController
     end
   end
 
-  def edit
-    @<%= file_name %> = <%= class_name %>.find(params[:id])
-  end
-
   def create
     @<%= file_name %> = <%= class_name %>.new(params[:<%= file_name %>])
 
@@ -48,6 +44,10 @@ class <%= controller_class_name %>Controller < ApplicationController
         format.json { render :json => @<%= file_name %>.errors, :status => :unprocessable_entity }
       end
     end
+  end
+
+  def edit
+    @<%= file_name %> = <%= class_name %>.find(params[:id])
   end
 
   def update
