@@ -30,7 +30,7 @@ InlineForm = {
   toggleAdd: function(ele) {
     container = $(ele).up('.container');
     container.down('a.showlink').toggle();
-    container.down('div.formWrapper').toggle();
+    container.down('div.form_wrapper').toggle();
   }
 }
 
