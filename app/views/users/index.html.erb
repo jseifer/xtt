@@ -53,7 +53,7 @@
 
 
 <% box(:sidebar, 'projects') do |sbox| %>
-  <% sbox.title = "Projects" %>
+  <% sbox.title = "Projects and time logged today" %>
   <% sbox.content_classes = "nopad" %>
   <% if current_user.archived_projects %>
   <% sbox.footer = %(<a href="#">Archived Projects &raquo;</a>) %>
@@ -61,11 +61,19 @@
   <% sbox.content = capture do %>
   <ul class="text-list">
   <% if current_user.projects.any? %>
-	<% current_user.projects.each do |project| -%>
-    <li>
+	<% current_user.projects.each_with_index do |project, index| -%>
+    <li<%= %( class="last") if first_in_collection?(current_user.projects, index) %>>
       <a href="<%= url_for project %>">
         <span class="ttl"><%=h project.name %></span>
-        <span class="desc">20 hours today by 3 people</span>
+        <span class="desc">Send messages using <em><%= project.code %></em></span>
+        <span class="you">
+          <span class="num">8.15</span>
+          <span class="meta">you</span>
+        </span>
+        <span class="others">
+          <span class="num">20.12</span>
+          <span class="meta">others</span>
+        </span>
       </a>
     </li>
 	<% end -%>

@@ -295,10 +295,12 @@ img { border: 0; }
 .text-list li {
   padding: 5px 8px;
   border-bottom: 1px solid #e2e2e2;
+  position: relative;
 }
 
 .text-list li a {
   display: block;
+  position: relative;
 }
 
 .text-list .desc {
@@ -318,6 +320,41 @@ img { border: 0; }
   font-size: 110%;
 }
 
+.you {
+  position: absolute;
+  right: 50px;
+  top: 0;
+  width: 50px;
+  display: block;
+  text-align: center;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+}
+
+.others {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  display: block;
+  text-align: center;
+}
+
+.num {
+  font-size: 120%;
+  font-weight: bold;
+  display: block;
+  color: #555;
+}
+
+.meta {
+  color: #999;
+  text-align: center;
+}
+
+#sbox-projects li:hover {
+  background-color: #eee;
+}
 /* @end */
 
 /* @group forms */
