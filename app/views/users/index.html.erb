@@ -78,14 +78,26 @@
       </a>
     </li>
 	<% end -%>
+  <% new_project_text = capture do %>
+  <span class="ttl">Create a new project?</span>
+  <span class="desc">You have 500 projects left on your plan</span>
+  <% end %>
 	<% else %>
-	<li class="last">
-	  <a href="#">
-	    <span class="ttl">You don't have any projects</span>
-	    <span class="desc">Create one now?</span>
-	  </a>
-	</li>
+  	<% new_project_text = capture do %>
+  	  <span class="ttl">You don't have any projects</span>
+      <span class="desc">Create one now?</span>
+  	<% end %>
 	<% end %>
+	<li class="last">
+	  <div class='container'>
+  	  <a class='showlink' href="#" onclick="InlineForm.toggleAdd(this)">
+  	    <%= new_project_text %>
+  	  </a>
+  	  <div class='formWrapper' style='display:none'>
+  	    <%= render :partial => 'projects/new' %>
+  	  </div>
+  	</div>
+	</li>
   </ul>
   <% end %>
 <% end %>

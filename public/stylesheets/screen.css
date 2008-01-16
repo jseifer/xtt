@@ -1,3 +1,5 @@
+/* @override http://localhost:3000/stylesheets/screen.css?1200513463 */
+
 body {
   margin: 0;
   text-align: center;
@@ -416,6 +418,9 @@ img { border: 0; }
 
 p.btns {
   text-align: right;
+}
+p.btns a {
+  display: inline;
 }
 
 /* @end */
