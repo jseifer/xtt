@@ -1,6 +1,16 @@
-<h1><%=h @user.login %></h1>
-
-<div class="inset">
-  <h2>Change to something else</h2>
-<%= render :partial => "statuses/form", :locals => { :user => @user, :status => @user.statuses.build } %>
-</div>
+<% box(:special, 'profile') do |box| %>
+  <% box.title = "Your profile" %>
+  <% box.header_utils = capture do %>
+    <%= link_to 'Profile' %> 
+    <%= link_to 'Notifications' %>
+    <%= link_to 'Colors' %>
+  <% end %>
+  
+  <% box.content = capture do %>
+    <% form_for @user, :html => { :class => 'form' } do |f| -%>
+      <%= render :partial => 'form', :object => f %>
+      <p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
+    <% end %>
+  <% end %>
+  
+<% end %>
