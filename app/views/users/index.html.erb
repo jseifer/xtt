@@ -80,10 +80,14 @@
 	<% end -%>
 	<% else %>
 	<li class="last">
-	  <a href="#">
-	    <span class="ttl">You don't have any projects</span>
-	    <span class="desc">Create one now?</span>
-	  </a>
+	  <div class='container'>
+  	  <a class='showlink' href="#" onclick="InlineForm.toggleAdd(this)">
+  	    <span class="ttl">You don't have any projects</span>
+  	    <span class="desc">Create one now?</span>
+  	  </a>
+	  <div class='formWrapper' style='display:none'>
+	    <%= render :partial => 'projects/new' %>
+	  </div>
 	</li>
 	<% end %>
   </ul>
