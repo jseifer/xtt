@@ -1,5 +1,5 @@
 <% box(:special, 'overview') do |box| %>
-  <% box.title = "What are you working on?" %>
+  <% box.title = "What are you doing?" %>
   <% box.content = capture do %>
     <% form_for current_user.statuses.build do |f| -%>
     <ul class="media-list">
@@ -29,7 +29,7 @@
 
 <div class="mblock">
   <div class="mblock-hdr">
-    <h3>What's everyone else working on?</h3>
+    <h3>What's everyone else doing?</h3>
   </div>
   <div class="mblock-cnt">
     <ul id="timeline" class="media-list">
@@ -48,7 +48,7 @@
     </ul>
   </div>
   <div class="mblock-footer">
-    <a href="#">5 other people haven't worked today &raquo;</a>
+    <a href="#">5 other people haven't logged anything today &raquo;</a>
   </div>
 </div>
 
