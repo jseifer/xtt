@@ -14,7 +14,8 @@
   		<% if current_user.last_status -%>
         <div class="media-content">
   			<% if current_user.last_status_project -%>
-          <h4 class="media-title"><a href="/video/2323">You're working on <%= link_to_project current_user.last_status_project %></a></h4>
+          <h4 class="media-title">
+            <a href="/video/2323">You're working on <%= link_to_project current_user.last_status_project %></a></h4>
   			<% end -%>
           <p class="quiet"><%=h current_user.last_status_message %></p>
           <span class="datetime"><%= time_ago_in_words current_user.last_status_at %> ago</span>
