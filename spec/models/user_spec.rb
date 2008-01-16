@@ -77,15 +77,15 @@ describe User do
       end
     end
     
-    it "extracts nil code from '!'" do
-      @user.send(:extract_code_and_message, ' ! foo').should == ['', "foo"]
+    it "extracts nil code from '@'" do
+      @user.send(:extract_code_and_message, ' @ foo').should == ['', "foo"]
     end
     
     it "strips whitespace from message" do
       @user.send(:extract_code_and_message, " foo ").should == [nil, "foo"]
     end
     
-    ["!foo ", " !foo "].each do |code|
+    ["@foo ", " @foo "].each do |code|
       it "extracts 'foo' code from #{code.inspect}" do
         @user.send(:extract_code_and_message, code + " bar ").should == %w(foo bar)
       end
@@ -115,23 +115,23 @@ describe User do
     end
     
     it "changes project" do
-      @status = @user.post "!#{projects(:default).code} Foo"
+      @status = @user.post "@#{projects(:default).code} Foo"
       @status.project.should == projects(:default)
     end
     
     it "ignores bad project" do
-      @status = @user.post "!asdf Foo"
+      @status = @user.post "@asdf Foo"
       @status.project.should be_nil
     end
     
     it "uses forced project" do
-      @status = @user.post "!asdf Foo", projects(:default)
+      @status = @user.post "@asdf Foo", projects(:default)
       @status.project.should == projects(:default)
     end
     
     it "changes user status to 'out'" do
       @user.last_status_project_id = projects(:default).id
-      @status = @user.post "! Foo"
+      @status = @user.post "@ Foo"
       @status.project.should be_nil
     end
   end

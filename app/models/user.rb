@@ -35,7 +35,7 @@ class User < ActiveRecord::Base
 protected
   def extract_code_and_message(message)
     code = nil
-    message.sub! /\!\w*/ do |c|
+    message.sub! /\@\w*/ do |c|
       code = c[1..-1]; ''
     end
     [code, message.strip]
