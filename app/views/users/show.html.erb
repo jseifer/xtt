@@ -1,16 +1,22 @@
 <% box(:special, 'profile') do |box| %>
   <% box.title = "Your profile" %>
   <% box.header_utils = capture do %>
-    <%= link_to 'Profile' %> 
-    <%= link_to 'Notifications' %>
-    <%= link_to 'Colors' %>
+    <%= link_to 'Profile', {}, :id => 'tab-profile' %> 
+    <%= link_to 'Notifications', :id => 'tab-notification' %>
+    <%= link_to 'Colors', :id => 'tab-colors' %>
   <% end %>
   
   <% box.content = capture do %>
+  <div id="profile-content">
     <% form_for @user, :html => { :class => 'form' } do |f| -%>
       <%= render :partial => 'form', :object => f %>
       <p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
     <% end %>
+  </div>
+  
+  <div id="colors-content">
+    
+  </div>
   <% end %>
   
 <% end %>
