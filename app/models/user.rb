@@ -31,6 +31,14 @@ class User < ActiveRecord::Base
     @related_users ||= User.find :all, :conditions => ['users.id != ? and memberships.project_id IN (?)', id, memberships.collect(&:project_id).uniq],
       :order => 'last_status_at desc', :joins => "INNER JOIN memberships ON users.id = memberships.user_id", :select => "DISTINCT users.*"
   end
+  
+  def total_hours_for(project)
+    project.statuses.calculate(:sum, :hours, :conditions => ['statuses.created_at >= ?', Time.now.utc.midnight])
+  end
+  
+  def hours_for(project)
+    Status.with_user(self) { total_hours_for project }
+  end
 
 protected
   def extract_code_and_message(message)

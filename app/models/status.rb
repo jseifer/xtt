@@ -18,6 +18,10 @@ class Status < ActiveRecord::Base
   event :process do
     transitions :from => :pending, :to => :processed, :guard => :calculate_hours
   end
+  
+  def self.with_user(user, &block)
+    with_scope :find => { :conditions => ['statuses.user_id = ?', user.id] }, &block
+  end
 
   def followup(reload = false)
     @followup   = nil if reload

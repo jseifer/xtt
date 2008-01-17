@@ -166,6 +166,54 @@ describe User do
     end
   end
 
+  describe "being unsuspended" do
+    define_models
+
+    before do
+      @user = users(:default)
+      @user.suspend!
+    end
+    
+    it 'reverts to active state' do
+      @user.unsuspend!
+      @user.should be_active
+    end
+    
+    it 'reverts to passive state if activation_code and activated_at are nil' do
+      User.update_all :activation_code => nil, :activated_at => nil
+      @user.reload.unsuspend!
+      @user.should be_passive
+    end
+    
+    it 'reverts to pending state if activation_code is set and activated_at is nil' do
+      User.update_all :activation_code => 'foo-bar', :activated_at => nil
+      @user.reload.unsuspend!
+      @user.should be_pending
+    end
+  end
+  
+  describe "(counting project hours)" do
+    define_models :copy => :users do
+      model Status do
+        stub :counted_1, :message => 'counted_1', :created_at => current_time.midnight + 5.minutes, :project => all_stubs(:project), :hours => 7
+        stub :counted_2, :message => 'counted_2', :created_at => current_time.midnight + 8.minutes, :project => all_stubs(:project), :hours => 8, :user => all_stubs(:admin_user)
+      end
+    end
+
+    before do
+      @user    = users(:default)
+      @project = projects(:default)
+    end
+    
+    it "calculates daily project total" do
+      @user.total_hours_for(@project).should == 15
+    end
+    
+    it "calculates daily user project total" do
+      @user.hours_for(@project).should == 7
+    end
+  end
+
   it 'resets password' do
     users(:default).update_attributes(:password => 'new password', :password_confirmation => 'new password')
     User.authenticate(users(:default).login, 'new password').should == users(:default)
@@ -229,11 +277,6 @@ describe User do
     User.authenticate('quentin', 'test').should_not == users(:default)
   end
 
-  it 'unsuspends user' do
-    users(:suspended).unsuspend!
-    users(:suspended).should be_active
-  end
-
   it 'deletes user' do
     users(:default).deleted_at.should be_nil
     users(:default).delete!
@@ -250,7 +293,7 @@ describe User do
     users(:default).projects.should include(project)
     project.memberships.should_not be_empty
   end
-  
+
 protected
   def create_user(options = {})
     User.create({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
