@@ -37,6 +37,17 @@
   </div>
 </div>
 
+<% box(:sidebar, 'members') do |sbox| %>
+  <% sbox.title = "Project Members" %>
+  <% sbox.content = capture do %>
+    <ul>
+      <% @project.users.each do |user| %>
+      <li><%= user.login %></li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>
+
 <% box(:sidebar, 'invitations') do |sbox| %>
   <% sbox.title = "Invitations" %>
   <% sbox.content = capture do %>
