@@ -1,3 +1,5 @@
+/* @override http://localhost:3000/stylesheets/screen.css?1200513463 */
+
 body {
   margin: 0;
   text-align: center;
@@ -47,7 +49,7 @@ img { border: 0; }
 /* @group Shared typography */
 
 .quiet {
-  color: #777;
+  color: #656565;
 }
 
 /* @end */
@@ -158,6 +160,25 @@ img { border: 0; }
   font-weight: bold;
   padding: 8px 12px;
   border-bottom: 1px solid #ddd;
+}
+
+.mblock-hdr .utils {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  font-size: 92%;
+}
+
+.mblock-hdr .utils a {
+  margin-left: 7px;
+  padding: 2px;
+}
+
+.mblock-hdr .utils a:hover {
+  background-color: #aaa;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
 }
 
 .mblock-footer, .sbox-footer {
@@ -295,10 +316,12 @@ img { border: 0; }
 .text-list li {
   padding: 5px 8px;
   border-bottom: 1px solid #e2e2e2;
+  position: relative;
 }
 
 .text-list li a {
   display: block;
+  position: relative;
 }
 
 .text-list .desc {
@@ -318,9 +341,60 @@ img { border: 0; }
   font-size: 110%;
 }
 
+.you {
+  position: absolute;
+  right: 50px;
+  top: 0;
+  width: 50px;
+  display: block;
+  text-align: center;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+}
+
+.others {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  display: block;
+  text-align: center;
+}
+
+.num {
+  font-size: 120%;
+  font-weight: bold;
+  display: block;
+  color: #555;
+}
+
+.meta {
+  color: #999;
+  text-align: center;
+}
+
+#sbox-projects li:hover {
+  background-color: #eee;
+}
 /* @end */
 
 /* @group forms */
+
+.form label {
+  font-weight: bold;
+  display: block;
+}
+
+.form input {
+  margin-bottom: 9px;
+}
+
+.form input[type=text], .form input[type=password] {
+  font-size: 140%;
+  border: 1px solid #999;
+  border-bottom-color: #bbb;
+  border-right-color: #bbb;
+}
 
 .status-entry {
   font-size: 140%;
@@ -344,6 +418,9 @@ img { border: 0; }
 
 p.btns {
   text-align: right;
+}
+p.btns a {
+  display: inline;
 }
 
 /* @end */

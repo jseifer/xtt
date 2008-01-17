@@ -1,5 +1,5 @@
 <% box(:special, 'overview') do |box| %>
-  <% box.title = "What are you working on?" %>
+  <% box.title = "What are you doing?" %>
   <% box.content = capture do %>
     <% form_for current_user.statuses.build do |f| -%>
     <ul class="media-list">
@@ -14,7 +14,8 @@
   		<% if current_user.last_status -%>
         <div class="media-content">
   			<% if current_user.last_status_project -%>
-          <h4 class="media-title"><a href="/video/2323">You're working on <%= link_to_project current_user.last_status_project %></a></h4>
+          <h4 class="media-title">
+            <a href="/video/2323">You're working on <%= link_to_project current_user.last_status_project %></a></h4>
   			<% end -%>
           <p class="quiet"><%=h current_user.last_status_message %></p>
           <span class="datetime"><%= time_ago_in_words current_user.last_status_at %> ago</span>
@@ -28,7 +29,7 @@
 
 <div class="mblock">
   <div class="mblock-hdr">
-    <h3>What's everyone else working on?</h3>
+    <h3>What's everyone else doing?</h3>
   </div>
   <div class="mblock-cnt">
     <ul id="timeline" class="media-list">
@@ -47,13 +48,13 @@
     </ul>
   </div>
   <div class="mblock-footer">
-    <a href="#">5 other people haven't worked today &raquo;</a>
+    <a href="#">5 other people haven't logged anything today &raquo;</a>
   </div>
 </div>
 
 
 <% box(:sidebar, 'projects') do |sbox| %>
-  <% sbox.title = "Projects" %>
+  <% sbox.title = "Projects and time logged today" %>
   <% sbox.content_classes = "nopad" %>
   <% if current_user.archived_projects %>
   <% sbox.footer = %(<a href="#">Archived Projects &raquo;</a>) %>
@@ -61,22 +62,42 @@
   <% sbox.content = capture do %>
   <ul class="text-list">
   <% if current_user.projects.any? %>
-	<% current_user.projects.each do |project| -%>
-    <li>
+	<% current_user.projects.each_with_index do |project, index| -%>
+    <li<%= %( class="last") if first_in_collection?(current_user.projects, index) %>>
       <a href="<%= url_for project %>">
         <span class="ttl"><%=h project.name %></span>
-        <span class="desc">20 hours today by 3 people</span>
+        <span class="desc">Send messages using <em><%= project.code %></em></span>
+        <span class="you">
+          <span class="num">8.15</span>
+          <span class="meta">you</span>
+        </span>
+        <span class="others">
+          <span class="num">20.12</span>
+          <span class="meta">others</span>
+        </span>
       </a>
     </li>
 	<% end -%>
+  <% new_project_text = capture do %>
+  <span class="ttl">Create a new project?</span>
+  <span class="desc">You have 500 projects left on your plan</span>
+  <% end %>
 	<% else %>
-	<li class="last">
-	  <a href="#">
-	    <span class="ttl">You don't have any projects</span>
-	    <span class="desc">Create one now?</span>
-	  </a>
-	</li>
+  	<% new_project_text = capture do %>
+  	  <span class="ttl">You don't have any projects</span>
+      <span class="desc">Create one now?</span>
+  	<% end %>
 	<% end %>
+	<li class="last">
+	  <div class="container">
+  	  <a class="showlink" href="#" onclick="InlineForm.toggleAdd(this)">
+  	    <%= new_project_text %>
+  	  </a>
+  	  <div class="form_wrapper" style="display:none">
+  	    <%= render :partial => 'projects/new' %>
+  	  </div>
+  	</div>
+	</li>
   </ul>
   <% end %>
 <% end %>
