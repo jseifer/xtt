@@ -136,12 +136,34 @@ describe User do
     end
   end
 
-  it 'creates users as !admin' do
-    create_user.should_not be_admin
-  end
-
-  it 'being created increments User.count' do
-    method(:create_user).should change(User, :count).by(1)
+  describe 'being created' do
+    define_models :users
+    before do
+      @user = nil
+      @creating_user = lambda do
+        @user = create_user
+        violated "#{@user.errors.full_messages.to_sentence}" if @user.new_record?
+      end
+    end
+    
+    it "increments User#count" do
+      @creating_user.should change(User, :count).by(1)
+    end
+    
+    it "starts in pending state" do
+      @creating_user.call
+      @user.should be_pending
+    end
+    
+    it "creates users as !admin" do
+      @creating_user.call
+      @user.should_not be_admin
+    end
+    
+    it "initializes #activation_code" do
+      @creating_user.call
+      @user.activation_code.should_not be_nil
+    end
   end
 
   it 'resets password' do

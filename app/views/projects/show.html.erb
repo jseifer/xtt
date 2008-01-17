@@ -51,7 +51,7 @@
 <% box(:sidebar, 'invitations') do |sbox| %>
   <% sbox.title = "Invitations" %>
   <% sbox.content = capture do %>
-		<% form_for @project.memberships.build do |f| -%>
+		<% remote_form_for @project.memberships.build do |f| -%>
 			<div>
 				<%= f.select :user_id, (User.find(:all) - @project.users).collect { |p| [p.login, p.id] } %>
 				<%= f.submit :Invite %>
