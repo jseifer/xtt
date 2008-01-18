@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 15) do
+ActiveRecord::Schema.define(:version => 16) do
 
   create_table "memberships", :force => true do |t|
     t.integer "project_id"
@@ -18,7 +18,6 @@ ActiveRecord::Schema.define(:version => 15) do
 
   create_table "projects", :force => true do |t|
     t.string   "name"
-    t.boolean  "billable"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "user_id"

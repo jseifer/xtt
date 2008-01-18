@@ -9,7 +9,7 @@ ModelStubbing.define_models do
   end
   
   model Project do
-    stub :name => 'project', :billable => true, :user => all_stubs(:user), :code => 'abc'
+    stub :name => 'project', :user => all_stubs(:user), :code => 'abc'
     stub :another, :name => 'another', :code => 'def'
   end
   

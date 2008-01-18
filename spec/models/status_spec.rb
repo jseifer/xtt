@@ -23,22 +23,6 @@ describe Status do
     statuses(:pending).previous.should == statuses(:in_project)
   end
   
-  it "is billable if project is billable" do
-    projects(:default).should be_billable
-    statuses(:in_project).project.should == projects(:default)
-    statuses(:in_project).should be_billable
-  end
-  
-  it "is not billable if project is not billable" do
-    projects(:default).update_attribute(:billable, false)
-    statuses(:in_project).project.should == projects(:default)
-    statuses(:in_project).should_not be_billable
-  end
-  
-  it "is not billable if there is no project" do
-    statuses(:default).reload.should_not be_billable
-  end
-  
   it "rounds down to the nearest 5 minutes" do
     statuses(:default).fixed_created_at = "2008-01-01 15:34:00 UTC"
     statuses(:default).created_at.should == Time.parse("2008-01-01 15:30:00 UTC")
@@ -133,14 +117,6 @@ describe Status, "in pending state" do
       @status.should be_processed
       @status.hours.to_s.should == (3.to_f + result).to_s
     end
-  end
-  
-  it "does no process @status hours if not billable" do
-    Status.update_all :project_id => nil
-    @status.reload
-    @status.process!
-    @status.should be_processed
-    @status.hours.should == 0
   end
 end
 
