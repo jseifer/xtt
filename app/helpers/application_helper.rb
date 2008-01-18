@@ -19,4 +19,8 @@ module ApplicationHelper
   def first_in_collection?(collection, index)
     collection.size == (index  + 1)
   end
+  
+  def update_button
+    tag(:input, {:type => 'image', :src => '/images/btns/ghost.png', :class => 'btn'})
+  end
 end

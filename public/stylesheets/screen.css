@@ -1,5 +1,9 @@
 /* @override http://localhost:3000/stylesheets/screen.css?1200513463 */
 
+* {
+  outline: none;
+}
+
 body {
   margin: 0;
   text-align: center;
@@ -180,9 +184,17 @@ img { border: 0; }
 
 .mblock-hdr .utils a:hover, .sbox-head .utils a:hover {
   background-color: #aaa;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
+
+.utils a.active {
+  background-color: #06f;
+  color: #fff;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
 }
 
 .mblock-footer, .sbox-footer {
@@ -433,8 +445,16 @@ img { border: 0; }
 p.btns {
   text-align: right;
 }
+
 p.btns a {
   display: inline;
 }
+
+.at {
+  color: #555;
+  margin-bottom: 8px;
+}
+
+
 
 /* @end */

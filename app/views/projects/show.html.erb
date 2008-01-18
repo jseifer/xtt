@@ -39,6 +39,14 @@
   <% content_for :dom_loaded do %>
     new Control.Tabs("tool-tabs", {
       linkSelector: 'a',
+      afterChange: function(container) {
+        var item = container.readAttribute('id');
+        if(item == "edit") {
+          $('sbox-tools').down('h3').update("Edit this project");
+        } else {
+          $('sbox-tools').down('h3').update("Invite someone to this project");
+        }
+      }
       });
   <% end %>
   <% sbox.header_utils = %(
@@ -58,7 +66,11 @@
   	<% end -%>
   	</div>
   	<div id="edit">
-  	 Edit
+  	  <%= error_messages_for :project %>
+      <% form_for @project, :html => {:class => 'form'} do |f| -%>
+      <%= render :partial => "form", :object => f %>
+      	<p class="btns"><%= update_button %></p>
+      <% end -%>
   	</div>
   <% end %>
 <% end %>

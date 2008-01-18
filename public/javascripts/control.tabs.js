@@ -49,7 +49,6 @@ Object.extend(Control.Tabs.prototype,{
 		}).each(function(link){
 			this.addTab(link);
 		}.bind(this));
-	  console.log(this.containers.each(function(c) {  console.log(c); }));
 		this.containers.values().each(this.options.hideFunction);
 		if(this.options.defaultTab == 'first')
 			this.setActiveTab(this.links.first());
@@ -86,7 +85,7 @@ Object.extend(Control.Tabs.prototype,{
 	addTab: function(link){
 		this.links.push(link);
 		link.key = link.getAttribute('href').replace(window.location.href.split('#')[0],'').split('/').last().replace(/#/,'');
-		this.containers[link.key] = $(link.key);
+		this.containers.set(link.key, $(link.key));
 		link[this.options.hover ? 'onmouseover' : 'onclick'] = function(link){
 			if(window.event)
 				Event.stop(window.event);
@@ -112,10 +111,10 @@ Object.extend(Control.Tabs.prototype,{
 				(this.options.setClassOnContainer ? $(item.parentNode) : item).removeClassName(this.options.activeClassName);
 			}.bind(this));
 			(this.options.setClassOnContainer ? $(link.parentNode) : link).addClassName(this.options.activeClassName);		  
-			this.activeContainer = this.containers[link.key];
+			this.activeContainer = this.containers.get(link.key);
 			this.activeLink = link;
-			this.options.showFunction(this.containers[link.key]);
-			this.notify('afterChange',this.containers[link.key]);
+			this.options.showFunction(this.containers.get(link.key));
+			this.notify('afterChange',this.containers.get(link.key));
 		}
 	},
 	next: function(){
