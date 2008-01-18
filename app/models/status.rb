@@ -22,6 +22,10 @@ class Status < ActiveRecord::Base
   def self.with_user(user, &block)
     with_scope :find => { :conditions => ['statuses.user_id = ?', user.id] }, &block
   end
+  
+  def self.since(date, &block)
+    with_scope :find => { :conditions => ['hours is not null and created_at >= ?', date.utc.midnight] }, &block
+  end
 
   def followup(reload = false)
     @followup   = nil if reload

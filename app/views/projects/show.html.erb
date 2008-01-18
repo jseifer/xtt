@@ -75,13 +75,13 @@
         </div>
         <div class="media-content">
           <h4 class="media-title"><%= link_to_user(user, "#{user.login}") %></h4>
-          <p class="quiet">Active 40 minutes ago</p>
+          <p class="quiet"><% if user.last_status_id -%>Active <%= time_ago_in_words user.last_status_at %> ago<% else -%>Inactive<% end -%></p>
           <span class="you">
-            <span class="num">3.4</span>
+            <span class="num"><%= number_with_precision @project.daily_member_hours[user.id].to_f, 2 %></span>
             <span class="meta">today</span>
           </span>
           <span class="others">
-            <span class="num">20.12</span>
+            <span class="num"><%= number_with_precision @project.member_hours[user.id].to_f, 2 %></span>
             <span class="meta">total</span>
           </span>
         </div>

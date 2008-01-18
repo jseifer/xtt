@@ -32,20 +32,37 @@ class User < ActiveRecord::Base
       :order => 'last_status_at desc', :joins => "INNER JOIN memberships ON users.id = memberships.user_id", :select => "DISTINCT users.*"
   end
   
-  def total_hours(reload = false)
-    @total_hours = nil if reload
-    @total_hours ||= calculate_total_project_hours(projects)
+  def total_project_hours(reload = false)
+    @total_project_hours = nil if reload
+    @total_project_hours ||= calculate_total_project_hours(projects)
   end
   
-  def user_hours(reload = false)
-    @user_hours = nil if reload
-    @user_hours ||= Status.with_user(self) { calculate_total_project_hours(projects) }
+  def project_hours(reload = false)
+    @project_hours = nil if reload
+    @project_hours ||= Status.with_user(self) { calculate_total_project_hours(projects) }
+  end
+  
+  def daily_member_hours(project, reload = false)
+    @daily_member_hours ||= {}
+    @daily_member_hours[project.id]   = nil if reload
+    @daily_member_hours[project.id] ||= Status.since(Time.now) { calculate_member_project_hours(project) }
+  end
+  
+  def member_hours(project, reload = false)
+    @member_hours ||= {}
+    @member_hours[project.id]   = nil if reload
+    @member_hours[project.id] ||= calculate_member_project_hours(project)
   end
 
 protected
   def calculate_total_project_hours(projects)
-    Status.calculate :sum, :hours, :group => :project_id, 
-      :conditions => ['hours is not null and project_id IN (?) and created_at >= ?', projects.collect { |p| p.id }, Time.now.utc.midnight]
+    Status.since Time.now do
+      Status.calculate :sum, :hours, :group => :project_id, :conditions => ['hours is not null and project_id IN (?)', projects.collect { |p| p.id }]
+    end
+  end
+  
+  def calculate_member_project_hours(project)
+    project.statuses.calculate :sum, :hours, :group => :user_id
   end
 
   def extract_code_and_message(message)
