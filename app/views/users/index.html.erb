@@ -68,11 +68,11 @@
         <span class="ttl"><%=h project.name %></span>
         <span class="desc">Send messages using <em><%= project.code %></em></span>
         <span class="you">
-          <span class="num">8.15</span>
+          <span class="num"><%= number_with_precision current_user.user_hours[project.id].to_f, 2 %></span>
           <span class="meta">you</span>
         </span>
         <span class="others">
-          <span class="num">20.12</span>
+          <span class="num"><%= number_with_precision current_user.total_hours[project.id].to_f, 2 %></span>
           <span class="meta">others</span>
         </span>
       </a>

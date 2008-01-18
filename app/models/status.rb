@@ -18,6 +18,10 @@ class Status < ActiveRecord::Base
   event :process do
     transitions :from => :pending, :to => :processed, :guard => :calculate_hours
   end
+  
+  def self.with_user(user, &block)
+    with_scope :find => { :conditions => ['statuses.user_id = ?', user.id] }, &block
+  end
 
   def followup(reload = false)
     @followup   = nil if reload
@@ -29,10 +33,6 @@ class Status < ActiveRecord::Base
     @previous   = nil if reload
     @previous ||= user.statuses.before(self) || :false
     @previous == :false ? nil : @previous
-  end
-  
-  def billable?
-    project && project.billable?
   end
   
   def project?
@@ -59,7 +59,6 @@ class Status < ActiveRecord::Base
 
   def fixed_created_at
     round_time created_at
-    #round_time(read_attribute(:created_at).utc)
   end
   def fixed_created_at=(new_time)
     write_attribute :created_at, round_time(Time.parse(new_time))
@@ -73,7 +72,7 @@ class Status < ActiveRecord::Base
 protected
   def calculate_hours
     return false if followup.nil?
-    quarters = billable? ? (accurate_time.to_f / 15.minutes.to_f).ceil : 0
+    quarters = (accurate_time.to_f / 15.minutes.to_f).ceil
     self.hours = quarters.to_f / 4.0
   end
   

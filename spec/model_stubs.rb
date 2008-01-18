@@ -1,5 +1,5 @@
 ModelStubbing.define_models do
-  time 2007, 6, 15
+  time 2007, 6, 15, 6
 
   model User do
     stub :login => 'normal-user', :email => 'normal-user@example.com', :state => 'active',
@@ -9,7 +9,7 @@ ModelStubbing.define_models do
   end
   
   model Project do
-    stub :name => 'project', :billable => true, :user => all_stubs(:user), :code => 'abc'
+    stub :name => 'project', :user => all_stubs(:user), :code => 'abc'
     stub :another, :name => 'another', :code => 'def'
   end
   

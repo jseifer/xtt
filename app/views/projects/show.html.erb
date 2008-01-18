@@ -26,7 +26,7 @@
         </div>
         <div class="media-content">
           <p class="quiet"><%= status_for status %></p>
-          <span class="datetime"><%= status_at status %></span>
+          <span class="datetime"><% if status.processed? -%><%= pluralize status.hours.to_f, 'hour' %>, <% end -%>posted <%= status_at status %></span>
         </div>
       </li>
 		<% end -%>
@@ -46,19 +46,20 @@
       <a href="#invite">Invite</a> 
       <a href="#edit">Edit</a>
     </div>) %>
+    
   <% sbox.content = capture do %>
-  <div id="invite">
-  <% form_for @project.memberships.build do |f| -%>
-		<div>
-			<%= f.select :user_id, (User.find(:all) - @project.users).collect { |p| [p.login, p.id] } %>
-			<%= f.submit :Invite %>
-			<%= f.hidden_field :project_id %>
-		</div>
-	<% end -%>
-	</div>
-	<div id="edit">
-	 Edit
-	</div>
+    <div id="invite">
+    <% form_for @project.memberships.build do |f| -%>
+  		<div>
+  			<%= f.select :user_id, (User.find(:all) - @project.users).collect { |p| [p.login, p.id] } %>
+  			<%= f.submit :Invite %>
+  			<%= f.hidden_field :project_id %>
+  		</div>
+  	<% end -%>
+  	</div>
+  	<div id="edit">
+  	 Edit
+  	</div>
   <% end %>
 <% end %>
 
@@ -85,7 +86,7 @@
           </span>
         </div>
       </li>
-		<% end -%>
+      <% end %>
     </ul>
   <% end %>
 <% end %>
