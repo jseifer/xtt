@@ -51,7 +51,7 @@ class User < ActiveRecord::Base
   def member_hours(project, reload = false)
     @member_hours ||= {}
     @member_hours[project.id]   = nil if reload
-    @member_hours[project.id] ||= calculate_member_project_hours(project)
+    @member_hours[project.id] ||= Status.since(1.month.ago) { calculate_member_project_hours(project) }
   end
 
 protected

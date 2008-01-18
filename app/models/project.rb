@@ -27,6 +27,14 @@ class Project < ActiveRecord::Base
   def member_hours(reload = false)
     user.member_hours(self, reload)
   end
+  
+  def owned_by?(user)
+    user && user_id == user.id
+  end
+  
+  def invitable_users
+    @invitable_users ||= User.find(:all) - users
+  end
 
 protected
   def create_membership

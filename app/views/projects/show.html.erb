@@ -19,7 +19,7 @@
   </div>
   <div class="mblock-cnt">
     <ul id="timeline" class="media-list">
-		<% @project.statuses.each_with_index do |status, index| -%>
+		<% if @project.statuses.each_with_index do |status, index| -%>
       <li class="media-item clearfix<%= %( last) if first_in_collection?(@project.statuses, index) %>">
         <div class="media">
           <%= gravatar_for status.user %>
@@ -29,6 +29,8 @@
           <span class="datetime"><% if status.processed? -%><%= pluralize status.hours.to_f, 'hour' %>, <% end -%>posted <%= status_at status %></span>
         </div>
       </li>
+		<% end.empty? -%>
+			<li>No status updates have been posted yet.</li>
 		<% end -%>
     </ul>
   </div>
@@ -36,35 +38,42 @@
 
 <% box(:sidebar, "tools") do |sbox| %>
   <% sbox.title = "Invite someone to this project" -%>
-  <% content_for :dom_loaded do %>
-    new Control.Tabs("tool-tabs", {
-      linkSelector: 'a',
-      afterChange: function(container) {
-        var item = container.readAttribute('id');
-        if(item == "edit") {
-          $('sbox-tools').down('h3').update("Edit this project");
-        } else {
-          $('sbox-tools').down('h3').update("Invite someone to this project");
-        }
-      }
-      });
-  <% end %>
-  <% sbox.header_utils = %(
-    <div id="tool-tabs">
-      <a href="#invite">Invite</a> 
-      <a href="#edit">Edit</a>
-    </div>) %>
-    
   <% sbox.content = capture do %>
     <div id="invite">
     <% form_for @project.memberships.build do |f| -%>
   		<div>
-  			<%= f.select :user_id, (User.find(:all) - @project.users).collect { |p| [p.login, p.id] } %>
+  			<%= f.select :user_id, @project.invitable_users.collect { |p| [p.login, p.id] } %>
   			<%= f.submit :Invite %>
   			<%= f.hidden_field :project_id %>
   		</div>
-  	<% end -%>
+  	<% end unless @project.invitable_users.empty? -%>
+		<% form_tag do |f| -%>
+			<div>
+				<%= text_area_tag :emails %>
+				<%= submit_tag :Invite %>
+				(unimplemented)
+			</div>
+		<% end -%>
   	</div>
+		<% if @project.owned_by? current_user -%>
+  		<% sbox.header_utils = %(
+  		  <div id="tool-tabs">
+  		    <a href="#invite">Invite</a> 
+  		    <a href="#edit">Edit</a>
+  		  </div>) %>
+  		<% content_for :dom_loaded do %>
+  		  new Control.Tabs("tool-tabs", {
+  		    linkSelector: 'a',
+  		    afterChange: function(container) {
+  		      var item = container.readAttribute('id');
+  		      if(item == "edit") {
+  		        $('sbox-tools').down('h3').update("Edit this project");
+  		      } else {
+  		        $('sbox-tools').down('h3').update("Invite someone to this project");
+  		      }
+  		    }
+  		    });
+  		<% end %>
   	<div id="edit">
   	  <%= error_messages_for :project %>
       <% form_for @project, :html => {:class => 'form'} do |f| -%>
@@ -72,6 +81,7 @@
       	<p class="btns"><%= update_button %></p>
       <% end -%>
   	</div>
+		<% end -%>
   <% end %>
 <% end %>
 
@@ -101,4 +111,15 @@
       <% end %>
     </ul>
   <% end %>
+<% end %>
+
+<% box(:sidebar, 'report') do |sbox| %>
+  <% sbox.title = "Filtering" %>
+	<% sbox.content = capture do %>
+		<ul>
+			<li><a href="#">This Week</li>
+			<li><a href="#">Last Two Weeks</li>
+			<li><a href="#">This Month</li>
+		</ul>
+	<% end -%>
 <% end %>
