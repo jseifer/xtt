@@ -82,7 +82,7 @@ describe StatusesController, "POST #create" do
     end
     
     it_assigns :status, :flash => { :notice => :not_nil }
-    it_redirects_to { root_path }
+    it_redirects_to { project_path(projects(:default)) }
   end
 
   describe StatusesController, "(unsuccessful creation)" do
