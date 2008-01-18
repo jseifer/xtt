@@ -1,7 +1,12 @@
 <% content_for :sidebar do %>
 <div id="sbox-<%= box.name %>" class="sbox">
   <div class="sbox-wrapper">
-    <h3><%= box.title %></h3>
+    <div class="sbox-head">
+      <h3><%= box.title %></h3>
+      <div class="utils">
+        <%= box.header_utils %>
+      </div>
+    </div>
     <div class="sbox-content <%= box.content_classes %>">
       <%= box.content %>
     </div>

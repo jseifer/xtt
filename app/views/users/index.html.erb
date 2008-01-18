@@ -60,10 +60,10 @@
   <% sbox.footer = %(<a href="#">Archived Projects &raquo;</a>) %>
   <% end rescue '' %>
   <% sbox.content = capture do %>
-  <ul class="text-list">
+  <ul class="text-list" id="project-lists">
   <% if current_user.projects.any? %>
 	<% current_user.projects.each_with_index do |project, index| -%>
-    <li<%= %( class="last") if first_in_collection?(current_user.projects, index) %>>
+    <li<%= %( class="last") if first_in_collection?(current_user.projects, index) %> id="project-<%= project.id %>">
       <a href="<%= url_for project %>">
         <span class="ttl"><%=h project.name %></span>
         <span class="desc">Send messages using <em><%= project.code %></em></span>
@@ -76,6 +76,13 @@
           <span class="meta">others</span>
         </span>
       </a>
+      <div id="showcase-project-<%= project.id %>" style="display:none">
+        <h3>Edit <%= h(project.name) %></h3>
+        <%= error_messages_for :project %>
+          <% form_for project, :html => {:class => "form" } do |f| -%>
+          <%= render :partial => "projects/form", :object => f %>
+        <% end %>
+      </div>
     </li>
 	<% end -%>
   <% new_project_text = capture do %>
@@ -89,14 +96,12 @@
   	<% end %>
 	<% end %>
 	<li class="last">
-	  <div class="container">
-  	  <a class="showlink" href="#" onclick="InlineForm.toggleAdd(this)">
-  	    <%= new_project_text %>
-  	  </a>
-  	  <div class="form_wrapper" style="display:none">
-  	    <%= render :partial => 'projects/new' %>
-  	  </div>
-  	</div>
+	  <a id="new-project-btn" href="projects/new">
+	    <%= new_project_text %>
+	  </a>
+	  <div id="new-project-form" style="display:none">
+	    <%= render :partial => 'projects/new' %>
+	  </div>
 	</li>
   </ul>
   <% end %>

@@ -15,12 +15,12 @@
 
 <div class="mblock">
   <div class="mblock-hdr">
-    <h3>What's everyone working on?</h3>
+    <h3><%= h(@project.name) %> Timeline</h3>
   </div>
   <div class="mblock-cnt">
     <ul id="timeline" class="media-list">
-		<% @project.statuses.each do |status| -%>
-      <li class="media-item clearfix">
+		<% @project.statuses.each_with_index do |status, index| -%>
+      <li class="media-item clearfix<%= %( last) if first_in_collection?(@project.statuses, index) %>">
         <div class="media">
           <%= gravatar_for status.user %>
         </div>
@@ -32,20 +32,60 @@
 		<% end -%>
     </ul>
   </div>
-  <div class="mblock-footer">
-    <a href="#">5 other people haven't worked today &raquo;</a>
-  </div>
 </div>
 
-<% box(:sidebar, 'invitations') do |sbox| %>
-  <% sbox.title = "Invitations" %>
+<% box(:sidebar, "tools") do |sbox| %>
+  <% sbox.title = "Invite someone to this project" -%>
+  <% content_for :dom_loaded do %>
+    new Control.Tabs("tool-tabs", {
+      linkSelector: 'a',
+      });
+  <% end %>
+  <% sbox.header_utils = %(
+    <div id="tool-tabs">
+      <a href="#invite">Invite</a> 
+      <a href="#edit">Edit</a>
+    </div>) %>
   <% sbox.content = capture do %>
-		<% form_for @project.memberships.build do |f| -%>
-			<div>
-				<%= f.select :user_id, (User.find(:all) - @project.users).collect { |p| [p.login, p.id] } %>
-				<%= f.submit :Invite %>
-				<%= f.hidden_field :project_id %>
-			</div>
+  <div id="invite">
+  <% form_for @project.memberships.build do |f| -%>
+		<div>
+			<%= f.select :user_id, (User.find(:all) - @project.users).collect { |p| [p.login, p.id] } %>
+			<%= f.submit :Invite %>
+			<%= f.hidden_field :project_id %>
+		</div>
+	<% end -%>
+	</div>
+	<div id="edit">
+	 Edit
+	</div>
+  <% end %>
+<% end %>
+
+<% box(:sidebar, 'people') do |sbox| %>
+  <% sbox.title = "People and hours" %>
+  <% sbox.content_classes = "nopad" %>
+  <% sbox.content = capture do %>
+   <ul id="timeline" class="media-list">
+		<% @project.users.each_with_index do |user, index| -%>
+      <li class="media-item clearfix<%= %( last) if first_in_collection?(@project.users, index) %>">
+        <div class="media">
+          <%= gravatar_for user %>
+        </div>
+        <div class="media-content">
+          <h4 class="media-title"><%= link_to_user(user, "#{user.login}") %></h4>
+          <p class="quiet">Active 40 minutes ago</p>
+          <span class="you">
+            <span class="num">3.4</span>
+            <span class="meta">today</span>
+          </span>
+          <span class="others">
+            <span class="num">20.12</span>
+            <span class="meta">total</span>
+          </span>
+        </div>
+      </li>
 		<% end -%>
+    </ul>
   <% end %>
 <% end %>

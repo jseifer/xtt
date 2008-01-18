@@ -162,19 +162,23 @@ img { border: 0; }
   border-bottom: 1px solid #ddd;
 }
 
-.mblock-hdr .utils {
+.sbox-head {
+  position: relative;
+}
+
+.mblock-hdr .utils, .sbox-head .utils {
   position: absolute;
   right: 8px;
   top: 8px;
   font-size: 92%;
 }
 
-.mblock-hdr .utils a {
+.mblock-hdr .utils a, .sbox-head .utils a {
   margin-left: 7px;
   padding: 2px;
 }
 
-.mblock-hdr .utils a:hover {
+.mblock-hdr .utils a:hover, .sbox-head .utils a:hover {
   background-color: #aaa;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -242,7 +246,7 @@ img { border: 0; }
 }
 
 .thumbnail {
-  padding: 5px;
+  padding: 3px;
   background-color: #fff;
 }
 
@@ -260,6 +264,8 @@ img { border: 0; }
 
 .media-content {
   margin-left: 63px;
+  padding-top: 3px;
+  position: relative;
 }
 
 .media-item .datetime {
@@ -300,6 +306,14 @@ img { border: 0; }
 
 .sbox-content.nopad {
   padding: 0;
+}
+
+.nopad .media {
+  margin-left: 9px;
+}
+
+.nopad .media-content {
+  margin-left: 72px;
 }
 
 .sbox .ttl {

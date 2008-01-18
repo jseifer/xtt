@@ -5,10 +5,21 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>XTT</title>
 	<%= javascript_include_tag 'prototype' %>
+	<%= javascript_include_tag 'showcase' %>
+	<%= javascript_include_tag 'control.tabs.js' %>
 	<%= javascript_include_tag 'application' %>
+	<script type="text/javascript" charset="utf-8">
+	 document.observe('dom:loaded', function() {
+	   <%= yield :dom_loaded %>
+	 })
+	</script>
 	<%= stylesheet_link_tag 'screen' %>
+	<%= stylesheet_link_tag 'showcase' %>
 </head>
 <body>
+  <div id="showcase" style="display:none">
+    <div id="showcase-content">test</div>
+  </div>
   <!-- header -->
   <div id="header">
     <div id="header-cnt">

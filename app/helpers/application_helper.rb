@@ -13,7 +13,7 @@ module ApplicationHelper
   end
   
   def gravatar_for(user)
-    image_tag "http://www.gravatar.com/avatar.php?gravatar_id=#{MD5.hexdigest user.email}&rating=R&size=48"
+    image_tag "http://www.gravatar.com/avatar.php?gravatar_id=#{MD5.hexdigest user.email}&rating=R&size=48", :class => 'thumbnail'
   end
   
   def first_in_collection?(collection, index)

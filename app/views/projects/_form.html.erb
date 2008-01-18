@@ -1,6 +1,12 @@
-
-	<p><%= form.text_field :name %></p>
-	<p><%= form.text_field :code %></p>
-	
-	<p><label><%= form.check_box :billable %> Billable?</label></p>
+  <p>
+    <label for="project_name">Project name:</label>
+    <%= form.text_field :name %>
+  </p>
+	<p>
+	  <label for="project_code">Code used to post to this project?</label>
+	  @<%= form.text_field :code %>
+	</p>
+	<p>
+	  <label><%= form.check_box :billable %> Billable?</label>
+	</p>
 		
