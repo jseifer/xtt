@@ -27,11 +27,9 @@
   <% end %>
 <% end %>
 
-<div class="mblock">
-  <div class="mblock-hdr">
-    <h3>What's everyone else doing?</h3>
-  </div>
-  <div class="mblock-cnt">
+<% box(:normal, 'everyone') do |box| %>
+  <% box.title = "What's everyone else doing?" %>
+  <% box.content = capture do %>
     <ul id="timeline" class="media-list">
 		<% current_user.related_users.each do |user| -%>
       <li class="media-item clearfix">
@@ -46,12 +44,12 @@
       </li>
 		<% end -%>
     </ul>
-  </div>
-  <div class="mblock-footer">
+  <% end #content %>
+  <% box.footer = capture do %>
     <a href="#">5 other people haven't logged anything today &raquo;</a>
-  </div>
-</div>
-
+  <% end # footer %>
+<% end %>
+<%= yield :normal_box %>
 
 <% box(:sidebar, 'projects') do |sbox| %>
   <% sbox.title = "Projects and time logged today" %>
@@ -66,7 +64,7 @@
     <li<%= %( class="last") if first_in_collection?(current_user.projects, index) %> id="project-<%= project.id %>">
       <a href="<%= url_for project %>">
         <span class="ttl"><%=h project.name %></span>
-        <span class="desc">Send messages using <em><%= project.code %></em></span>
+        <span class="desc">Send messages using <em>@<%= project.code %></em></span>
         <span class="you">
           <span class="num"><%= number_with_precision current_user.project_hours[project.id].to_f, 2 %></span>
           <span class="meta">you</span>
