@@ -20,6 +20,14 @@ class Project < ActiveRecord::Base
     users.include?(user)
   end
 
+  def daily_member_hours(reload = false)
+    user.daily_member_hours(self, reload)
+  end
+  
+  def member_hours(reload = false)
+    user.member_hours(self, reload)
+  end
+
 protected
   def create_membership
     memberships.create :user_id => user_id
