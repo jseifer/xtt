@@ -195,6 +195,7 @@ describe User do
   describe "(counting project hours)" do
     define_models :copy => :users do
       model Status do
+        stub :uncounted, :message => 'uncounted', :created_at => current_time.midnight + 3.minutes, :hours => 7
         stub :counted_1, :message => 'counted_1', :created_at => current_time.midnight + 5.minutes, :project => all_stubs(:project), :hours => 7
         stub :counted_2, :message => 'counted_2', :created_at => current_time.midnight + 8.minutes, :project => all_stubs(:project), :hours => 8, :user => all_stubs(:admin_user)
       end
@@ -206,11 +207,13 @@ describe User do
     end
     
     it "calculates daily project total" do
-      @user.total_hours_for(@project).should == 15
+      @user.total_hours.size.should == 1
+      @user.total_hours[@project.id].should == 15
     end
     
     it "calculates daily user project total" do
-      @user.hours_for(@project).should == 7
+      @user.user_hours.size.should == 1
+      @user.user_hours[@project.id].should == 7
     end
   end
 

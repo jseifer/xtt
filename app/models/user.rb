@@ -32,15 +32,22 @@ class User < ActiveRecord::Base
       :order => 'last_status_at desc', :joins => "INNER JOIN memberships ON users.id = memberships.user_id", :select => "DISTINCT users.*"
   end
   
-  def total_hours_for(project)
-    project.statuses.calculate(:sum, :hours, :conditions => ['statuses.created_at >= ?', Time.now.utc.midnight])
+  def total_hours(reload = false)
+    @total_hours = nil if reload
+    @total_hours ||= calculate_total_project_hours(projects)
   end
   
-  def hours_for(project)
-    Status.with_user(self) { total_hours_for project }
+  def user_hours(reload = false)
+    @user_hours = nil if reload
+    @user_hours ||= Status.with_user(self) { calculate_total_project_hours(projects) }
   end
 
 protected
+  def calculate_total_project_hours(projects)
+    Status.calculate :sum, :hours, :group => :project_id, 
+      :conditions => ['hours is not null and project_id IN (?) and created_at >= ?', projects.collect { |p| p.id }, Time.now.utc.midnight]
+  end
+
   def extract_code_and_message(message)
     code = nil
     message.sub! /\@\w*/ do |c|
