@@ -6,7 +6,7 @@ var Showcase = Class.create({
     this.showcaseContent = $('showcase-content');
     this.contentNode = $(content);
     this.contentNode.writeAttribute('id', 'showcase-content');
-    var closeBtn = new Element('a', {class: 'closebtn'});
+    var closeBtn = new Element('a', {'class': 'closebtn'});
     closeBtn.update("close");
     closeBtn.observe('click', function() {
       this.showcase.hide();
