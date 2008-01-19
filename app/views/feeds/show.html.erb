@@ -14,16 +14,19 @@
     <tbody>
     <% @feed.items.each do |item| %>
       <tr>
-        <% status = @feed.status_for(item) %>
-        <% if status.project == @feed.project -%>
-        <td>:)</td>
-        <% else -%>
-          <% if status.project.nil? %>
-          <td>You weren't on a project: <%= link_to h(status.message), status %></td>
-          <% else %>
-          <td>Warning: you were working on <%= link_to h(status.project.name), status.project %></td>
-          <% end %>
-        <% end -%>
+        <% if status = @feed.status_for(item) %>
+          <% if status.project and status.project == @feed.project -%>
+          <td>:)</td>
+          <% else -%>
+            <% if status.project.nil? %>
+            <td>You weren't on a project: <%= link_to h(status.message), status %></td>
+            <% else %>
+            <td>Warning: you were working on <%= link_to h(status.project.name), status.project %></td>
+            <% end %>
+          <% end -%>
+        <% else %>
+          <td>Couldn't find a status</td>
+        <% end %>
         <td><%=h item[:created_at] %></td>
         <td><a href="<%= Feed.ticket_url(item[:number]) %>">Ticket #<%=h item[:number] %></a></td>
         <td><%=h item[:title] %></td>

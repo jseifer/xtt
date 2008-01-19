@@ -25,6 +25,10 @@ class Feed < ActiveRecord::Base
     items = Feed.run(URI.parse(url))
   end
 
+  def user(id, token)
+    items = Feed.run(URI.parse("http://digisynd.lighthouseapp.com/users/#{id}.xml?_token=#{token}"))
+  end
+
   def status_for(item)
     status = Status.find(:first, :conditions => ['created_at > ?', item[:created_at]], :order => "created_at asc", :limit => 1)
   end

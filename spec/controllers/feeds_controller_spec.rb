@@ -1,20 +1,21 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe FeedsController, "GET #index" do
-  # fixture definition
+  define_models :feeds
 
   act! { get :index }
 
   before do
     @feeds = []
     Feed.stub!(:find).with(:all).and_return(@feeds)
+    controller.stub!(:login_required)
   end
   
   it_assigns :feeds
   it_renders :template, :index
 
   describe FeedsController, "(xml)" do
-    # fixture definition
+    define_models :feeds
     
     act! { get :index, :format => 'xml' }
 
@@ -23,7 +24,7 @@ describe FeedsController, "GET #index" do
   end
 
   describe FeedsController, "(json)" do
-    # fixture definition
+    define_models :feeds
     
     act! { get :index, :format => 'json' }
 
@@ -35,12 +36,12 @@ describe FeedsController, "GET #index" do
 end
 
 describe FeedsController, "GET #show" do
-  # fixture definition
+  define_models :feeds
 
   act! { get :show, :id => 1 }
 
   before do
-    @feed  = feeds(:default)
+    @feed  = feeds(:lh)
     Feed.stub!(:find).with('1').and_return(@feed)
   end
   
@@ -48,7 +49,7 @@ describe FeedsController, "GET #show" do
   it_renders :template, :show
   
   describe FeedsController, "(xml)" do
-    # fixture definition
+    define_models :feeds
     
     act! { get :show, :id => 1, :format => 'xml' }
 
@@ -56,7 +57,7 @@ describe FeedsController, "GET #show" do
   end
 
   describe FeedsController, "(json)" do
-    # fixture definition
+    define_models :feeds
     
     act! { get :show, :id => 1, :format => 'json' }
 
@@ -67,7 +68,7 @@ describe FeedsController, "GET #show" do
 end
 
 describe FeedsController, "GET #new" do
-  # fixture definition
+  define_models :feeds
   act! { get :new }
   before do
     @feed  = Feed.new
@@ -81,14 +82,14 @@ describe FeedsController, "GET #new" do
   it_renders :template, :new
   
   describe FeedsController, "(xml)" do
-    # fixture definition
+    define_models :feeds
     act! { get :new, :format => 'xml' }
 
     it_renders :xml, :feed
   end
 
   describe FeedsController, "(json)" do
-    # fixture definition
+    define_models :feeds
     act! { get :new, :format => 'json' }
 
     it_renders :json, :feed
@@ -98,6 +99,7 @@ describe FeedsController, "GET #new" do
 end
 
 describe FeedsController, "POST #create" do
+  define_models :feeds
   before do
     @attributes = {}
     @feed = mock_model Feed, :new_record? => false, :errors => []
@@ -105,7 +107,7 @@ describe FeedsController, "POST #create" do
   end
   
   describe FeedsController, "(successful creation)" do
-    # fixture definition
+    define_models :feeds
     act! { post :create, :feed => @attributes }
 
     before do
@@ -117,7 +119,7 @@ describe FeedsController, "POST #create" do
   end
 
   describe FeedsController, "(unsuccessful creation)" do
-    # fixture definition
+    define_models :feeds
     act! { post :create, :feed => @attributes }
 
     before do
@@ -129,7 +131,7 @@ describe FeedsController, "POST #create" do
   end
   
   describe FeedsController, "(successful creation, xml)" do
-    # fixture definition
+    define_models :feeds
     act! { post :create, :feed => @attributes, :format => 'xml' }
 
     before do
@@ -142,7 +144,7 @@ describe FeedsController, "POST #create" do
   end
   
   describe FeedsController, "(unsuccessful creation, xml)" do
-    # fixture definition
+    define_models :feeds
     act! { post :create, :feed => @attributes, :format => 'xml' }
 
     before do
@@ -154,7 +156,7 @@ describe FeedsController, "POST #create" do
   end
 
   describe FeedsController, "(successful creation, json)" do
-    # fixture definition
+    define_models :feeds
     act! { post :create, :feed => @attributes, :format => 'json' }
 
     before do
@@ -167,7 +169,7 @@ describe FeedsController, "POST #create" do
   end
   
   describe FeedsController, "(unsuccessful creation, json)" do
-    # fixture definition
+    define_models :feeds
     act! { post :create, :feed => @attributes, :format => 'json' }
 
     before do
@@ -181,11 +183,11 @@ describe FeedsController, "POST #create" do
 end
 
 describe FeedsController, "GET #edit" do
-  # fixture definition
+  define_models :feeds
   act! { get :edit, :id => 1 }
   
   before do
-    @feed  = feeds(:default)
+    @feed  = feeds(:lh)
     Feed.stub!(:find).with('1').and_return(@feed)
   end
 
@@ -194,14 +196,15 @@ describe FeedsController, "GET #edit" do
 end
 
 describe FeedsController, "PUT #update" do
+  define_models :feeds
   before do
     @attributes = {}
-    @feed = feeds(:default)
+    @feed = feeds(:lh)
     Feed.stub!(:find).with('1').and_return(@feed)
   end
   
   describe FeedsController, "(successful save)" do
-    # fixture definition
+    define_models :feeds
     act! { put :update, :id => 1, :feed => @attributes }
 
     before do
@@ -213,7 +216,7 @@ describe FeedsController, "PUT #update" do
   end
 
   describe FeedsController, "(unsuccessful save)" do
-    # fixture definition
+    define_models :feeds
     act! { put :update, :id => 1, :feed => @attributes }
 
     before do
@@ -225,7 +228,7 @@ describe FeedsController, "PUT #update" do
   end
   
   describe FeedsController, "(successful save, xml)" do
-    # fixture definition
+    define_models :feeds
     act! { put :update, :id => 1, :feed => @attributes, :format => 'xml' }
 
     before do
@@ -237,7 +240,7 @@ describe FeedsController, "PUT #update" do
   end
   
   describe FeedsController, "(unsuccessful save, xml)" do
-    # fixture definition
+    define_models :feeds
     act! { put :update, :id => 1, :feed => @attributes, :format => 'xml' }
 
     before do
@@ -249,7 +252,7 @@ describe FeedsController, "PUT #update" do
   end
 
   describe FeedsController, "(successful save, json)" do
-    # fixture definition
+    define_models :feeds
     act! { put :update, :id => 1, :feed => @attributes, :format => 'json' }
 
     before do
@@ -261,7 +264,8 @@ describe FeedsController, "PUT #update" do
   end
   
   describe FeedsController, "(unsuccessful save, json)" do
-    # fixture definition
+    define_models :feeds
+
     act! { put :update, :id => 1, :feed => @attributes, :format => 'json' }
 
     before do
@@ -275,11 +279,11 @@ describe FeedsController, "PUT #update" do
 end
 
 describe FeedsController, "DELETE #destroy" do
-  # fixture definition
+  define_models :feeds
   act! { delete :destroy, :id => 1 }
   
   before do
-    @feed = feeds(:default)
+    @feed = feeds(:lh)
     @feed.stub!(:destroy)
     Feed.stub!(:find).with('1').and_return(@feed)
   end
@@ -288,7 +292,7 @@ describe FeedsController, "DELETE #destroy" do
   it_redirects_to { feeds_path }
   
   describe FeedsController, "(xml)" do
-    # fixture definition
+    define_models :feeds
     act! { delete :destroy, :id => 1, :format => 'xml' }
 
     it_assigns :feed
@@ -296,7 +300,7 @@ describe FeedsController, "DELETE #destroy" do
   end
 
   describe FeedsController, "(json)" do
-    # fixture definition
+    define_models :feeds
     act! { delete :destroy, :id => 1, :format => 'json' }
 
     it_assigns :feed
