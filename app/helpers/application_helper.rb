@@ -3,7 +3,8 @@ require 'ostruct'
 require 'md5'
 
 module ApplicationHelper
-
+  include LiveTimer
+  
   def box(type, name, &block)
     type = type.to_s
     box = OpenStruct.new
