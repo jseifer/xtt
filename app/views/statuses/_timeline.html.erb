@@ -1,0 +1,10 @@
+<% box(:sidebar, 'timeline') do |box| %>
+  <% box.title = "#{title} Status: " + link_to(h(status.message), status) %>
+  <% box.content = capture do %>
+    <%= nice_timer_for status %>
+    <p>Start: <%=h status.created_at.to_s %></p>
+    <% if status.followup -%>
+      <p>Finish: <%=h status.followup.created_at.to_s %></p>
+    <% end -%>
+  <% end -%>
+<% end -%>

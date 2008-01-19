@@ -1,3 +1,32 @@
 <h3><%=h @status.user.login %> status<% if @status.project? -%> for <%= link_to @status.project.name, @status.project %><% end -%></h3>
 
+<% box(:special, "overview") do |box| %>
+  <% box.title = capture do %>
+  <ul class="media-list">
+    <li class="media-item clearfix last">
+      <div class="media" style="">
+        <%= gravatar_for current_user %>
+      </div>
+      <div class="media-content">
+        <p>
+          <%= link_to h(@status.user.login), @status.user %> status
+          <% if @status.project? %> for <%= link_to h(@status.project.name), @status.project %><% end %>
+        </p>
+        <p><%=h @status.message %> (<%= nice_timer_for @status %>)
+        </p>
+      </div>
+    </li>
+  </ul>
+  <% end %>
+  <% box.content = capture do %>
+  <p>You started working at <%=h @status.created_at.to_s %></p>
+  This is where the feed items live
+  <% end %>
+<% end %>
+
 <%= render :partial => "form", :locals => { :status => @status } %>
+
+<% statuses = [@status.previous, @status, @status.followup] %>
+<%= render :partial => "timeline", :locals => { :status => @status.previous, :title => "Previous" } if @status.previous %>
+<%= render :partial => "timeline", :locals => { :status => @status, :title => "Current" } %>
+<%= render :partial => "timeline", :locals => { :status => @status.followup, :title => "Next" } if @status.followup %>

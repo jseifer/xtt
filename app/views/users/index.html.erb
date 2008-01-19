@@ -18,7 +18,9 @@
             <%= link_to_project current_user.last_status_project, "You're working on #{current_user.last_status_project.name}" %></h4>
   			<% end -%>
           <p class="quiet"><%=h current_user.last_status_message %></p>
-          <span class="datetime"><%= time_ago_in_words current_user.last_status_at %> ago</span>
+          <span class="datetime">
+            <%= link_to "more", current_user.last_status %> |
+            <%= time_ago_in_words current_user.last_status_at %> ago</span>
         </div>
   		<% end -%>
       </li>
