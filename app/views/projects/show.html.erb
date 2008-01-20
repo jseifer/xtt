@@ -26,7 +26,9 @@
         </div>
         <div class="media-content">
           <p class="quiet"><%= status_for status %></p>
-          <span class="datetime"><% if status.processed? -%><%= pluralize status.hours.to_f, 'hour' %>, <% end -%>posted <%= status_at status %></span>
+          <span class="datetime">
+            <%= link_to 'more', status %> |
+            <% if status.processed? -%><%= pluralize status.hours.to_f, 'hour' %>, <% end -%>posted <%= status_at status %></span>
         </div>
       </li>
 		<% end.empty? -%>

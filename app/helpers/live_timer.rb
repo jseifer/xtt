@@ -13,11 +13,12 @@ module LiveTimer
 
   # Show a live-updating timer that works on time-passed-since
   def nice_timer_for(status)
+    incrementer = Time.now.to_f
     if status.followup.nil?
       (@content_for_dom_loaded ||= "")
-      @content_for_dom_loaded += "new PeriodicalExecuter(function() { timerIncrement('timer_#{dom_id(status)}') }, 1);"
+      @content_for_dom_loaded += "new PeriodicalExecuter(function() { XTT.timerIncrement('timer_#{dom_id(status)}_#{incrementer}') }, 1);"
     end # no status followup
-    "<span style=\"display:none\" id=\"timer_#{dom_id status}\">#{status.created_at.to_f}</span><span class=\"timer\">#{nice_time(status.accurate_time)}</span>"
+    "<span style=\"display:none\" id=\"timer_#{dom_id status}_#{incrementer}\">#{status.created_at.to_f}</span><span class=\"timer\">#{nice_time(status.accurate_time)}</span>"
   end
 
 end

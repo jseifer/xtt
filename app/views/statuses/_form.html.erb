@@ -5,7 +5,7 @@
   </div>
   <p>
     <label for="status_created_at">Start time</label>
-    <input type="text" id="status_created_at" name="status_created_at" value="<%=h status.created_at.strftime("%a, %d %b %T UTC %Y") %>" size="30 "/>
+    <input type="text" id="status_created_at" name="status_created_at" value="<%=h status.created_at.strftime("%a, %d %b %T UTC %Y") %>" size="40" class="utc_date" />
   </p>
   <% if status.previous %>
   <p class="hint">
@@ -13,16 +13,15 @@
     (<%= nice_timer_for status.previous %>)
   </p>
   <p>
-    You can't start this status before <b class="utc_date"><%=h status.previous.created_at.strftime("%a, %d %b %T UTC %Y") %></b>
+    You can't start this status before <b class="utc_date"><%=h status.previous.created_at.strftime("%a, %d %b %T UTC %Y") %></b>  unless you delete the previous status.
   </p>
   <% end %>
 
     <hr />
 
   <% if status.followup %>
-
     <p><label for="status_followup_time">Finish time</label>
-       <input type="text" id="status_followup_time" name="status_followup_time" value="<%=h status.followup_time.strftime("%a, %d %b %T UTC %Y") %>" size="30" />
+       <input type="text" id="status_followup_time" name="status_followup_time" value="<%=h status.followup_time.strftime("%a, %d %b %T UTC %Y") %>" class="utc_date" size="40" />
     </p>
     <p class="hint">
       This will adjust the start time of next status, <%= link_to_status status.followup %>
@@ -80,13 +79,14 @@
     }
     var minutes = parseInt(hours[0]) * multiplier * 1000;
     var date = Date.parse($(base).defaultValue);
-    $(input).value = new Date(date + minutes * 60).toUTCString();
+    $(input).value = new Date(date + minutes * 60); //.toUTCString();
     set_big_timer();
   }
   function set_big_timer() {
-    
-    var timer = Date.parse($('status_followup_time').value) - Date.parse($('status_created_at').value);
-    $('big-timer').innerHTML = nice_time(timer / 1000);
+    if ($('status_followup_time') && $('status_created_at')) {
+      var timer = Date.parse($('status_followup_time').value) - Date.parse($('status_created_at').value);
+      $('big-timer').innerHTML = XTT.nice_time(timer / 1000);
+    }
   }
   </script>
 <% end %>
