@@ -8,7 +8,7 @@ module LiveTimer
     seconds = seconds % 1.hour
     minutes = seconds / 1.minute
     seconds = seconds % 1.minute
-    (hours > 0 ? "#{hours}:" : '') + ('%02d:%02d' % [minutes, seconds])
+    (hours > 0 ? "#{hours}:" : '0:') + ('%02d:%02d' % [minutes, seconds])
   end
 
   # Show a live-updating timer that works on time-passed-since

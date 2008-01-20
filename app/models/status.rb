@@ -43,6 +43,7 @@ class Status < ActiveRecord::Base
     !project_id.nil?
   end
 
+  # The accurate amount of time (not rounded) this project has taken.
   def accurate_time
     return if created_at.nil?
     (followup ? followup.created_at : Time.now) - created_at
@@ -52,15 +53,17 @@ class Status < ActiveRecord::Base
     user && user_id == user.id
   end
   
+  # Set the end time (aka followup time) of this item
   def followup_time=(new_time)
-    followup.update_attribute :created_at, round_time(new_time)
+    followup.update_attribute :created_at, Time.parse(new_time.to_s) # round_time(new_time)
   end
-
   def followup_time
-    t = followup.created_at.to_f
-    round_time(t)
+    followup.created_at
+    #t = followup.created_at.to_f
+    #round_time(t)
   end
-
+  
+  # Set the created_at time, but rounded to the nearest 5 minutes.
   def fixed_created_at
     round_time created_at
   end
@@ -68,6 +71,7 @@ class Status < ActiveRecord::Base
     write_attribute :created_at, round_time(Time.parse(new_time))
   end
   
+  # Round times down to the nearest 5 minutes
   def round_time(t)
     t = t.to_f
     Time.at(t - (t%300)).utc

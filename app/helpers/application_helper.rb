@@ -24,4 +24,11 @@ module ApplicationHelper
   def update_button
     tag(:input, {:type => 'image', :src => '/images/btns/ghost.png', :class => 'btn'})
   end
+  
+  def link_to_status(status)
+    ret = ""
+    ret << link_to(h(status.project.name), status.project) + ": " if status.project
+    ret << link_to(h(status.message), status)
+    ret
+  end
 end

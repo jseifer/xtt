@@ -1,5 +1,3 @@
-<h3><%=h @status.user.login %> status<% if @status.project? -%> for <%= link_to @status.project.name, @status.project %><% end -%></h3>
-
 <% box(:special, "overview") do |box| %>
   <% box.title = capture do %>
   <ul class="media-list">
@@ -24,7 +22,13 @@
   <% end %>
 <% end %>
 
-<%= render :partial => "form", :locals => { :status => @status } %>
+<% box :normal, 'form' do |box| %>
+  <% box.title = "Edit status" %>
+  <% box.content = capture do %>
+    <%= render(:partial => "form", :locals => { :status => @status }) %>
+  <% end %>
+<% end %>
+<%= yield :normal_box %>
 
 <% statuses = [@status.previous, @status, @status.followup] %>
 <%= render :partial => "timeline", :locals => { :status => @status.previous, :title => "Previous" } if @status.previous %>
