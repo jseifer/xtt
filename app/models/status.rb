@@ -53,9 +53,35 @@ class Status < ActiveRecord::Base
     user && user_id == user.id
   end
   
+  def validate #_followup_does_not_clash
+    return true if (user.nil? or followup.nil? or followup.followup.nil?)
+    value = followup.followup_time
+    if followup_time > value
+      errors.add :followup_time, "Cannot extend this status to after the next status' end-point. Delete the next status." 
+      return false
+    else
+      # errors.add :followup_time, "Cannot extend this status to after the next status' end-point. Delete the next status." 
+      # n othing
+    end
+  end
+  
   # Set the end time (aka followup time) of this item
+  # Don't allow setting a followup time past the next status's finish time.
   def followup_time=(new_time)
-    followup.update_attribute :created_at, Time.parse(new_time.to_s) # round_time(new_time)
+    time = Time.parse(new_time.to_s)
+    raise "No followup" unless followup
+    if followup.followup.nil? or # followup is still in play, so we don't care about adjusting its start time or 
+      (followup.followup_time) # we have something to check against
+
+      if followup_time > time
+        errors.add :followup_time, "Cannot extend this status to after the next status' end-point. Delete the next status." 
+        return false
+      else
+        followup.update_attribute :created_at, time # round_time(new_time)
+      #else
+      #  raise "not valid"
+      end
+    end
   end
   def followup_time
     followup.created_at

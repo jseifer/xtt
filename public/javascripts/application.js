@@ -3,6 +3,9 @@ document.observe('dom:loaded', function() {
   $$('input.hint').each(function(i){
     Event.observe(i, 'focus', hintField);
     Event.observe(i, 'blur', unhintField);
+  });
+  $$('.utc_date').each(function(i){
+    $(i).innerHTML = new Date(Date.parse(i.innerHTML));
   })
 
 });

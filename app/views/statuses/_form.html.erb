@@ -3,17 +3,24 @@
   <div id="big-timer" style="font-size:200%; float:right; background-color:#aaa;padding:10px;border:1px solid #888">
     <%= nice_time status.accurate_time %>
   </div>
-  <p><label for="status_created_at">Start time</label>
-     <input type="text" id="status_created_at" name="status_created_at" value="<%=h status.created_at.strftime("%a, %d %b %T UTC %Y") %>" size="30 "/>
+  <p>
+    <label for="status_created_at">Start time</label>
+    <input type="text" id="status_created_at" name="status_created_at" value="<%=h status.created_at.strftime("%a, %d %b %T UTC %Y") %>" size="30 "/>
   </p>
   <% if status.previous %>
   <p class="hint">
     This will adjust the finish time of previous, <%= link_to_status status.previous %>
     (<%= nice_timer_for status.previous %>)
   </p>
+  <p>
+    You can't start this status before <b class="utc_date"><%=h status.previous.created_at.strftime("%a, %d %b %T UTC %Y") %></b>
+  </p>
   <% end %>
-  <% if status.followup %>
+
     <hr />
+
+  <% if status.followup %>
+
     <p><label for="status_followup_time">Finish time</label>
        <input type="text" id="status_followup_time" name="status_followup_time" value="<%=h status.followup_time.strftime("%a, %d %b %T UTC %Y") %>" size="30" />
     </p>
@@ -21,6 +28,12 @@
       This will adjust the start time of next status, <%= link_to_status status.followup %>
       (<%= nice_timer_for status.followup %>)
     </p>
+
+    <% if status.followup.followup_time %>
+      <input type="hidden" name="maximum-time" value="<%=h status.followup.followup_time if status.followup.followup %>" /> 
+      <p>You can't set the finish time of this status past <b class="utc_date"><%=h status.followup.followup_time.strftime("%a, %d %b %T UTC %Y") %></b>.</p>
+    <% end %>
+
     <% if status.followup.followup.nil? or status.followup.accurate_time > 30.minutes %>
     <p id="time_setter">Set to
       <a href="#">30 mins</a>
@@ -30,7 +43,7 @@
         <% end # if -%>
       <% end # each -%>
     </p>
-    <input type="hidden" name="maximum-time" value="<%=h status.followup.followup_time if status.followup.followup %>" />
+    <!-- todo: limit the finish time by this value -->
     <% else %>
     <p>
       The next status finishes in <%= nice_timer_for status.followup %>. You need to delete, merge,
@@ -38,6 +51,7 @@
     </p>
     <% end %>
   <% else %>
+
     <p>This status is still active (<%= nice_timer_for status %>)</p>
   <% end %>
   <hr />

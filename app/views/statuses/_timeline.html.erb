@@ -2,9 +2,9 @@
   <% box.title = "#{title} Status: " + link_to_status(status) %>
   <% box.content = capture do %>
     <%= nice_timer_for status %>
-    <p>Start: <%=h status.created_at.to_s %></p>
+    <p>Start: <b class="utc_date"><%=h status.created_at.to_s %></b></p>
     <% if status.followup -%>
-      <p>Finish: <%=h status.followup.created_at.to_s %></p>
+      <p>Finish: <b class="utc_date"><%=h status.followup.created_at.to_s %></b></p>
     <% end -%>
   <% end -%>
 <% end -%>

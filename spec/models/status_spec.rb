@@ -19,6 +19,19 @@ describe Status do
     statuses(:pending).reload.created_at.should == time
   end
   
+  it "does not allow setting followup time past the next status' finish time" do
+    time = 5.minutes.from_now
+    # order goes default -> in_project -> pending 
+    # so setting default.followup_time has to check all the way to 'pending' to ensure it
+    # doesn't exceed its bounds.
+    statuses(:in_project).followup.should == statuses(:pending) # created 47 hours ago
+    statuses(:default).followup.should == statuses(:in_project) # created 48 hours ago
+    statuses(:default).should be_valid
+
+    statuses(:default).followup_time = statuses(:pending).created_at + 1.second
+    statuses(:default).should_not be_valid
+  end
+  
   it "#next retrieves previous status" do
     statuses(:pending).previous.should == statuses(:in_project)
   end
