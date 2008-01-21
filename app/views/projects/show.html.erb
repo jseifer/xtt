@@ -16,6 +16,11 @@
 <div class="mblock">
   <div class="mblock-hdr">
     <h3><%= h(@project.name) %> Timeline</h3>
+    <div class="utils">
+      <a href="#today">Today</a>
+      <a href="#thisweek">Week</a>
+      <a href="#this">Month</a>
+    </div>
   </div>
   <div class="mblock-cnt">
     <ul id="timeline" class="media-list">
@@ -138,15 +143,4 @@
       <% end %>
     </ul>
   <% end %>
-<% end %>
-
-<% box(:sidebar, 'report') do |sbox| %>
-  <% sbox.title = "Filtering" %>
-	<% sbox.content = capture do %>
-		<ul>
-			<li><a href="#">This Week</a></li>
-			<li><a href="#">Last Two Weeks</a></li>
-			<li><a href="#">This Month</a></li>
-		</ul>
-	<% end -%>
 <% end %>
