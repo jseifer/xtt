@@ -10,6 +10,7 @@ class Status < ActiveRecord::Base
   has_finder :without_project, :conditions => {:project_id => nil}, :extend => LatestExtension
   
   after_create :cache_user_status
+#  before_update :calculate_hours
   
   acts_as_state_machine :initial => :pending
   state :pending, :enter => :process_previous
@@ -68,12 +69,18 @@ class Status < ActiveRecord::Base
   # Set the end time (aka followup time) of this item
   # Don't allow setting a followup time past the next status's finish time.
   def followup_time=(new_time)
-    time = Time.parse(new_time.to_s)
+    time = Time.parse(new_time.to_s).utc
+    
+    # Ensure there is a next object to set the create time
     raise "No followup" unless followup
+    # Todo: just auto-create a new status?
+    
+    # Now, check that we can set the next object's created_at time correctly.
     if followup.followup.nil? or # followup is still in play, so we don't care about adjusting its start time or 
-      (followup.followup_time) # we have something to check against
+      (followup.followup_time) # confirm we actually have something to check against
 
       if followup_time > time
+        raise "invalid"
         errors.add :followup_time, "Cannot extend this status to after the next status' end-point. Delete the next status." 
         return false
       else
@@ -87,6 +94,13 @@ class Status < ActiveRecord::Base
     followup.created_at
     #t = followup.created_at.to_f
     #round_time(t)
+  end
+  
+  # Javascript times get formatted weirdly
+  def created_at=(new_time)
+    new_time.to_s.gsub!(/GMT([-+]\d)/, "\\1")
+    time = Time.parse(new_time.to_s).utc
+    write_attribute :created_at, time
   end
   
   # Set the created_at time, but rounded to the nearest 5 minutes.

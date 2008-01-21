@@ -11,12 +11,16 @@ describe Status do
     statuses(:in_project).followup.should == statuses(:pending)
   end
   
-  it "adjusts followup time with accesor" do
+  it "adjusts followup time with accessor" do
     time = 5.minutes.from_now
+
     statuses(:pending).created_at.should_not == time
-    statuses(:in_project).followup_time = time
-    statuses(:in_project).save
-    statuses(:pending).reload.created_at.should == time
+    statuses(:pending).followup.should be_nil
+
+    s = statuses(:in_project)
+    s.followup.should_receive(:update_attribute).with(:created_at, time)
+    s.followup_time = time.to_s
+    s.should be_valid
   end
   
   it "does not allow setting followup time past the next status' finish time" do
@@ -30,6 +34,16 @@ describe Status do
 
     statuses(:default).followup_time = statuses(:pending).created_at + 1.second
     statuses(:default).should_not be_valid
+  end
+  
+  it "assigns date if the input string is from javascript" do
+    statuses(:default).followup_time = "2008-12-12 00:00:00 GMT-0800"
+    statuses(:in_project).reload.created_at.should == Time.parse("2008-12-12 08:00:00 UTC")
+  end
+  
+  it "assigns created-at to utc if input string is from javascript" do
+    statuses(:default).created_at = "2008-12-12 00:00:00 GMT-0800"
+    statuses(:default).created_at.should == Time.parse("2008-12-12 08:00:00 UTC").utc
   end
   
   it "#next retrieves previous status" do
