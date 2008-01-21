@@ -26,7 +26,9 @@
         </div>
         <div class="media-content">
           <p class="quiet"><%= status_for status %></p>
-          <span class="datetime"><% if status.processed? -%><%= pluralize status.hours.to_f, 'hour' %>, <% end -%>posted <%= status_at status %></span>
+          <span class="datetime">
+            <%= link_to 'more', status %> |
+            <% if status.processed? -%><%= pluralize status.hours.to_f, 'hour' %>, <% end -%>posted <%= status_at status %></span>
         </div>
       </li>
 		<% end.empty? -%>
@@ -117,9 +119,30 @@
   <% sbox.title = "Filtering" %>
 	<% sbox.content = capture do %>
 		<ul>
-			<li><a href="#">This Week</li>
-			<li><a href="#">Last Two Weeks</li>
-			<li><a href="#">This Month</li>
+			<li><a href="#">This Week</a></li>
+			<li><a href="#">Last Two Weeks</a></li>
+			<li><a href="#">This Month</a></li>
 		</ul>
 	<% end -%>
+<% end %>
+
+<% box(:sidebar, 'feeds') do |sbox| %>
+  <% sbox.title = "Feeds" %>
+  <% sbox.content = capture do %>
+    <ul>
+      <li>Feed</li>
+    <% @project.feeds.each do |feed| %>
+      <li><%= link_to h(feed.name), feed %></li>
+    <% end %>
+    </ul>
+    <h3>Add a new feed</h3>
+    <% form_for @project.feeds.new do |f|%>
+      <%= f.hidden_field :project_id %>
+      <div>
+        <%= f.text_field :name, :value => "name", :size => 10, :class => "hint" %>
+        <%= f.text_field :url, :value => "http://" %>
+  			<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
+      </div>
+    <% end %>
+  <% end %>
 <% end %>

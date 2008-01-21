@@ -21,6 +21,17 @@ ModelStubbing.define_models do
   model Membership
 end
 
+ModelStubbing.define_models :feeds do 
+  model Project do
+    stub :name => 'project', :user => all_stubs(:user), :code => 'abc'
+  end
+  
+  model Feed do
+    stub :name => 'my feed', :url => 'http://foo.bar', :project => all_stubs(:project)
+    stub :lh, :name => 'lighthouse', :url => 'http://foo.lighthouseapp.com', :project => all_stubs(:project)
+  end
+end
+
 ModelStubbing.define_models :users do 
   model User do
     stub :admin,     :login => 'admin-user',     :email => 'admin-user@example.com', :remember_token => 'blah', :admin => true
@@ -37,6 +48,12 @@ ModelStubbing.define_models :users do
     stub :user => all_stubs(:user), :project => all_stubs(:project)
     stub :admin, :user => all_stubs(:admin_user)
   end
+
+  model Feed do
+    stub :name => 'my feed', :url => 'http://foo.bar', :project => all_stubs(:project)
+    stub :lh, :name => 'lighthouse', :url => 'http://foo.lighthouseapp.com', :project => all_stubs(:project)
+  end
+
 end
 
 ModelStubbing.define_models :statuses do

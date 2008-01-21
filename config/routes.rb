@@ -5,6 +5,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :projects do |project|
     project.resources :statuses, :controller => 'project_statuses'
   end
+  map.resources :feeds # todo: move to projects
+  
   map.resources :memberships  
   map.resources :users, :member => { :suspend   => :put,
                                      :unsuspend => :put,

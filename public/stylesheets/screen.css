@@ -422,6 +422,10 @@ img { border: 0; }
   border-right-color: #bbb;
 }
 
+form input.hint {
+  color: #aaa;
+}
+
 .status-entry {
   font-size: 140%;
   font-family: Helvetica, Arial, sans-serif;
