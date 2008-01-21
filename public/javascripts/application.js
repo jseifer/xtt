@@ -1,6 +1,6 @@
 document.observe('dom:loaded', function() {
 
-  $$('input.hint').each(function(i){
+  $$('input.hint').each(function(i) {
     Event.observe(i, 'focus', XTT.hintField);
     Event.observe(i, 'blur', XTT.unhintField);
   });

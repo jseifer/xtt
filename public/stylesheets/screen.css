@@ -424,6 +424,21 @@ img { border: 0; }
 
 form input.hint {
   color: #aaa;
+  font-style: italic;
+}
+
+.inline-form {
+  margin: 9px 0 0 0;
+  border-top: 1px solid #ccc;
+  padding: 18px 9px 9px 9px;
+}
+
+.inline-form p {
+  margin-bottom: 9px;
+}
+
+.inline-form p.btns {
+  margin-top: 9px;
 }
 
 .status-entry {
@@ -440,6 +455,10 @@ form input.hint {
   height: 20px;
   background: url(../images/btns/update.png) 0 0 no-repeat;
   width: 80px;
+}
+
+.btn.save {
+  background: url(../images/btns/save.gif) 0 0 no-repeat;
 }
 
 .btn:hover {
