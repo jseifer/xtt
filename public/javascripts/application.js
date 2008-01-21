@@ -1,9 +1,5 @@
 document.observe('dom:loaded', function() {
-
-  $$('input.hint').each(function(i) {
-    Event.observe(i, 'focus', XTT.hintField);
-    Event.observe(i, 'blur', XTT.unhintField);
-  });
+  $$('input.hintable').invoke('hintable');
   XTT.adjust_utc();
 });
 
@@ -16,23 +12,7 @@ XTT = {
       i.innerHTML = new Date(Date.parse(i.innerHTML)) 
     });
   },
-  
-  /* justin: got a better way of doing this? :) c3 */
-  hintField: function(event) {
-    var element = Event.element(event);
-    if (element.value == element.defaultValue) { 
-      element.removeClassName('hint');
-      element.value = '' 
-    }
-  },
-  
-  unhintField: function(event) {
-    var element = Event.element(event);
-    if (element.value == '') {
-      element.value = element.defaultValue;
-      element.addClassName('hint');
-    }
-  },
+
   nice_time: function(seconds) {
     /* live timer */
     var hours = (seconds / 3600).floor();
@@ -50,3 +30,21 @@ XTT = {
     dom.nextSibling.innerHTML = XTT.nice_time(epoch - seconds);
   }
 }
+
+Element.addMethods('INPUT', {
+  hintable: function(element) {
+    var element = $(element), title = element.readAttribute('title');
+    element.setValue(title);
+    element.observe('focus', function() {
+      element.removeClassName('hintable');
+      if($F(element) != title) return;
+      element.setValue('');
+    });
+    element.observe('blur', function() {
+      if($F(element) == "") {
+        element.addClassName('hintable');
+        element.setValue(title);
+      }
+    });
+  }
+});

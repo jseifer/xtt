@@ -422,7 +422,7 @@ img { border: 0; }
   border-right-color: #bbb;
 }
 
-form input.hint {
+form input.hintable {
   color: #aaa;
   font-style: italic;
 }
