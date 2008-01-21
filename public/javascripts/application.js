@@ -32,6 +32,11 @@ XTT = {
 }
 
 Element.addMethods('INPUT', {
+  /**
+   * Add hints to input elements.
+   * Add the class name hintable to all elements that you want to hint.
+   * Use the title attribute of the input to provide the hint.
+   */
   hintable: function(element) {
     var element = $(element), title = element.readAttribute('title');
     element.setValue(title);
