@@ -237,6 +237,7 @@ img { border: 0; }
   border-top: 1px solid #f7f7f7;
   padding: 9px 0;
   list-style: none;
+  position: relative;
 }
 
 .special .media-list li {
@@ -268,6 +269,16 @@ img { border: 0; }
 
 .media-item h4 {
   font-weight: normal;
+  margin-right: 50px;
+}
+
+h4.status a {
+  color: #656565;
+}
+
+h4.status a:hover {
+  color: #222;
+  background-color: #fff;
 }
 
 .media-item a {
@@ -409,6 +420,10 @@ img { border: 0; }
 .form label {
   font-weight: bold;
   display: block;
+}
+
+.form .btns {
+  margin-top: 9px;
 }
 
 .form input {
