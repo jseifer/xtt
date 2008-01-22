@@ -1,29 +1,40 @@
 <% box(:special, "overview") do |box| %>
-  <% box.title = capture do %>
+
+  <% if @status.followup %>
+    <% box.title = %(<span class="utc">#{@status.created_at.to_s}</span> - <span class="utc">#{@status.followup.created_at.to_s}</span>) %>
+  <% else %>
+    <% box.title = %(<span class="utc">#{@status.created_at.to_s}</span> - Now</span>) %>
+  <% end %>
+  
+  <% box.content = capture do %>
   <ul class="media-list">
     <li class="media-item clearfix last">
-      <div class="media" style="">
+      <div class="media">
         <%= gravatar_for current_user %>
       </div>
       <div class="media-content">
-        <p>
-          <%= link_to h(@status.user.login), @status.user %> status
-          <% if @status.project? %> for <%= link_to h(@status.project.name), @status.project %><% end %>
-        </p>
-        <p><%=h @status.message %> (<%= nice_timer_for @status %>)
-        </p>
+        <h4 class="media-title"><%=h @status.message %></h4>
+        <p class="quiet">posted <%= status_at @status %></p>
+        <% if @status.followup.nil? %>
+        <span class="others">
+          <span class="num"><%= nice_timer_for @status %></span>
+          <span class="meta">logged</span>
+        </span>
+        <% else %>
+        <span class="others">
+          <span class="num"><%= @status.hours.to_f %></span>
+          <span class="meta">hours</span>
+        </span>
+        <% end %>
       </div>
     </li>
   </ul>
   <% end %>
-  <% box.content = capture do %>
-  <p>You started working at <%=h @status.created_at.to_s %></p>
-  This is where the feed items live
-  <% end %>
+
 <% end %>
 
 <% box :normal, 'form' do |box| %>
-  <% box.title = "Edit status" %>
+  <% box.title = "Modify this status" %>
   <% box.content = capture do %>
     <%= render(:partial => "form", :locals => { :status => @status }) %>
   <% end %>

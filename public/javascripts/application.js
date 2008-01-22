@@ -3,12 +3,12 @@ document.observe('dom:loaded', function() {
   XTT.adjust_utc();
 });
 
-XTT = {
+var XTT = {
   adjust_utc: function() {
-    $$('input.utc_date').each(function(i){ 
+    $$('input.utc').each(function(i){ 
       i.value = new Date(Date.parse(i.value)) 
     });
-    $$('b.utc_date').each(function(i){
+    $$('span.utc').each(function(i){
       i.innerHTML = new Date(Date.parse(i.innerHTML)) 
     });
   },
@@ -21,6 +21,7 @@ XTT = {
     seconds = (seconds % 60).toPaddedString(2);
     return([hours, minutes, seconds].join(":"));
   },
+  
   timerIncrement: function(dom) {
     dom = $(dom);
     var seconds = parseInt(dom.innerHTML);

@@ -29,6 +29,7 @@
   <% end %>
 <% end %>
 
+<% unless current_user.related_users.blank? %>
 <% box(:normal, 'everyone') do |box| %>
   <% box.title = "What's everyone else doing?" %>
   <% box.content = capture do %>
@@ -51,6 +52,8 @@
     <a href="#">5 other people haven't logged anything today &raquo;</a>
   <% end # footer %>
 <% end %>
+<% end %>
+
 <%= yield :normal_box %>
 
 <% box(:sidebar, 'projects') do |sbox| %>
