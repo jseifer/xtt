@@ -25,6 +25,10 @@ module ApplicationHelper
     tag(:input, {:type => 'image', :src => '/images/btns/ghost.png', :class => 'btn'})
   end
   
+  def save_button
+    tag(:input, {:type => 'image', :src => '/images/btns/ghost.png', :class => 'btn save'})
+  end
+  
   def link_to_status(status)
     ret = ""
     ret << link_to(h(status.project.name), status.project) + ": " if status.project
