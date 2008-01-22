@@ -16,6 +16,11 @@
 <div class="mblock">
   <div class="mblock-hdr">
     <h3><%= h(@project.name) %> Timeline</h3>
+    <div class="utils">
+      <a href="#today">Today</a>
+      <a href="#thisweek">Week</a>
+      <a href="#this">Month</a>
+    </div>
   </div>
   <div class="mblock-cnt">
     <ul id="timeline" class="media-list">
@@ -25,10 +30,14 @@
           <%= gravatar_for status.user %>
         </div>
         <div class="media-content">
-          <p class="quiet"><%= status_for status %></p>
-          <span class="datetime">
-            <%= link_to 'more', status %> |
-            <% if status.processed? -%><%= pluralize status.hours.to_f, 'hour' %>, <% end -%>posted <%= status_at status %></span>
+          <h4 class="media-title status"><%= link_to(status_for(status), status) %></h4>
+          <p class="quiet">posted <%= status_at status %></p>
+          <% if status.processed? -%>
+          <span class="others">
+            <span class="num"><%= status.hours.to_f %></span>
+            <span class="meta">hours</span>
+          </span>
+          <% end %>
         </div>
       </li>
 		<% end.empty? -%>
@@ -42,6 +51,8 @@
   <% sbox.title = "Invite someone to this project" -%>
   <% sbox.content = capture do %>
     <div id="invite">
+      <p>Invite someone to this project using their email or username.  Separate each item with a comma.</p>    
+		  
     <% form_for @project.memberships.build do |f| -%>
   		<div>
   			<%= f.select :user_id, @project.invitable_users.collect { |p| [p.login, p.id] } %>
@@ -49,18 +60,16 @@
   			<%= f.hidden_field :project_id %>
   		</div>
   	<% end unless @project.invitable_users.empty? -%>
-		<% form_tag do |f| -%>
-			<div>
-				<%= text_area_tag :emails %>
-				<%= submit_tag :Invite %>
-				(unimplemented)
-			</div>
+		<% form_tag '', :class => 'form'  do |f| -%>
+			<p><%= text_area_tag :emails, '',  :rows => 3, :cols => 43  %></p>
+    	<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn save" title="Save" /></p>
 		<% end -%>
   	</div>
 		<% if @project.owned_by? current_user -%>
   		<% sbox.header_utils = %(
   		  <div id="tool-tabs">
-  		    <a href="#invite">Invite</a> 
+  		    <a href="#invite">Invite</a>
+  		    <a href="#tracking">Auto update</a>
   		    <a href="#edit">Edit</a>
   		  </div>) %>
   		<% content_for :dom_loaded do %>
@@ -70,8 +79,10 @@
   		      var item = container.readAttribute('id');
   		      if(item == "edit") {
   		        $('sbox-tools').down('h3').update("Edit this project");
-  		      } else {
+  		      } else if(item == "invite") {
   		        $('sbox-tools').down('h3').update("Invite someone to this project");
+  		      } else {
+  		        $('sbox-tools').down('h3').update("Auto track updates");
   		      }
   		    }
   		    });
@@ -82,6 +93,32 @@
       <%= render :partial => "form", :object => f %>
       	<p class="btns"><%= update_button %></p>
       <% end -%>
+  	</div>
+
+  	<div id="tracking">
+  	   <ul class="text-list">
+        <% @project.feeds.each_with_index do |feed, index| %>
+          <li<%= %( class="last") if first_in_collection?(@project.feeds, index) %>>
+            <span class="ttl"><%= link_to h(feed.name), feed %></span>
+            <span class="desc">Updated 10 minutes ago</span>
+          </li>
+        <% end %>
+        </ul>
+                
+        <% form_for @project.feeds.new, :html => {:class => 'form' } do |f|%>    	  
+        <p>Have an RSS feed that you'd like to auto update this project with?</p>
+        
+          <%= f.hidden_field :project_id %>
+          <p>
+            <label for="project_feed_name">Give this feed a title</label>
+            <%= f.text_field :name %>
+          </p>
+          <p>
+            <label for="project_feed_url">URL of feed</label>
+            <%= f.text_field :url, :value => "http://" %>
+          </p>
+      		<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn save" title="Save" /></p>
+        <% end %>
   	</div>
 		<% end -%>
   <% end %>
@@ -112,37 +149,5 @@
       </li>
       <% end %>
     </ul>
-  <% end %>
-<% end %>
-
-<% box(:sidebar, 'report') do |sbox| %>
-  <% sbox.title = "Filtering" %>
-	<% sbox.content = capture do %>
-		<ul>
-			<li><a href="#">This Week</a></li>
-			<li><a href="#">Last Two Weeks</a></li>
-			<li><a href="#">This Month</a></li>
-		</ul>
-	<% end -%>
-<% end %>
-
-<% box(:sidebar, 'feeds') do |sbox| %>
-  <% sbox.title = "Feeds" %>
-  <% sbox.content = capture do %>
-    <ul>
-      <li>Feed</li>
-    <% @project.feeds.each do |feed| %>
-      <li><%= link_to h(feed.name), feed %></li>
-    <% end %>
-    </ul>
-    <h3>Add a new feed</h3>
-    <% form_for @project.feeds.new do |f|%>
-      <%= f.hidden_field :project_id %>
-      <div>
-        <%= f.text_field :name, :value => "name", :size => 10, :class => "hint" %>
-        <%= f.text_field :url, :value => "http://" %>
-  			<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
-      </div>
-    <% end %>
   <% end %>
 <% end %>

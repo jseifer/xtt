@@ -237,6 +237,7 @@ img { border: 0; }
   border-top: 1px solid #f7f7f7;
   padding: 9px 0;
   list-style: none;
+  position: relative;
 }
 
 .special .media-list li {
@@ -268,6 +269,16 @@ img { border: 0; }
 
 .media-item h4 {
   font-weight: normal;
+  margin-right: 50px;
+}
+
+h4.status a {
+  color: #656565;
+}
+
+h4.status a:hover {
+  color: #222;
+  background-color: #fff;
 }
 
 .media-item a {
@@ -411,6 +422,10 @@ img { border: 0; }
   display: block;
 }
 
+.form .btns {
+  margin-top: 9px;
+}
+
 .form input {
   margin-bottom: 9px;
 }
@@ -422,8 +437,23 @@ img { border: 0; }
   border-right-color: #bbb;
 }
 
-form input.hint {
+form input.hintable {
   color: #aaa;
+  font-style: italic;
+}
+
+.inline-form {
+  margin: 9px 0 0 0;
+  border-top: 1px solid #ccc;
+  padding: 18px 9px 9px 9px;
+}
+
+.inline-form p {
+  margin-bottom: 9px;
+}
+
+.inline-form p.btns {
+  margin-top: 9px;
 }
 
 .status-entry {
@@ -440,6 +470,10 @@ form input.hint {
   height: 20px;
   background: url(../images/btns/update.png) 0 0 no-repeat;
   width: 80px;
+}
+
+.btn.save {
+  background: url(../images/btns/save.gif) 0 0 no-repeat;
 }
 
 .btn:hover {
