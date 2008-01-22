@@ -5,7 +5,7 @@
   </div>
   <p>
     <label for="status_created_at">Start time</label>
-    <input type="text" id="status_created_at" name="status[created_at]" value="<%=h status.created_at.strftime("%a, %d %b %T UTC %Y") %>" size="40" class="utc_date" />
+    <input type="text" id="status_created_at" name="status[set_created_at]" value="<%=h status.created_at.strftime("%a, %d %b %T UTC %Y") %>" size="40" class="utc_date" />
   </p>
   <% if status.previous %>
   <p class="hint">
