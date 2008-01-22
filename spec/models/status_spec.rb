@@ -2,6 +2,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Status do
   define_models :statuses
+  # define_models :users
   
   it "#user retrieves associated User" do
     statuses(:default).user.should == users(:default)
@@ -18,7 +19,9 @@ describe Status do
     statuses(:pending).followup.should be_nil
 
     s = statuses(:in_project)
+    s.followup.should == statuses(:pending)
     s.followup.should_receive(:update_attribute).with(:created_at, time)
+
     s.followup_time = time.to_s
     s.should be_valid
   end
@@ -35,6 +38,35 @@ describe Status do
     statuses(:default).followup_time = statuses(:pending).created_at + 1.second
     statuses(:default).should_not be_valid
   end
+
+  it "sets the correct time" do
+    u = users(:default) #mock_model(User, :id => '1')
+    s1 = Status.create! :created_at => "Fri Jan 18 2008 00:00:00", :user => u, :message => "foo", :project_id => 1
+    s2 = Status.create! :created_at => "Fri Jan 19 2008 00:00:00", :user => u, :message => "bar", :project_id => 1
+    s3 = Status.create! :created_at => "Fri Jan 20 2008 00:00:00", :user => u, :message => "bar", :project_id => 1    
+    
+    s1.followup(true).should == s2
+    
+    s1.attributes = {
+      "set_created_at" => "Fri Jan 18 2008 12:45:01 GMT-0800 (PST)",
+      "followup_time"  => "Fri Jan 19 2008 12:45:01 GMT-0800 (PST)"
+    }
+    
+    s1.created_at.should == Time.parse("2008-01-18 20:45:01 UTC").utc
+    s2.reload.created_at.should == Time.parse("2008-01-19 20:45:01 UTC").utc
+  end
+
+
+  it "does not allow time travel backwards" do
+    statuses(:in_project).previous.should == statuses(:default)
+    lambda{
+      statuses(:in_project).set_created_at = statuses(:default).created_at.utc - 10.minutes
+      statuses(:in_project).errors.on(:created_at).should_not be_nil
+    }.should_not change { statuses(:in_project).created_at }
+    
+    #}.should change { statuses(:in_project).valid? }.to(false)
+    #statuses(:in_project).should_not be_valid
+  end
   
   it "assigns date if the input string is from javascript" do
     statuses(:default).followup_time = "2008-12-12 00:00:00 GMT-0800"
@@ -42,7 +74,7 @@ describe Status do
   end
   
   it "assigns created-at to utc if input string is from javascript" do
-    statuses(:default).created_at = "2008-12-12 00:00:00 GMT-0800"
+    statuses(:default).set_created_at = "2008-12-12 00:00:00 GMT-0800 (PST)"
     statuses(:default).created_at.should == Time.parse("2008-12-12 08:00:00 UTC").utc
   end
   
@@ -76,14 +108,16 @@ describe Status, "being created" do
   
   it "is related properly to the previous status" do
     @new.save!
-    @new.previous.should    == @status
+    @new.previous(true).should    == @status
     @status.followup.should == @new
   end
   
-  it "processes previous status" do
+  it "processes previous status when creating" do
     @status.should be_pending
+    @status.should be_valid
     @new.save!
-    @status.reload.should be_processed
+    @status.reload
+    @status.should be_processed
     @status.hours.to_f.should == 5.0
   end
   
