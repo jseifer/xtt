@@ -5,8 +5,8 @@ document.observe('dom:loaded', function() {
 
 var XTT = {
   adjust_utc: function() {
-    $$('input.utc').each(function(i){ 
-      i.value = new Date(Date.parse(i.value)) 
+    $$('input.utc').each(function(input){ 
+      input.setValue(new DateTime($F(input)).toLocalString());
     });
     $$('span.utc').each(function(i){
       i.innerHTML = new Date(Date.parse(i.innerHTML)) 
@@ -31,6 +31,21 @@ var XTT = {
     dom.nextSibling.innerHTML = XTT.nice_time(epoch - seconds);
   }
 }
+
+var DateTime = Class.create({
+  initialize: function(date) {
+    this.dateTime = "";
+    if(Object.isString(date))
+      this.dateTime = new Date(Date.parse(date));
+    else if(date.constructor == Date) {
+      this.dateTime = date;
+    }
+  },
+  
+  toLocalString: function() {
+    return this.dateTime.toLocaleString();
+  }
+})
 
 Element.addMethods('INPUT', {
   /**

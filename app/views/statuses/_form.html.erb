@@ -5,7 +5,7 @@
   </div>
   <p>
     <label for="status_created_at">Start time</label>
-    <input type="text" id="status_created_at" name="status[set_created_at]" value="<%=h status.created_at.strftime("%a, %d %b %T UTC %Y") %>" size="40" class="utc_date" />
+    <input type="text" id="status_created_at" name="status[set_created_at]" value="<%=h status.created_at.strftime("%a, %d %b %T UTC %Y") %>" size="40" class="utc" />
   </p>
   <% if status.previous %>
   <p class="hint">
@@ -13,7 +13,7 @@
     (<%= nice_timer_for status.previous %>)
   </p>
   <p>
-    You can't start this status before <b class="utc_date"><%=h status.previous.created_at.strftime("%a, %d %b %T UTC %Y") %></b>  unless you delete the previous status.
+    You can't start this status before <span class="utc"><%=h status.previous.created_at.strftime("%a, %d %b %T UTC %Y") %></span>  unless you delete the previous status.
   </p>
   <% end %>
 
@@ -21,7 +21,7 @@
 
   <% if status.followup %>
     <p><label for="status_followup_time">Finish time</label>
-       <input type="text" id="status_followup_time" name="status[followup_time]" value="<%=h status.followup_time.strftime("%a, %d %b %T UTC %Y") %>" class="utc_date" size="40" />
+       <input type="text" id="status_followup_time" name="status[followup_time]" value="<%=h status.followup_time.strftime("%a, %d %b %T UTC %Y") %>" class="utc" size="40" />
     </p>
     <p class="hint">
       This will adjust the start time of next status, <%= link_to_status status.followup %>
@@ -30,7 +30,7 @@
 
     <% if status.followup.followup %>
       <input type="hidden" name="maximum-time" value="<%=h status.followup.followup_time if status.followup.followup %>" /> 
-      <p>You can't set the finish time of this status past <b class="utc_date"><%=h status.followup.followup_time.strftime("%a, %d %b %T UTC %Y") %></b>.</p>
+      <p>You can't set the finish time of this status past <span class="utc"><%=h status.followup.followup_time.strftime("%a, %d %b %T UTC %Y") %></span>.</p>
     <% end %>
 
     <% if status.followup.followup.nil? or status.followup.accurate_time > 30.minutes %>
