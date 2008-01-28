@@ -35,4 +35,18 @@ module ApplicationHelper
     ret << link_to(h(status.message), status)
     ret
   end
+  
+  # def round_time(time, round_to = 15.0)
+  #   scaled = time.
+  #   
+  #   ## Put this where you want it fool
+  #   class Float
+  #     alias_method :old_round, :round unless method_defined?(:old_round)
+  #     def round(round_to = 1.0)
+  #       scaled = self / round_to
+  #       rounded = scaled.old_round * round_to
+  #       rounded % 1 == 0 ? rounded.to_i : rounded
+  #     end
+  #   end
+  # end
 end

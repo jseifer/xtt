@@ -6,7 +6,7 @@
 	<title>XTT</title>
 	<%= javascript_include_tag 'prototype' %>
 	<%= javascript_include_tag 'showcase' %>
-	<%= javascript_include_tag 'control.tabs.js' %>
+	<%= javascript_include_tag 'control.tabs.js', 'ipselect.js' %>
 	<%= javascript_include_tag 'application' %>
 
 	<%= yield :head %>
@@ -16,7 +16,7 @@
 	 })
 	</script>
 	<%= stylesheet_link_tag 'screen' %>
-	<%= stylesheet_link_tag 'showcase' %>
+	<%= stylesheet_link_tag 'showcase', 'ipselect' %>
 </head>
 <body>
   <div id="showcase" style="display:none">

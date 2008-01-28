@@ -496,6 +496,19 @@ p.btns a {
   margin-bottom: 8px;
 }
 
+.tblform th, .tblform td {
+  padding: 5px;
+}
 
+.tblform th {
+  text-align: right;
+}
+
+.tblform td input[type=text], .tblform td input[type=password] {
+  border: 1px solid #aaa;
+  border-bottom-color: #ccc;
+  border-right-color: #ccc;
+  color: #444;
+}
 
 /* @end */

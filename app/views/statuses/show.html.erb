@@ -36,7 +36,29 @@
 <% box :normal, 'form' do |box| %>
   <% box.title = "Modify this status" %>
   <% box.content = capture do %>
-    <%= render(:partial => "form", :locals => { :status => @status }) %>
+  <% form_for @status, :html => { :class => 'form' } do |f| %>
+  <table cellspacing="0" cellpadding="0" class="tblform">
+    <tr>
+      <th>
+        <label for="status">Started <%= @status.created_at.strftime("%A, %B %d") %> at:</label>
+      </th>
+      <td>
+        <input type="text" id="created-at" name="status[set_created_at]" value="<%= @status.created_at.strftime("%H:%m %p") %>" />
+      </td>
+    </tr>
+    <tr>
+      <th><label for="status">Finished <%= @status.created_at.strftime("%A, %B %d") %> at:</label></th>
+      <td><input type="text" id="finished-at" name="status[set_finished_at]" value="<%= @status.created_at.strftime("%H:%m %p") %>" /></td>
+    </tr>
+    <tr>
+      <th><label for="status">Total hours worked:</label></th>
+      <td><input type="text" id="hours-worked" name="status[set_created_at]" value="<%= @status.created_at.strftime("%H:%m %p") %>" /></td>
+    </tr>
+    <tr>
+      <td colspan="2"><p class="btns"><%= save_button %></p></td>
+    </tr>
+  </table>
+    <% end %>
   <% end %>
 <% end %>
 <%= yield :normal_box %>
