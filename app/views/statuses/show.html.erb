@@ -43,16 +43,18 @@
         <label for="status">Started <%= @status.created_at.strftime("%A, %B %d") %> at:</label>
       </th>
       <td>
-        <input type="text" id="created-at" name="status[set_created_at]" value="<%= @status.created_at.strftime("%H:%m %p") %>" />
+        <input type="text" id="created-at" name="status[set_created_at]" value="<%= @status.created_at.strftime("%I:%m %p") %>" />
       </td>
     </tr>
     <tr>
       <th><label for="status">Finished <%= @status.created_at.strftime("%A, %B %d") %> at:</label></th>
-      <td><input type="text" id="finished-at" name="status[set_finished_at]" value="<%= @status.created_at.strftime("%H:%m %p") %>" /></td>
+      <td><input type="text" id="finished-at" name="status[set_finished_at]" value="<%= @status.followup.created_at.strftime("%I:%m %p") %>" /></td>
     </tr>
     <tr>
-      <th><label for="status">Total hours worked:</label></th>
-      <td><input type="text" id="hours-worked" name="status[set_created_at]" value="<%= @status.created_at.strftime("%H:%m %p") %>" /></td>
+      <th>
+        <label for="status">Total time worked:</label>
+      </th>
+      <td><input type="text" id="hours-worked" name="status[set_hours_worked]" value="<%= @status.hours %>" /></td>
     </tr>
     <tr>
       <td colspan="2"><p class="btns"><%= save_button %></p></td>
