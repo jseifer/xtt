@@ -1,9 +1,18 @@
 document.observe('dom:loaded', function() {
+  // Make inputs with the class name hintable use their title attribute
+  // for a hint.
   $$('input.hintable').invoke('hintable');
   
+  // Get users Timezone offset, add it as a hidden field and 
+  // submit it with every form
   var date = new Date();
   var offset = date.getTimezoneOffset();
+  $$('form').each(function(form) {
+    var input = new Element('input', {type:'hidden', name:'tzoffset', class:'tzoffset'});
+    form.insert(input);
+  });
   $$('input.tzoffset').invoke('setValue', offset);
+  
 });
 
 // var XTT = {
