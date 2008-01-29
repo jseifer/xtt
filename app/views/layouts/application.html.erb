@@ -4,9 +4,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>XTT</title>
-	<%= javascript_include_tag 'prototype' %>
-	<%= javascript_include_tag 'showcase' %>
-	<%= javascript_include_tag 'control.tabs.js', 'ipselect.js' %>
+	<%= javascript_include_tag 'prototype', 'cookie', :cache => 'main' %>
+	<%= javascript_include_tag 'showcase', 'control.tabs.js', 'ipselect.js', :cache => 'components'  %>
 	<%= javascript_include_tag 'application' %>
 
 	<%= yield :head %>
@@ -45,6 +44,7 @@
   <div id="wrapper">
     <!-- contents -->
     <div id="content" class="clearfix">
+      <%= yield :fullscreen_box %>
       <!-- main -->
       <div id="main">
         <%= yield :special_box %>

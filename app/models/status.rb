@@ -4,6 +4,7 @@ class Status < ActiveRecord::Base
   concerned_with :hacky_date_methods
   
   attr_writer :followup
+  attr_reader :active
   
   belongs_to :user
   belongs_to :project
@@ -40,6 +41,14 @@ class Status < ActiveRecord::Base
     @previous   = nil if reload
     @previous ||= user.statuses.before(self) || :false
     @previous == :false ? nil : @previous
+  end
+  
+  def active?
+    @active ||= followup.nil?
+  end
+  
+  def out?
+    !project?
   end
   
   def project?

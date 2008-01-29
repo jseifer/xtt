@@ -33,11 +33,9 @@ ActiveRecord::Schema.define(:version => 18) do
     t.string   "code"
   end
 
-  add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
-
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
-    t.decimal  "hours",      :precision => 8, :scale => 2, :default => 0.0
+    t.decimal  "hours",      :default => 0.0
     t.string   "message"
     t.string   "state"
     t.datetime "created_at"

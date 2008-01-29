@@ -3,61 +3,43 @@ document.observe('dom:loaded', function() {
   // for a hint.
   $$('input.hintable').invoke('hintable');
   
+  $('status_message').observe('keypress', function(event) {
+    if(event.keyCode === Event.KEY_RETURN) {
+      this.up('form').submit();
+    }
+  });
+  
+  
+  // Grab all the day badges and if the user has their browser 
+  // wide enough, show them on page load.  Also, when the user resizes 
+  // their browser window run this check again.
+  var dayBadges = $$('p.day-break');
+  var showing = false;
+  if(document.viewport.getWidth() > 1175) {
+    dayBadges.invoke('show');
+    showing = true;
+  }
+  Event.observe(window, 'resize', function() {
+    var vpWidth = document.viewport.getWidth();
+    if(vpWidth > 1175) {
+      showing = true;
+      dayBadges.invoke('show');
+    } else if(vpWidth < 1175 && showing) {
+      dayBadges.invoke('hide');
+    } 
+  });
+});
+
+
+(function() {
   // Get users Timezone offset, add it as a hidden field and 
   // submit it with every form
   var date = new Date();
   var offset = date.getTimezoneOffset();
-  $$('form').each(function(form) {
-    var input = new Element('input', {type:'hidden', name:'tzoffset', class:'tzoffset'});
-    form.insert(input);
-  });
-  $$('input.tzoffset').invoke('setValue', offset);
-  
-});
+  Cookie.set({tzoffset: offset});
+})();
 
-// var XTT = {
-//   adjust_utc: function() {
-//     $$('input.utc').each(function(input){ 
-//       input.setValue(new DateTime($F(input)).toLocalString());
-//     });
-//     $$('span.utc').each(function(i){
-//       i.innerHTML = new Date(Date.parse(i.innerHTML)) 
-//     });
-//   },
-// 
-//   nice_time: function(seconds) {
-//     /* live timer */
-//     var hours = (seconds / 3600).floor();
-//     seconds = seconds % 3600;
-//     var minutes = (seconds / 60).floor().toPaddedString(2);
-//     seconds = (seconds % 60).toPaddedString(2);
-//     return([hours, minutes, seconds].join(":"));
-//   },
-//   
-//   timerIncrement: function(dom) {
-//     dom = $(dom);
-//     var seconds = parseInt(dom.innerHTML);
-//     var d = new Date();
-//     var epoch = (d.getTime() - d.getMilliseconds()) / 1000;
-// 
-//     dom.nextSibling.innerHTML = XTT.nice_time(epoch - seconds);
-//   }
-// }
 
-// var DateTime = Class.create({
-//   initialize: function(date) {
-//     this.dateTime = "";
-//     if(Object.isString(date))
-//       this.dateTime = new Date(Date.parse(date));
-//     else if(date.constructor == Date) {
-//       this.dateTime = date;
-//     }
-//   },
-//   
-//   toLocalString: function() {
-//     return this.dateTime.toLocaleString();
-//   }
-// })
 
 Element.addMethods('INPUT', {
   /**

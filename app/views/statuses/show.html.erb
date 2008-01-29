@@ -33,39 +33,103 @@
 
 <% end %>
 
-<% box :normal, 'form' do |box| %>
-  <% box.title = "Modify this status" %>
-  <% box.content = capture do %>
-  <% form_for @status, :html => { :class => 'form' } do |f| %>
-  <table cellspacing="0" cellpadding="0" class="tblform">
-    <tr>
-      <th>
-        <label for="status">Started <%= @status.created_at.strftime("%A, %B %d") %> at:</label>
-      </th>
-      <td>
-        <input type="text" id="created-at" name="status[set_created_at]" value="<%= @status.created_at.strftime("%I:%m %p") %>" />
-      </td>
-    </tr>
-    <tr>
-      <th><label for="status">Finished <%= @status.created_at.strftime("%A, %B %d") %> at:</label></th>
-      <td><input type="text" id="finished-at" name="status[set_finished_at]" value="<%= @status.followup.created_at.strftime("%I:%m %p") %>" /></td>
-    </tr>
-    <tr>
-      <th>
-        <label for="status">Total time worked:</label>
-      </th>
-      <td><input type="text" id="hours-worked" name="status[set_hours_worked]" value="<%= @status.hours %>" /></td>
-    </tr>
-    <tr>
-      <td colspan="2"><p class="btns"><%= save_button %></p></td>
-    </tr>
-  </table>
+<% unless @status.active? %>
+  <% box :normal, 'form' do |box| %>
+    <% box.title = "Modify this status" %>
+    <% box.content = capture do %>
+    <% form_for @status, :html => { :class => 'form' } do |f| %>
+    <table cellspacing="0" cellpadding="0" class="tblform">
+      <tr>
+        <th>
+          <label for="status">Started <%= @status.created_at.strftime("%A, %B %d") %> at:</label>
+        </th>
+        <td>
+          <input type="text" id="created-at" name="status[set_created_at]" value="<%= @status.created_at.strftime("%I:%m %p") %>" />
+          <% if @status.previous %><p class="quiet">Changing the start time will change the finish time of the previous status: <strong>&ldquo;<%=h @status.previous.message %>&rdquo;</strong></p><% end %>
+        </td>
+      </tr>
+      <tr>
+        <th><label for="status">Finished <%= @status.followup.created_at.strftime("%A, %B %d") %> at:</label></th>
+        <td>
+          <input type="text" id="finished-at" name="status[set_finished_at]" value="<%= @status.followup.created_at.strftime("%I:%m %p") %>" />
+          <p class="quiet">Changing the finish time will alter the start time of the following status: <strong>&ldquo;<%=h @status.followup.message %>&rdquo;</strong></p>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          <label for="status">Total hours worked:</label>
+        </th>
+        <td>
+          <input type="text" id="hours-worked" name="status[set_hours_worked]" value="<%= @status.hours %>" />
+          <p class="quiet">Changing the hours worked will change the finish time of this status and the start time of your following status: <strong>&ldquo;<%=h @status.followup.message %>&rdquo;</strong></p>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2"><p class="btns"><%= save_button %></p></td>
+      </tr>
+    </table>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>
+
 <%= yield :normal_box %>
 
-<% statuses = [@status.previous, @status, @status.followup] %>
-<%= render :partial => "timeline", :locals => { :status => @status.previous, :title => "Previous" } if @status.previous %>
-<%= render :partial => "timeline", :locals => { :status => @status, :title => "Current" } %>
-<%= render :partial => "timeline", :locals => { :status => @status.followup, :title => "Next" } if @status.followup %>
+
+<% box(:sidebar, 'details') do |sbox| %>
+  <% sbox.title = "Other status details" %>
+  <% sbox.content_classes = "nopad" %>
+  <% sbox.content = capture do %>
+    <ul id="status-list">
+      <% if @status.previous %>
+      <li<%= %( class="last") if @status.followup.nil? %>>
+        <a href="<%= status_path(@status.previous) %>">
+          <span class="quiet">Previous status: <em><%=h @status.previous.message %></em></span>
+          <span class="start-fin">
+            <span class="start">
+              <span class="time"><%= start_time_for(@status.previous) %></span>
+              <span class="month">January 22</span>
+            </span>
+            <span class="dash">-</span>
+            <span class="finish">
+              <span class="time"><%= finish_time_for(@status.previous) %></span>
+              <span class="month">January 22</span>
+            </span>
+            <span class="hours">
+              <span class="time"><%= @status.previous.hours %></span>
+              <span class="month">hours</span>
+            </span>
+          </span>
+        </a>
+      </li>
+      <% end %>
+      <% if @status.followup %>
+      <li class="last">
+        <a href="<%= status_path(@status.followup) %>">
+          <span class="quiet">Next status: <em><%=h @status.followup.message %></em></span>
+          <span class="start-fin">
+            <span class="start">
+              <span class="time"><%= start_time_for(@status.followup) %></span>
+              <span class="month">January 23</span>
+            </span>
+            <span class="dash">-</span>
+            <span class="finish">
+              <% unless @status.followup.active? %>
+              <span class="time"><%= finish_time_for(@status.followup) %></span>
+              <span class="month">January 23</span>
+              <% else %>
+              <span class="time">Now</span>
+              <span class="month"><%= Time.now.strftime("%B %d") %></span>
+              <% end %>
+            </span>
+            <span class="hours">
+              <span class="time"><%= @status.followup.hours %></span>
+              <span class="month">hours</span>
+            </span>
+          </span>
+        </a>
+      </li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>

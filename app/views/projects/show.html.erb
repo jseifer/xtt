@@ -8,6 +8,23 @@
 					<%= f.hidden_field :project_id %>
     			<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
         </li>
+        
+        <li class="clearfix" style="border-bottom:0">
+             <%= image_tag(Gchart.bar(
+                :bg => 'CACACA', 
+                :data => [1,2,4,2,3,5,1], 
+                :line_colors => ['224499'],
+                :max_value => 'auto',
+                :bar_width => '100',
+                :size => '380x120',
+                :custom => "chxr=1,0,24&amp;chg=0,25,1,0&amp;chbh=40",            
+                :axis_labels => ["Sun|Mon|Tue|Wed|Thu|Fri|Sat"],
+                :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => 'week-chart', :class => 'special-chart') %>
+          <p class="special-num">
+            <span class="main-num">50.23</span>
+            <span class="quiet">hours this week</span>
+          </p>
+        </li>
       </ul>
     <% end %>
   <% end %>
@@ -24,8 +41,17 @@
   </div>
   <div class="mblock-cnt">
     <ul id="timeline" class="media-list">
+    <% prev_status = '' %>
 		<% if @project.statuses.each_with_index do |status, index| -%>
-      <li class="media-item clearfix<%= %( last) if first_in_collection?(@project.statuses, index) %>">
+      <li class="media-item clearfix<%= %( last) if first_in_collection?(@project.statuses, index) %><%= %( daybreak)  if status.created_at.day != prev_status.created_at.day rescue '' %>">
+        <% if status.created_at.day != prev_status.created_at.day %>
+        <p class="day-break" style="display:none">
+          <span class="day"><%= status.created_at.strftime("%A") %></span>
+          <span class="num"><%= status.created_at.strftime("%d") %></span>
+        </p>
+        <% end rescue '' %>
+        <% prev_status = status %>
+        
         <div class="media">
           <%= gravatar_for status.user %>
         </div>
@@ -61,7 +87,7 @@
   		</div>
   	<% end unless @project.invitable_users.empty? -%>
 		<% form_tag '', :class => 'form'  do |f| -%>
-			<p><%= text_area_tag :emails, '',  :rows => 3, :cols => 43  %></p>
+			<p><%= text_area_tag :emails, '',  :rows => 3  %></p>
     	<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn save" title="Save" /></p>
 		<% end -%>
   	</div>
@@ -125,7 +151,7 @@
 <% end %>
 
 <% box(:sidebar, 'people') do |sbox| %>
-  <% sbox.title = "People and hours" %>
+  <% sbox.title = "Filter this project by a member" %>
   <% sbox.content_classes = "nopad" %>
   <% sbox.content = capture do %>
    <ul id="timeline" class="media-list">
