@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   # Uncomment the :secret if you're not using the cookie session store
   protect_from_forgery # :secret => 'b26d74a5338fb7435501904f0451dc26'
 
-  helper_method :iphone_user_agent?
+  helper_method :iphone_user_agent?, :browser_timezone
 
 protected
   def iphone_user_agent?
@@ -27,9 +27,9 @@ protected
   # make it UTC, while TimeZone expects offsets in seconds to add to 
   # a UTC to make it local.
   def browser_timezone
-    return nil if params[:tzoffset].blank?
+    return nil if cookies[:tzoffset].blank?
     @browser_timezone ||= begin
-      min = params[:tzoffset].to_i
+      min = cookies[:tzoffset].to_i
       tz = TimeZone[(min + (-2 * min)).minutes]
       current_user.update_attribute(:time_zone, tz.name) if tz && logged_in? && tz.name != current_user.time_zone
       tz

@@ -1,19 +1,24 @@
 <p>
-  <label for="login">Login</label>
+	<%= form.label :login %>
   <%= form.text_field :login %>
 </p>
 
 <p>
-  <label for="email">Email</label>
+	<%= form.label :email %>
   <%= form.text_field :email %>
 </p>
 
 <p>
-  <label for="password">Password</label>
+	<%= form.label :password %>
   <%= form.password_field :password %>
 </p>
 
 <p>
-  <label for="password_confirmation">Confirm Password</label>
+	<%= form.label :password_confirmation, "Confirm Password" %>
   <%= form.password_field :password_confirmation %>
+</p>
+
+<p>
+	<%= form.label :time_zone %>
+	<%= form.text_field :time_zone, :readonly => true %>
 </p>
