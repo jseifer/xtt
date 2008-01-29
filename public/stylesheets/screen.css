@@ -296,11 +296,28 @@ h4.status a:hover {
   float: right;
 }
 
+.day-break {
+  position: absolute;
+  left: -109px;
+  width: 60px;
+  text-align: center;
+  display: block;
+  background-color: #ccc;
+  padding: 9px;
+  -webkit-border-radius: 8px;
+  -moz-border-radius: 8px;
+  border-radius: 8px;
+}
+
+li.daybreak {
+  border-top: 2px solid #e4e4e4;
+}
+
 /* @end */
 
 
 /* @group sidebar */
-.sbox {
+.sbox, .fsbox {
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
   background: #f7f7f7;
@@ -506,11 +523,15 @@ h4.status a:hover {
   margin-bottom: 9px;
 }
 
-.form input[type=text], .form input[type=password] {
+.form input[type=text], .form input[type=password], .form textarea  {
   font-size: 140%;
   border: 1px solid #999;
   border-bottom-color: #bbb;
   border-right-color: #bbb;
+}
+
+#emails {
+  width: 330px;
 }
 
 form input.hintable {
@@ -587,6 +608,26 @@ p.btns a {
   border-bottom-color: #ccc;
   border-right-color: #ccc;
   color: #444;
+}
+
+/* @end */
+
+/* @group Charts and reporting stuff */
+.special-chart {
+  float: left;
+}
+
+.special-num {
+  margin-left: 380px;
+  margin-top: 45px;
+  text-align: center;
+}
+
+.special-num .main-num {
+  font-size: 400%;
+  font-weight: bold;
+  display: block;
+  line-height: 100%;
 }
 
 /* @end */

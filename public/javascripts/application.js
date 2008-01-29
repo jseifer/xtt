@@ -2,6 +2,32 @@ document.observe('dom:loaded', function() {
   // Make inputs with the class name hintable use their title attribute
   // for a hint.
   $$('input.hintable').invoke('hintable');
+  
+  $('status_message').observe('keypress', function(event) {
+    if(event.keyCode === Event.KEY_RETURN) {
+      this.up('form').submit();
+    }
+  });
+  
+  
+  // Grab all the day badges and if the user has their browser 
+  // wide enough, show them on page load.  Also, when the user resizes 
+  // their browser window run this check again.
+  var dayBadges = $$('p.day-break');
+  var showing = false;
+  if(document.viewport.getWidth() > 1175) {
+    dayBadges.invoke('show');
+    showing = true;
+  }
+  Event.observe(window, 'resize', function() {
+    var vpWidth = document.viewport.getWidth();
+    if(vpWidth > 1175) {
+      showing = true;
+      dayBadges.invoke('show');
+    } else if(vpWidth < 1175 && showing) {
+      dayBadges.invoke('hide');
+    } 
+  });
 });
 
 
