@@ -152,7 +152,7 @@ describe User do
     
     it "starts in pending state" do
       @creating_user.call
-      @user.should be_pending
+      @user.reload.should be_pending
     end
     
     it "creates users as !admin" do
@@ -162,7 +162,7 @@ describe User do
     
     it "initializes #activation_code" do
       @creating_user.call
-      @user.activation_code.should_not be_nil
+      @user.reload.activation_code.should_not be_nil
     end
   end
 
@@ -309,6 +309,8 @@ describe User do
 
 protected
   def create_user(options = {})
-    User.create({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
+    u = User.new({ :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.merge(options))
+    u.register! if u.valid?
+    u
   end
 end

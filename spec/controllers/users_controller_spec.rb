@@ -4,11 +4,20 @@ describe UsersController do
   define_models :users
 
   it 'allows signup' do
-    pending "on hold, need to use invitations instead"
     lambda do
       create_user
       response.should be_redirect      
     end.should change(User, :count).by(1)
+  end
+
+  it 'signs up user in pending state' do
+    create_user
+    assigns(:user).reload.should be_pending
+  end
+
+  it 'signs up user with activation code' do
+    create_user
+    assigns(:user).reload.activation_code.should_not be_nil
   end
 
   it 'requires login on signup' do
