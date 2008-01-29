@@ -496,8 +496,13 @@ p.btns a {
   margin-bottom: 8px;
 }
 
+.tblform {
+  width: 100%;
+}
+
 .tblform th, .tblform td {
-  padding: 5px;
+  padding: 9px;
+  vertical-align: top;
 }
 
 .tblform th {
