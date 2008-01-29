@@ -426,6 +426,15 @@ h4.status a:hover {
 #status-list .start-fin {
   position: relative;
   height: 45px;
+  display: block;
+}
+
+#status-list a {
+  display: block;
+}
+
+#status-list li:hover {
+  background-color: #eee;
 }
 
 #status-list em {
