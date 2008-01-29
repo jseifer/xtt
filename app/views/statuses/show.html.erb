@@ -75,18 +75,57 @@
 
 <%= yield :normal_box %>
 
-<%= render :partial => "timeline", :locals => { :status => @status.previous, :title => "Previous" } if @status.previous %>
-<% unless @status.active? %>
-<%= render :partial => "timeline", :locals => { :status => @status, :title => "Current" } %>
-<% end %>
-
 
 <% box(:sidebar, 'details') do |sbox| %>
-  <% sbox.title = "Project details" %>
+  <% sbox.title = "Other status details" %>
   <% sbox.content_classes = "nopad" %>
   <% sbox.content = capture do %>
-    <ul class="text-list">
-      <li>Project: <% if @status.out? %>No project<% else %> <%=h @status.project.name %><% end %></li>
+    <ul id="status-list">
+      <% if @status.previous %>
+      <li<%= %( class="last") if @status.followup.nil? %>>
+        <span class="quiet">Previous status: <em><%=h @status.previous.message %></em></span>
+        <p class="start-fin">
+          <span class="start">
+            <span class="time"><%= start_time_for(@status.previous) %></span>
+            <span class="month">January 22</span>
+          </span>
+          <span class="dash">-</span>
+          <span class="finish">
+            <span class="time"><%= finish_time_for(@status.previous) %></span>
+            <span class="month">January 22</span>
+          </span>
+          <span class="hours">
+            <span class="time"><%= @status.previous.hours %></span>
+            <span class="month">hours</span>
+          </span>
+        </p>
+      </li>
+      <% end %>
+      <% if @status.followup %>
+      <li class="last">
+        <span class="quiet">Next status: <em><%=h @status.followup.message %></em></span>
+        <p class="start-fin">
+          <span class="start">
+            <span class="time"><%= start_time_for(@status.followup) %></span>
+            <span class="month">January 23</span>
+          </span>
+          <span class="dash">-</span>
+          <span class="finish">
+            <% unless @status.followup.active? %>
+            <span class="time"><%= finish_time_for(@status.followup) %></span>
+            <span class="month">January 23</span>
+            <% else %>
+            <span class="time">Now</span>
+            <span class="month"><%= Time.now.strftime("%B %d") %></span>
+            <% end %>
+          </span>
+          <span class="hours">
+            <span class="time"><%= @status.followup.hours %></span>
+            <span class="month">hours</span>
+          </span>
+        </p>
+      </li>
+      <% end %>
     </ul>
   <% end %>
 <% end %>
