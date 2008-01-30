@@ -26,7 +26,7 @@ Rails::Initializer.run do |config|
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
   # Add additional load paths for your own custom dirs
-  config.load_paths += %W( #{RAILS_ROOT}/app/concerns )
+  config.load_paths += %W( #{RAILS_ROOT}/app/concerns #{RAILS_ROOT}/vendor/googlecharts-0.2.0/lib )
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
@@ -56,9 +56,4 @@ Rails::Initializer.run do |config|
 
   # Make Active Record use UTC-base instead of local time
   config.active_record.default_timezone = :utc
-  
-  config.after_initialize do
-    gem 'has_finder'
-    require 'has_finder'
-  end
 end

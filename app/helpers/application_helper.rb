@@ -1,8 +1,4 @@
 # Methods added to this helper will be available to all templates in the application.
-require 'ostruct'
-require 'md5'
-require 'gchart'
-
 module ApplicationHelper
   include LiveTimer
   
@@ -38,11 +34,23 @@ module ApplicationHelper
   end
   
   def start_time_for(status)
-    status.created_at.strftime("%I:%m %p").downcase
+    js_formatted_time status.created_at
   end
   
   def finish_time_for(status)
-    status.followup.created_at.strftime("%I:%m %p").downcase
+    js_formatted_time status.followup.created_at
   end
 
+  @@default_jstime_format = "%d %b, %Y %I:%M %p"
+  def jstime(time, custom = nil)
+    content_tag 'span', time.strftime(@@default_jstime_format), :class => "time #{custom}".strip
+  end
+  
+  def js_time_ago_in_words(time)
+    jstime time
+  end
+  
+  def js_formatted_time(time)
+    jstime time, :formatted
+  end
 end

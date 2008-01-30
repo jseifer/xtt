@@ -19,7 +19,7 @@
           <p class="quiet"><%=h current_user.last_status_message %></p>
           <span class="datetime">
             <%= link_to "more", current_user.last_status %> |
-            <%= time_ago_in_words current_user.last_status_at %> ago
+            <%= js_time_ago_in_words current_user.last_status_at %>
           </span>
           <%= image_tag Gchart.bar(
             :bg => 'CACACA', 
