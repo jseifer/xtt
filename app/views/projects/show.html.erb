@@ -21,8 +21,8 @@
                 :axis_labels => ["Sun|Mon|Tue|Wed|Thu|Fri|Sat"],
                 :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => 'week-chart', :class => 'special-chart') %>
           <p class="special-num">
-            <span class="main-num">50.23</span>
-            <span class="quiet">hours this week</span>
+            <span class="main-num"><%= @statuses.sum { |s| s.hours } %></span>
+            <span class="quiet">hours this <%=h params[:filter] %> period.</span>
           </p>
         </li>
       </ul>
@@ -34,8 +34,9 @@
   <div class="mblock-hdr">
     <h3><%= h(@project.name) %> Timeline</h3>
     <div class="utils">
-			<%= link_to_filtered_statuses(:today, :filter => 'today') %>
+			<%= link_to_filtered_statuses(:daily, :filter => 'daily') %>
 			<%= link_to_filtered_statuses(:week,  :filter => 'weekly') %>
+			<%= link_to_filtered_statuses('bi-weekly', :filter => 'bi-weekly') %>
 			<%= link_to_filtered_statuses(:month, :filter => 'monthly') %>
     </div>
   </div>
