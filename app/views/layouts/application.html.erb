@@ -16,6 +16,10 @@
 	</script>
 	<%= stylesheet_link_tag 'screen' %>
 	<%= stylesheet_link_tag 'showcase', 'ipselect' %>
+	<!--[if lt IE 7]>
+	  <%= stylesheet_link_tag 'fail' %>
+	  <%= javascript_include_tag 'morefail' %>
+	<![endif]-->
 </head>
 <body>
   <div id="showcase" style="display:none">
@@ -24,7 +28,7 @@
   <!-- header -->
   <div id="header">
     <div id="header-cnt">
-      <h1><a href="/"><%= image_tag 'xtt-logo.png' %></a></h1>
+      <h1><a href="/"><%= image_tag 'xtt-logo.png', :id => 'logo' %></a></h1>
     </div>
     <div id="header-nav">
       <ul class="clearfix">
