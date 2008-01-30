@@ -2,12 +2,14 @@ document.observe('dom:loaded', function() {
   // Make inputs with the class name hintable use their title attribute
   // for a hint.
   $$('input.hintable').invoke('hintable');
+  var statusMessage = $('status_message');
   
-  $('status_message').observe('keypress', function(event) {
-    if(event.keyCode === Event.KEY_RETURN) {
-      this.up('form').submit();
-    }
-  });
+  if(statusMessage)
+    statusMessage.observe('keypress', function(event) {
+      if(event.keyCode === Event.KEY_RETURN) {
+        this.up('form').submit();
+      }
+    });
   
   
   // Grab all the day badges and if the user has their browser 
