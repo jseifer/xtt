@@ -40,7 +40,7 @@
     </div>
   </div>
   <div class="mblock-cnt">
-    <ul id="timeline" class="media-list">
+    <ol id="timeline" class="media-list">
     <% prev_status = '' %>
 		<% if @statuses.each_with_index do |status, index| -%>
       <li class="media-item clearfix<%= %( last) if first_in_collection?(@project.statuses, index) %><%= %( daybreak)  if status.created_at.day != prev_status.created_at.day rescue '' %>">
@@ -69,7 +69,7 @@
 		<% end.empty? -%>
 			<li>No status updates have been posted yet.</li>
 		<% end -%>
-    </ul>
+    </ol>
   </div>
 </div>
 
@@ -87,7 +87,7 @@
   		</div>
   	<% end unless @project.invitable_users.empty? -%>
 		<% form_tag '', :class => 'form'  do |f| -%>
-			<p><%= text_area_tag :emails, '',  :rows => 3  %></p>
+			<p><%= text_area_tag :emails, '',  :rows => 3, :cols => 20  %></p>
     	<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn save" title="Save" /></p>
 		<% end -%>
   	</div>
@@ -122,6 +122,7 @@
   	</div>
 
   	<div id="tracking">
+  	  <% if @project.feeds.any? %>
   	   <ul class="text-list">
         <% @project.feeds.each_with_index do |feed, index| %>
           <li<%= %( class="last") if first_in_collection?(@project.feeds, index) %>>
@@ -130,6 +131,7 @@
           </li>
         <% end %>
         </ul>
+        <% end %>
                 
         <% form_for @project.feeds.new, :html => {:class => 'form' } do |f|%>    	  
         <p>Have an RSS feed that you'd like to auto update this project with?</p>
@@ -154,7 +156,7 @@
   <% sbox.title = "Filter this project by a member" %>
   <% sbox.content_classes = "nopad" %>
   <% sbox.content = capture do %>
-   <ul id="timeline" class="media-list">
+   <ul class="media-list">
 		<% @project.users.each_with_index do |user, index| -%>
       <li class="media-item clearfix<%= %( last) if first_in_collection?(@project.users, index) %>">
         <div class="media">
