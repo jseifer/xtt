@@ -30,13 +30,14 @@ protected
     return nil if cookies[:tzoffset].blank?
     @browser_timezone ||= begin
       min = cookies[:tzoffset].to_i
-      tz = TimeZone[(min + (-2 * min)).minutes]
-      current_user.update_attribute(:time_zone, tz.name) if tz && logged_in? && tz.name != current_user.time_zone
-      tz
+      TimeZone[(min + (-2 * min)).minutes]
     end
   end
 
   def set_timezone
+    if logged_in? && browser_timezone
+      current_user.update_attribute(:time_zone, browser_timezone.name) if logged_in? && browser_timezone.name != current_user.time_zone
+    end
     Time.zone = logged_in? ? current_user.time_zone : browser_timezone
   end
 end
