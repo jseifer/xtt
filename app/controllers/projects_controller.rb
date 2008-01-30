@@ -12,6 +12,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    @statuses = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter])
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml  => @project }
@@ -74,5 +75,13 @@ protected
   
   def authorized?
     logged_in? && (admin? || @project.nil? || @project.editable_by?(current_user))
+  end
+  
+  def user_status_for(status)
+    case status
+      when 'me'    then current_user.id
+      when /^\d+$/ then status.to_i
+      else nil
+    end
   end
 end

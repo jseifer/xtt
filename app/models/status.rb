@@ -26,9 +26,42 @@ class Status < ActiveRecord::Base
   end
   
   def self.with_user(user, &block)
-    with_scope :find => { :conditions => ['statuses.user_id = ?', user.id] }, &block
+    return block.call if user.nil?
+    user_id = user.is_a?(User) ? user.id : user
+    with_scope :find => { :conditions => ['statuses.user_id = ?', user_id] }, &block
   end
   
+  def self.with_date_filter(filter, &block)
+    range = case filter
+      when 'today'
+        today = Time.zone.now.midnight
+        (today..today + 1.day)
+      when 'weekly'
+        mon = Time.zone.now.beginning_of_week
+        (mon..mon + 1.week)
+      #when 'bi-weekly'
+      #  today = Time.zone.now.midnight
+      #  start = today.day >= 15 ? 
+      when 'monthly'
+        start = Time.zone.now.beginning_of_month
+        (start..start + 1.month)
+      when nil then return block.call
+      else raise "Unknown filter: #{filter.inspect}"
+    end
+    with_date_range range, &block
+  end
+  
+  def self.with_date_range(range, &block)
+    with_scope :find => { :conditions => "statuses.created_at #{range.to_s :db}" }, &block
+  end
+  
+  # user_id can be an integer or nil
+  def self.filter(user_id, filter)
+    with_user user_id do
+      with_date_filter(filter) { find :all, :order => 'statuses.created_at desc' }
+    end
+  end
+   
   def self.since(date, &block)
     with_scope :find => { :conditions => ['hours is not null and created_at >= ?', date.utc.midnight] }, &block
   end

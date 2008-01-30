@@ -7,8 +7,7 @@ describe ProjectsController, "GET #index" do
 
   before do
     @projects = []
-    @user = mock("User")
-    @user.stub!(:projects).and_return(@projects)
+    @user = mock_model User, :projects => @projects, :active? => true, :time_zone => "UTC"
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
   end
@@ -27,25 +26,45 @@ describe ProjectsController, "GET #index" do
 end
 
 describe ProjectsController, "GET #show" do
-  define_models
-
-  act! { get :show, :id => 1 }
-
+    
   before do
     @project = projects(:default)
+    @statuses = []
     Project.stub!(:find).with('1').and_return(@project)
+    @project.stub!(:statuses).and_return([])
     controller.stub!(:login_required)
+    controller.stub!(:current_user).and_return(mock_model User, :id => 55, :active? => true, :time_zone => "UTC")
   end
-  
-  it_assigns :project
-  it_renders :template, :show
-  
-  describe ProjectsController, "(xml)" do
-    define_models
-    
-    act! { get :show, :id => 1, :format => 'xml' }
 
-    it_renders :xml, :project
+  [ {:user_id => nil,   :filter => nil, :args => [nil, nil]},
+    {:user_id => 'all', :filter => nil, :args => [nil, nil]},
+    {:user_id => 'me',  :filter => nil, :args => [55,  nil]},
+    {:user_id => '5',   :filter => nil, :args => [5,   nil]},
+    {:user_id => nil,   :filter => 'weekly', :args => [nil, 'weekly']},
+    {:user_id => 'all', :filter => 'weekly', :args => [nil, 'weekly']},
+    {:user_id => 'me',  :filter => 'weekly', :args => [55,  'weekly']},
+    {:user_id => '5',   :filter => 'weekly', :args => [5,   'weekly']} ].each do |options|
+      
+    describe ProjectsController, "(xml)" do
+      define_models
+      
+      act! { get :show, options.merge(:id => 1) }
+      
+      before do
+        @project.statuses.stub!(:filter).with(*options[:args]).and_return(@statuses)
+      end
+      
+      it_assigns :project, :statuses
+      it_renders :template, :show
+
+      describe ProjectsController, "(xml)" do
+        define_models
+        
+        act! { get :show, options.merge(:id => 1, :format => 'xml') }
+      
+        it_renders :xml, :project
+      end if options[:user_id].nil? && options[:filter].nil?
+    end
   end
 end
 
@@ -92,7 +111,7 @@ describe ProjectsController, "POST #create" do
     login_as :default
     @attributes = {}
     @project = mock_model Project, :new_record? => false, :errors => []
-    @user = mock_model User, :owned_projects => []
+    @user = mock_model User, :owned_projects => [], :active? => true, :time_zone => "UTC"
     @user.owned_projects.stub!(:build).with(@attributes).and_return(@project)
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)

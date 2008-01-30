@@ -34,15 +34,15 @@
   <div class="mblock-hdr">
     <h3><%= h(@project.name) %> Timeline</h3>
     <div class="utils">
-      <a href="#today">Today</a>
-      <a href="#thisweek">Week</a>
-      <a href="#this">Month</a>
+			<%= link_to_filtered_statuses(:today, :filter => 'today') %>
+			<%= link_to_filtered_statuses(:week,  :filter => 'weekly') %>
+			<%= link_to_filtered_statuses(:month, :filter => 'monthly') %>
     </div>
   </div>
   <div class="mblock-cnt">
     <ul id="timeline" class="media-list">
     <% prev_status = '' %>
-		<% if @project.statuses.each_with_index do |status, index| -%>
+		<% if @statuses.each_with_index do |status, index| -%>
       <li class="media-item clearfix<%= %( last) if first_in_collection?(@project.statuses, index) %><%= %( daybreak)  if status.created_at.day != prev_status.created_at.day rescue '' %>">
         <% if status.created_at.day != prev_status.created_at.day %>
         <p class="day-break" style="display:none">
@@ -161,7 +161,7 @@
           <%= gravatar_for user %>
         </div>
         <div class="media-content">
-          <h4 class="media-title"><%= link_to_user(user, "#{user.login}") %></h4>
+          <h4 class="media-title"><%= link_to_filtered_statuses h(user.login), :user_id => (user == current_user ? :me : user) %></h4>
           <p class="quiet"><% if user.last_status_id -%>Active <%= js_time_ago_in_words user.last_status_at %> ago<% else -%>Inactive<% end -%></p>
           <span class="you">
             <span class="num"><%= number_with_precision @project.daily_member_hours[user.id].to_f, 2 %></span>
@@ -175,5 +175,6 @@
       </li>
       <% end %>
     </ul>
+		<p><%= link_to_filtered_statuses "All Users", :user_id => :all %></p>
   <% end %>
 <% end %>
