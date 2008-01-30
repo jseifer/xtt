@@ -47,6 +47,11 @@
     <div id="content" class="clearfix">
       <!-- main -->
       <div id="main">
+        <% if flash[:notice] %>
+        <div class="mblock"><div class="mblock-cnt">
+          <%=h flash[:notice] %>
+        </div></div>
+        <% end %>
         <%= yield :special_box %>
         <%= yield %>
       </div>

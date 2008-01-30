@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 17) do
+ActiveRecord::Schema.define(:version => 18) do
 
   create_table "feeds", :force => true do |t|
     t.string   "name"
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(:version => 17) do
     t.integer  "last_status_id"
     t.string   "last_status_message"
     t.datetime "last_status_at"
+    t.string   "aim_login"
   end
 
 end
