@@ -15,9 +15,10 @@ body {
 
 ul, li, form, input, dt, dl, dd, ol, div, p, 
 blockquote, h1, h2, h3, h4, h5, h6, a, pre,
-code {
+code, abbr {
   margin: 0;
   padding: 0;
+  border: none;
 }
 
 a {
@@ -34,19 +35,16 @@ a:hover {
 img { border: 0; }
 
 .clearfix:after {
-    content: "."; 
-    display: block; 
-    height: 0; 
-    clear: both; 
-    visibility: hidden;
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
 }
-
-.clearfix {display: inline-table;}
-
-/* Hides from IE-mac \*/
-* html .clearfix {height: 1%;}
-.clearfix {display: block;}
-/* End hide from IE-mac */
+.clearfix {display:inline-block;}
+/* Hide from IE Mac \*/
+.clearfix {display:block;}
+/* End hide from IE Mac */
 
 /* @end */
 
@@ -220,6 +218,10 @@ img { border: 0; }
   border-bottom: 1px solid #aaa;
 }
 
+.mblock h4 {
+  font-size: 100%;
+}
+
 .mblock.special h4 a {
   color: #333;
 }
@@ -238,6 +240,8 @@ img { border: 0; }
   padding: 9px 0;
   list-style: none;
   position: relative;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .special .media-list li {
@@ -317,6 +321,11 @@ li.daybreak {
 
 
 /* @group sidebar */
+
+#sidebar h4 {
+  font-size: 100%;
+}
+
 .sbox, .fsbox {
   -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
