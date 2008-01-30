@@ -1,6 +1,8 @@
 class Status < ActiveRecord::Base
   validates_presence_of :user_id, :message
-  
+  validate :followup_is_valid
+  validate :previous_is_valid
+
   concerned_with :hacky_date_methods
   
   attr_writer :followup
@@ -58,35 +60,6 @@ class Status < ActiveRecord::Base
   def editable_by?(user)
     user && user_id == user.id
   end
-  
-  def validate
-    return validate_followup && validate_previous
-  end
-  
-  def validate_followup
-    return true if (user.nil? or followup.nil? or followup.followup.nil?)
-    value = followup.followup_time
-    if followup_time > value
-      errors.add :followup_time, "Cannot extend this status to after the next status' end-point. Delete the next status." 
-      return false
-    else
-      # errors.add :followup_time, "Cannot extend this status to after the next status' end-point. Delete the next status." 
-      # n othing
-      true
-    end
-  end
-  
-  def validate_previous
-    return true if (user.nil? or previous.nil?)
-    value = previous.created_at
-    if value > created_at
-      errors.add :created_at, "Cannot travel back in time with this status in hand."
-      return false
-    else
-      # nothign
-      true
-    end
-  end
 
 protected
   def calculate_hours
@@ -101,5 +74,20 @@ protected
   
   def cache_user_status
     User.update_all ['last_status_project_id = ?, last_status_id = ?, last_status_message = ?, last_status_at = ?', project_id, id, message, created_at], ['id = ?', user_id]
+  end
+
+  def followup_is_valid
+    return if (user.nil? || followup.nil? || followup.followup.nil?)
+    value = followup.followup_time
+    if followup_time > value
+      errors.add :followup_time, "Cannot extend this status to after the next status' end-point. Delete the next status." 
+    end
+  end
+  
+  def previous_is_valid
+    return if (user.nil? || previous.nil?)
+    if previous.created_at > created_at
+      errors.add :created_at, "Cannot travel back in time with this status in hand."
+    end
   end
 end
