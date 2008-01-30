@@ -32,7 +32,7 @@ ModelStubbing.define_models :feeds do
   end
 end
 
-ModelStubbing.define_models :users do 
+ModelStubbing.define_models :users do
   model User do
     stub :admin,     :login => 'admin-user',     :email => 'admin-user@example.com', :remember_token => 'blah', :admin => true
     stub :pending,   :login => 'pending-user',   :email => 'pending-user@example.com',   :state => 'pending', :activated_at => nil, :remember_token => 'asdf', :activation_code => 'abcdef'

@@ -14,13 +14,22 @@
   		<% if current_user.last_status -%>
         <div class="media-content">
   			<% if current_user.last_status_project -%>
-          <h4 class="media-title">
-            <%= link_to_project current_user.last_status_project, "You're working on #{current_user.last_status_project.name}" %></h4>
+          <h4 class="media-title"><%= link_to_project current_user.last_status_project, "You're working on #{current_user.last_status_project.name}" %></h4>
   			<% end -%>
           <p class="quiet"><%=h current_user.last_status_message %></p>
           <span class="datetime">
             <%= link_to "more", current_user.last_status %> |
-            <%= time_ago_in_words current_user.last_status_at %> ago</span>
+            <%= js_time_ago_in_words current_user.last_status_at %>
+          </span>
+          <%= image_tag Gchart.bar(
+            :bg => 'CACACA', 
+            :data => [1,2,4,2,3,5,1], 
+            :bar_colors => ['224499'],
+            :max_value => 'auto',
+            :size => '540x100',
+            :custom => "chxr=1,0,5&amp;chg=0,50,1,0&amp;chbh=60,10",            
+            :axis_labels => ["Sun|Mon|Tue|Wed|Thu|Fri|Sat"],
+            :axis_with_labels => %w(x y)), :style => 'margin-top:27px' %>
         </div>
   		<% end -%>
       </li>

@@ -4,9 +4,8 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>XTT</title>
-	<%= javascript_include_tag 'prototype' %>
-	<%= javascript_include_tag 'showcase' %>
-	<%= javascript_include_tag 'control.tabs.js' %>
+	<%= javascript_include_tag 'prototype', 'cookie', :cache => 'main' %>
+	<%= javascript_include_tag 'showcase', 'control.tabs.js', 'ipselect.js', :cache => 'components'  %>
 	<%= javascript_include_tag 'application' %>
 
 	<%= yield :head %>
@@ -16,7 +15,11 @@
 	 })
 	</script>
 	<%= stylesheet_link_tag 'screen' %>
-	<%= stylesheet_link_tag 'showcase' %>
+	<%= stylesheet_link_tag 'showcase', 'ipselect' %>
+	<!--[if lt IE 7]>
+	  <%= stylesheet_link_tag 'fail' %>
+	  <%= javascript_include_tag 'morefail' %>
+	<![endif]-->
 </head>
 <body>
   <div id="showcase" style="display:none">
@@ -25,7 +28,7 @@
   <!-- header -->
   <div id="header">
     <div id="header-cnt">
-      <h1><a href="/"><%= image_tag 'xtt-logo.png' %></a></h1>
+      <h1><a href="/"><%= image_tag 'xtt-logo.png', :id => 'logo' %></a></h1>
     </div>
     <div id="header-nav">
       <ul class="clearfix">
@@ -45,6 +48,7 @@
   <div id="wrapper">
     <!-- contents -->
     <div id="content" class="clearfix">
+      <%= yield :fullscreen_box %>
       <!-- main -->
       <div id="main">
         <% if flash[:notice] %>
