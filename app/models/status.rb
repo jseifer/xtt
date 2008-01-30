@@ -31,7 +31,8 @@ class Status < ActiveRecord::Base
     with_scope :find => { :conditions => ['statuses.user_id = ?', user_id] }, &block
   end
   
-  def self.with_date_filter(filter, now = Time.zone.now, &block)
+  def self.with_date_filter(filter, now = nil, &block)
+    now ||= Time.zone.now
     range = case filter
       when 'daily'
         today = now.midnight
