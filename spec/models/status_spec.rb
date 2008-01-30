@@ -266,11 +266,11 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows today's statuses" do
-    compare_arrays Status.filter(nil, 'today'),  [:default, :status_day]
+    compare_arrays Status.filter(nil, 'daily'),  [:default, :status_day]
   end
   
   it "shows today's statuses by user" do
-    compare_arrays Status.filter(5, 'today'),  [:default]
+    compare_arrays Status.filter(5, 'daily'),  [:default]
   end
   
   it "shows this week's statuses" do
@@ -279,6 +279,24 @@ describe Status, "(filtering by date)" do
   
   it "shows this week's statuses by user" do
     compare_arrays Status.filter(5, 'weekly'),  [:default, :status_week_1]
+  end
+  
+  it "shows this fortnight's statuses" do
+    compare_arrays Status.filter(nil, 'bi-weekly'),  [:default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2]
+  end
+  
+  it "shows this fortnight's statuses by user" do
+    compare_arrays Status.filter(5, 'bi-weekly'),  [:default, :status_week_1, :status_biweek_2]
+  end
+  
+  it "shows earlier fortnight's statuses" do
+    Time.stub!(:now).and_return(Time.utc(2007, 6, 14, 6))
+    compare_arrays Status.filter(nil, 'bi-weekly'),  [:status_month_1, :status_month_2]
+  end
+  
+  it "shows earlier fortnight's statuses by user" do
+    Time.stub!(:now).and_return(Time.utc(2007, 6, 14, 6))
+    compare_arrays Status.filter(5, 'bi-weekly'),  [:status_month_2]
   end
   
   it "shows this month's statuses" do

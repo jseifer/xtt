@@ -31,20 +31,19 @@ class Status < ActiveRecord::Base
     with_scope :find => { :conditions => ['statuses.user_id = ?', user_id] }, &block
   end
   
-  def self.with_date_filter(filter, &block)
+  def self.with_date_filter(filter, now = Time.zone.now, &block)
     range = case filter
-      when 'today'
-        today = Time.zone.now.midnight
+      when 'daily'
+        today = now.midnight
         (today..today + 1.day)
       when 'weekly'
-        mon = Time.zone.now.beginning_of_week
+        mon = now.beginning_of_week
         (mon..mon + 1.week)
-      #when 'bi-weekly'
-      #  today = Time.zone.now.midnight
-      #  start = today.day >= 15 ? 
+      when 'bi-weekly'
+        today = now.midnight
+        today.day >= 15 ? (today.change(:day => 15)..today.end_of_month) : (today.beginning_of_month..today.change(:day => 15))
       when 'monthly'
-        start = Time.zone.now.beginning_of_month
-        (start..start + 1.month)
+        (now.beginning_of_month..now.end_of_month)
       when nil then return block.call
       else raise "Unknown filter: #{filter.inspect}"
     end
