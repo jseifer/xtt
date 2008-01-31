@@ -31,7 +31,7 @@ document.observe('dom:loaded', function() {
     } 
   });
 
-  $$('span.time').each(function(span) {
+  $$('span.timestamp').each(function(span) {
 		if(span.hasClassName("formatted"))
 			span.update(Date.parseUTC(span.innerHTML).strftime("%I:%m %p"));
 		else
