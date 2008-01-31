@@ -44,11 +44,11 @@
     <ol id="timeline" class="media-list">
     <% prev_status = '' %>
 		<% if @statuses.each_with_index do |status, index| -%>
-      <li class="hentry media-item clearfix<%= %( last) if first_in_collection?(@project.statuses, index) %><%= %( daybreak)  if status.created_at.day != prev_status.created_at.day rescue '' %>">
-        <% if status.created_at.day != prev_status.created_at.day %>
+      <li class="hentry media-item clearfix<%= %( last) if first_in_collection?(@project.statuses, index) %><%= %( daybreak)  if (status.created_at.day != prev_status.created_at.day) rescue '' %>">
+        <% if (index == 0) || (status.created_at.day != prev_status.created_at.day) %>        
         <p class="day-break" style="display:none">
           <span class="day"><%= status.created_at.strftime("%A") %></span>
-          <span class="num"><%= status.created_at.strftime("%d") %></span>
+          <span class="num"><%= status.created_at.strftime("%b %d") %></span>
         </p>
         <% end rescue '' %>
         <% prev_status = status %>

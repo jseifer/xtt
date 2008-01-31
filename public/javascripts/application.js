@@ -37,6 +37,22 @@ document.observe('dom:loaded', function() {
 		else
     	span.update(Date.parseUTC(span.innerHTML).timeAgoInWords());
   });
+  
+  var startTime   = $('created-at');
+  var finishTime  = $('finished-at');
+  var hoursWorked = $('hours-worked');
+  
+  if(hoursWorked && startTime && finishTime) {
+    var hours = $F(hoursWorked);
+    var started = new Date(Date.parse(startTime.readAttribute('title')));
+    console.log(started);
+    hoursWorked.observe('keyup', function() {
+      var newHours = parseFloat($F(this));
+      if(newHours != hours) {
+        finishTime.setValue((newHours).since(started).toDate().strftime("%I:%m %p"));
+      }
+    });
+  }
 });
 
 

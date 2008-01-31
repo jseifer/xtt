@@ -1,0 +1,6 @@
+<div id="status">
+  <% form_for current_user.statuses.build do |f| -%>
+  	<%= f.text_field :message, :style => 'width:190px', :class => 'status-entry' %>
+		<input type="submit" value="Update" />
+  <% end %>
+</div>
