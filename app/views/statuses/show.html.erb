@@ -48,6 +48,7 @@
           <% if @status.previous %><p class="quiet">Changing the start time will change the finish time of the previous status: <strong>&ldquo;<%=h @status.previous.message %>&rdquo;</strong></p><% end %>
         </td>
       </tr>
+      <% if @status.followup %>
       <tr>
         <th><label for="status">Finished <%= @status.followup.created_at.strftime("%A, %B %d") %> at:</label></th>
         <td>
@@ -55,6 +56,7 @@
           <p class="quiet">Changing the finish time will alter the start time of the following status: <strong>&ldquo;<%=h @status.followup.message %>&rdquo;</strong></p>
         </td>
       </tr>
+      <% end %>
       <tr>
         <th>
           <label for="status">Total hours worked:</label>
