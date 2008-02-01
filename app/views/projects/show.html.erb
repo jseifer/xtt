@@ -23,6 +23,7 @@
           <p class="special-num">
             <span class="main-num"><%= @statuses.sum { |s| s.hours } %></span>
             <span class="quiet">hours this <%=h params[:filter] %> period.</span>
+            <span class="paging"><a href="#">&larr; Monday</a> <a href="#">Wednesday &rarr;</a></span>
           </p>
         </li>
       </ul>

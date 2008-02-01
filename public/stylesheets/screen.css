@@ -654,4 +654,22 @@ p.btns a {
   line-height: 100%;
 }
 
+.paging {
+  display: block;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.paging a {
+  color: #888;
+  margin-left: 9px;
+}
+
+.paging a:hover {
+  color: #269;
+}
+
+.paging a:first-child {
+  margin-left: 0;
+}
 /* @end */
