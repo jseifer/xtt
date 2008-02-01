@@ -4,7 +4,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>XTT</title>
-	<%= javascript_include_tag 'prototype', 'cookie', :cache => 'main' %>
+	<%= javascript_include_tag 'prototype', 'cookie', 'time', :cache => 'main' %>
 	<%= javascript_include_tag 'showcase', 'control.tabs.js', 'ipselect.js', :cache => 'components'  %>
 	<%= javascript_include_tag 'application' %>
 
@@ -51,11 +51,7 @@
       <%= yield :fullscreen_box %>
       <!-- main -->
       <div id="main">
-        <% if flash[:notice] %>
-        <div class="mblock"><div class="mblock-cnt">
-          <%=h flash[:notice] %>
-        </div></div>
-        <% end %>
+        <%= display_flash :notice %>
         <%= yield :special_box %>
         <%= yield %>
       </div>

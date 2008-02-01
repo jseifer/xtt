@@ -45,10 +45,10 @@ class Status < ActiveRecord::Base
         today.day >= 15 ? (today.change(:day => 15)..today.end_of_month) : (today.beginning_of_month..today.change(:day => 15))
       when 'monthly'
         (now.beginning_of_month..now.end_of_month)
-      when nil then return block.call
+      when nil then return [block.call, nil]
       else raise "Unknown filter: #{filter.inspect}"
     end
-    with_date_range range, &block
+    [with_date_range(range, &block), range]
   end
   
   def self.with_date_range(range, &block)

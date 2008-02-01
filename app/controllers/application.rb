@@ -1,9 +1,12 @@
 # Filters added to this controller apply to all controllers in the application.
 # Likewise, all the methods added will be available for all controllers.
 class ApplicationController < ActionController::Base
+  cattr_accessor :host_name, :instance_writer => false
+
   include AuthenticatedSystem
   include ExceptionNotifiable
   helper :all # include all helpers, all the time
+  before_filter :set_host
   before_filter :adjust_format_for_iphone
   before_filter :set_timezone
 
@@ -40,5 +43,9 @@ protected
       current_user.update_attribute(:time_zone, browser_timezone.name) if logged_in? && browser_timezone.name != current_user.time_zone
     end
     Time.zone = logged_in? ? current_user.time_zone : browser_timezone
+  end
+  
+  def set_host
+    self.class.host_name = request.host
   end
 end
