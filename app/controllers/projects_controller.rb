@@ -12,7 +12,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @statuses = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter])
+    @statuses, @date_range = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter])
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml  => @project }
