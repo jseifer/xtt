@@ -51,11 +51,7 @@
       <%= yield :fullscreen_box %>
       <!-- main -->
       <div id="main">
-        <% if flash[:notice] %>
-        <div class="mblock"><div class="mblock-cnt">
-          <%=h flash[:notice] %>
-        </div></div>
-        <% end %>
+        <%= display_flash :notice %>
         <%= yield :special_box %>
         <%= yield %>
       </div>

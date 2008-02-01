@@ -24,8 +24,8 @@ class UsersController < ApplicationController
     @user.register! if @user.valid?
     if @user.errors.empty?
       self.current_user = @user
-      redirect_back_or_default('/')
       flash[:notice] = "Thanks for signing up!"
+      redirect_back_or_default
     else
       render :action => 'new'
     end
@@ -38,7 +38,7 @@ class UsersController < ApplicationController
       current_user.activate!
       flash[:notice] = "Signup complete!"
     end
-    redirect_back_or_default('/')
+    redirect_back_or_default
   end
   
   # private user editing

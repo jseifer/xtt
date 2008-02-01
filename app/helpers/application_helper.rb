@@ -53,4 +53,9 @@ module ApplicationHelper
   def js_formatted_time(time)
     jstime time, :formatted
   end
+  
+  def display_flash(key)
+    return nil if flash[key].blank?
+    content_tag(:div, content_tag(:div, h(flash[key]), :class => 'mblock-cnt'), :class => 'mblock')
+  end
 end

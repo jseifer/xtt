@@ -10,7 +10,7 @@ class User
   validates_confirmation_of :password,                   :if => :password_required?
   validates_length_of       :login,    :within => 3..40
   validates_length_of       :email,    :within => 3..100
-  validates_uniqueness_of   :login, :email, :case_sensitive => false
+  validates_uniqueness_of   :login, :email
   before_save :encrypt_password
   
   # prevents a user from submitting a crafted form that bypasses activation
@@ -61,12 +61,29 @@ class User
     self.remember_token            = nil
     save(false)
   end
+  
+  def login=(value)
+    unless value.nil?
+      value.gsub! /\W/, ''
+      value.strip!
+      value.downcase!
+    end
+    write_attribute :login, value
+  end
+  
+  def email=(value)
+    unless value.nil?
+      value.strip!
+      value.downcase!
+    end
+    write_attribute :email, value
+  end
 
 protected
   # before filter 
   def encrypt_password
     return if password.blank?
-    self.salt = Digest::SHA1.hexdigest("--#{Time.now.to_s}--#{login}--") if new_record?
+    self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
     self.crypted_password = encrypt(password)
   end
     

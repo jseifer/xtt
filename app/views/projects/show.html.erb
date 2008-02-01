@@ -88,7 +88,7 @@
   			<%= f.hidden_field :project_id %>
   		</div>
   	<% end unless @project.invitable_users.empty? -%>
-		<% form_tag '', :class => 'form'  do |f| -%>
+		<% form_tag '', :class => 'form'  do -%>
 			<p><%= text_area_tag :emails, '',  :rows => 3, :cols => 20  %></p>
     	<p class="btns"><%= save_button %></p>
 		<% end -%>
