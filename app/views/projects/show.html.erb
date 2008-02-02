@@ -8,7 +8,9 @@
 					<%= f.hidden_field :project_id %>
     			<p class="btns"><%= update_button %></p>
         </li>
-        
+        <li id="project-head">
+          <h2><%=h @project.name %></h2>
+        </li>
         <li class="clearfix" style="border-bottom:0">
              <%= image_tag(Gchart.bar(
                 :bg => 'CACACA', 
@@ -23,7 +25,7 @@
           <p class="special-num">
             <span class="main-num"><%= @statuses.sum { |s| s.hours } %></span>
             <span class="quiet">hours this <%=h params[:filter] %> period.</span>
-            <span class="paging"><a href="#">&larr; Monday</a> <a href="#">Wednesday &rarr;</a></span>
+            <%= paging_for_period(@date_range) %>
           </p>
         </li>
       </ul>
@@ -35,10 +37,10 @@
   <div class="mblock-hdr">
     <h3><%= h(@project.name) %> Timeline</h3>
     <div class="utils">
-			<%= link_to_filtered_statuses(:daily, :filter => 'daily') %>
-			<%= link_to_filtered_statuses(:week,  :filter => 'weekly') %>
-			<%= link_to_filtered_statuses('bi-weekly', :filter => 'bi-weekly') %>
-			<%= link_to_filtered_statuses(:month, :filter => 'monthly') %>
+			<%= link_to_filtered_statuses(:Daily, :filter => 'daily') %>
+			<%= link_to_filtered_statuses(:Week,  :filter => 'weekly') %>
+			<%= link_to_filtered_statuses('Bi-weekly', :filter => 'bi-weekly') %>
+			<%= link_to_filtered_statuses(:Month, :filter => 'monthly') %>
     </div>
   </div>
   <div class="mblock-cnt">
@@ -157,6 +159,9 @@
 <% box(:sidebar, 'people') do |sbox| %>
   <% sbox.title = "Filter this project by a member" %>
   <% sbox.content_classes = "nopad" %>
+  <% if params[:user_id] %>
+  <% sbox.header_utils =  link_to_filtered_statuses("Remove filter", {:user_id => :all}) %>
+  <% end %>
   <% sbox.content = capture do %>
    <ul class="media-list">
 		<% @project.users.each_with_index do |user, index| -%>
@@ -179,6 +184,5 @@
       </li>
       <% end %>
     </ul>
-		<p><%= link_to_filtered_statuses "All Users", :user_id => :all %></p>
   <% end %>
 <% end %>

@@ -56,6 +56,6 @@ module ApplicationHelper
   
   def display_flash(key)
     return nil if flash[key].blank?
-    content_tag(:div, content_tag(:div, h(flash[key]), :class => 'mblock-cnt'), :class => 'mblock')
+    content_tag(:div, content_tag(:div, h(flash[key]), :class => 'mblock-cnt'), :class => 'mblock', :id => key.to_s.downcase)
   end
 end

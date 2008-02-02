@@ -637,6 +637,18 @@ p.btns a {
 /* @end */
 
 /* @group Charts and reporting stuff */
+#project-head {
+  border-top: none;
+  margin-top: 18px;
+}
+
+#project-head h2 {
+  font-size: 92%;
+  text-transform: uppercase;
+  color: #676767;
+  font-weight: normal;
+}
+
 .special-chart {
   float: left;
 }
@@ -672,4 +684,16 @@ p.btns a {
 .paging a:first-child {
   margin-left: 0;
 }
+/* @end */
+
+/* @group messages, errors, and the like */
+
+#notice {
+  background-color: #bec;
+  color: #031;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #483;
+}
+
 /* @end */
