@@ -1,7 +1,7 @@
 <% box(:special, "overview") do |box| %>
 
   <% if @status.followup %>
-    <% box.title = %(<span class="utc">#{@status.created_at.to_s}</span> - <span class="utc">#{@status.followup.created_at.to_s}</span>) %>
+    <% box.title = "#{@status.created_at.strftime('%A, %B %d %I:%m %p')}  - #{@status.followup.created_at.strftime("%A, %B %d %I:%m %p")}" %>
   <% else %>
     <% box.title = %(<span class="utc">#{@status.created_at.to_s}</span> - Now</span>) %>
   <% end %>
@@ -46,7 +46,7 @@
     <% box.content = capture do %>
     <% form_for @status, :html => { :id => 'edit-status', :class => 'form' } do |f| %>
     <table cellspacing="0" cellpadding="0" class="tblform">
-      <tr>
+      <!-- <tr>
         <th>
           <label for="status">Started <%= @status.created_at.strftime("%A, %B %d") %> at:</label>
         </th>
@@ -62,15 +62,15 @@
           <input type="text" id="finished-at" name="status[set_finished_at]" value="<%= @status.followup.created_at.strftime("%I:%m %p") %>" title="<%= @status.followup.created_at %>" />
           <p class="quiet">Changing the finish time will alter the start time of the following status: <strong>&ldquo;<%=h @status.followup.message %>&rdquo;</strong></p>
         </td>
-      </tr>
       <% end %>
+      </tr> -->
       <tr>
         <th>
           <label for="status">Total hours worked:</label>
         </th>
         <td>
-          <input type="text" id="hours-worked" name="xstatus[set_hours_worked]" value="<%= @status.hours %>" />
-          <p class="quiet">Changing the hours worked will change the finish time of this status and the start time of your following status: <strong>&ldquo;<%=h @status.followup.message %>&rdquo;</strong></p>
+          <input type="text" id="hours-worked" name="status[set_hours_worked]" value="<%= @status.hours %>" />
+          <p class="quiet">Modifying your time could potentially cause overlap with your other statuses.</p>
         </td>
       </tr>
       <tr>
@@ -93,19 +93,21 @@
       <% if @status.previous %>
       <li<%= %( class="last") if @status.followup.nil? %>>
         <a href="<%= status_path(@status.previous) %>">
-          <span class="quiet">Previous status: <em><%=h @status.previous.message %></em></span>
+          <span class="quiet">Previous status</span>
+          <em><%=h @status.previous.message %></em>
           <span class="start-fin">
             <span class="start">
-              <span class="number"><%= start_time_for(@status.previous) %></span>
+              <span class="time"><%= start_time_for(@status.previous) %></span>
               <span class="month">January 22</span>
             </span>
             <span class="dash">-</span>
             <span class="finish">
-              <span class="number"><%= finish_time_for(@status.previous) %></span>
+              <span class="time"><%= finish_time_for(@status.previous) %></span>
               <span class="month">January 22</span>
             </span>
+            <span class="equals">=</span>
             <span class="hours">
-              <span class="number"><%= @status.previous.hours %></span>
+              <span class="time"><%= @status.previous.hours %></span>
               <span class="month">hours</span>
             </span>
           </span>
@@ -115,22 +117,24 @@
       <% if @status.followup %>
       <li class="last">
         <a href="<%= status_path(@status.followup) %>">
-          <span class="quiet">Next status: <em><%=h @status.followup.message %></em></span>
+          <span class="quiet">Next status</span>
+           <em><%=h @status.followup.message %></em>
           <span class="start-fin">
             <span class="start">
               <span class="time"><%= start_time_for(@status.followup) %></span>
               <span class="month">January 23</span>
             </span>
             <span class="dash">-</span>
-            <span class="finish">
+            <span class="finish">              
               <% unless @status.followup.active? %>
               <span class="time"><%= finish_time_for(@status.followup) %></span>
-              <span class="month">January 23</span>
+              <span class="month"><%= @status.followup.created_at.strftime("%B %d") %></span>
               <% else %>
               <span class="time">Now</span>
               <span class="month"><%= Time.now.strftime("%B %d") %></span>
               <% end %>
             </span>
+            <span class="equals">=</span>
             <span class="hours">
               <span class="time"><%= @status.followup.hours %></span>
               <span class="month">hours</span>

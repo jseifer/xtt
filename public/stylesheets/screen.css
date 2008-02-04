@@ -464,28 +464,36 @@ li.daybreak {
 }
 
 #status-list em {
-  color: #333;
+  color: #999;
+  display: block;
+  border-bottom: 1px dotted #ccc;
+  padding-bottom: 9px;
+}
+
+#status-list span.quiet {
+  color: #777;
   font-weight: bold;
-  font-style: normal;
+  text-transform: uppercase;
+  font-size: 92%;
 }
 
 #status-list .start {
   position: absolute;
-  width: 100px;
+  width: 70px;
   left: 0;
   top: 9px;
   display: block;
+  text-align: left;
 }
 
 #status-list .finish {
   position: absolute;
   top: 9px;
-  left: 109px;
-  width: 100px;
+  left: 88px;
+  width: 70px;
   display: block;
 }
 
-#status-list .number,
 #status-list .time {
   font-weight: bold;
   font-size: 120%;
@@ -500,13 +508,19 @@ li.daybreak {
   text-align: center;
 }
 
-#status-list .dash {
+#status-list .dash, #status-list .equals {
   font-size: 150%;
   font-weight: bold;
   position: absolute;
-  left: 100px;
+  left: 75px;
   top: 9px;
   width: 9px;
+  color: #000;
+}
+
+#status-list .equals {
+  left: 200px;
+  top: 18px;
 }
 
 #status-list .hours {
@@ -623,6 +637,18 @@ p.btns a {
 /* @end */
 
 /* @group Charts and reporting stuff */
+#project-head {
+  border-top: none;
+  margin-top: 18px;
+}
+
+#project-head h2 {
+  font-size: 92%;
+  text-transform: uppercase;
+  color: #676767;
+  font-weight: normal;
+}
+
 .special-chart {
   float: left;
 }
@@ -638,6 +664,36 @@ p.btns a {
   font-weight: bold;
   display: block;
   line-height: 100%;
+}
+
+.paging {
+  display: block;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.paging a {
+  color: #888;
+  margin-left: 9px;
+}
+
+.paging a:hover {
+  color: #269;
+}
+
+.paging a:first-child {
+  margin-left: 0;
+}
+/* @end */
+
+/* @group messages, errors, and the like */
+
+#notice {
+  background-color: #bec;
+  color: #031;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #483;
 }
 
 /* @end */

@@ -43,7 +43,7 @@ module ApplicationHelper
 
   @@default_jstime_format = "%d %b, %Y %I:%M %p"
   def jstime(time, custom = nil)
-    content_tag('abbr', content_tag('span', time.strftime(@@default_jstime_format), :class => "time #{custom}".strip), :title => time.xmlschema, :class => 'published')
+    content_tag('abbr', content_tag('span', time.strftime(@@default_jstime_format), :class => "timestamp #{custom}".strip), :title => time.xmlschema, :class => 'published')
   end
   
   def js_time_ago_in_words(time)
@@ -56,6 +56,6 @@ module ApplicationHelper
   
   def display_flash(key)
     return nil if flash[key].blank?
-    content_tag(:div, content_tag(:div, h(flash[key]), :class => 'mblock-cnt'), :class => 'mblock')
+    content_tag(:div, content_tag(:div, h(flash[key]), :class => 'mblock-cnt'), :class => 'mblock', :id => key.to_s.downcase)
   end
 end
