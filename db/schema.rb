@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 19) do
+ActiveRecord::Schema.define(:version => 22) do
 
   create_table "feeds", :force => true do |t|
     t.string   "name"
@@ -33,16 +33,16 @@ ActiveRecord::Schema.define(:version => 19) do
     t.string   "code"
   end
 
-  add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
-
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
-    t.decimal  "hours",      :precision => 8, :scale => 2, :default => 0.0
+    t.decimal  "hours",       :default => 0.0
     t.string   "message"
     t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "project_id"
+    t.string   "source",      :default => "the web"
+    t.datetime "finished_at"
   end
 
   add_index "statuses", ["created_at", "user_id"], :name => "index_statuses_on_created_at_and_user_id"

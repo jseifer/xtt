@@ -15,6 +15,7 @@ class Status < ActiveRecord::Base
   has_finder :without_project, :conditions => {:project_id => nil}, :extend => LatestExtension
   
   after_create :cache_user_status
+  after_create :set_previous_finish_time
 #  before_update :calculate_hours
   
   acts_as_state_machine :initial => :pending
@@ -99,6 +100,10 @@ protected
     return false if followup.nil?
     quarters = (accurate_time.to_f / 15.minutes.to_f).ceil
     self.hours = quarters.to_f / 4.0
+  end
+  
+  def set_previous_finish_time
+    previous.update_attribute(:finished_at, created_at) if previous(true) and previous.pending?
   end
   
   def process_previous
