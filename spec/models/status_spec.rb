@@ -244,13 +244,13 @@ describe Status, "(filtering by date)" do
     time 2007, 6, 30, 6
     model Status do
       stub :message => 'default', :state => 'processed', :hours => 5, :created_at => current_time - 5.minutes, :user_id => 5
-      stub :status_day, :created_at => current_time - 8.minutes, :user_id => 3
-      stub :status_week_1, :created_at => current_time - 3.days
-      stub :status_week_2, :created_at => current_time - (4.days + 20.hours), :user_id => 3
+      stub :status_day,      :created_at => current_time - 8.minutes, :user_id => 3
+      stub :status_week_1,   :created_at => current_time - 3.days
+      stub :status_week_2,   :created_at => current_time - (4.days + 20.hours), :user_id => 3
       stub :status_biweek_1, :created_at => current_time - 8.days, :user_id => 3
       stub :status_biweek_2, :created_at => current_time - (14.days + 20.hours)
-      stub :status_month_1, :created_at => current_time - 20.days, :user_id => 3
-      stub :status_month_2, :created_at => current_time - (28.days + 20.hours)
+      stub :status_month_1,  :created_at => current_time - 20.days, :user_id => 3
+      stub :status_month_2,  :created_at => current_time - (28.days + 20.hours)
       stub :archive, :created_at => current_time - 35.days
     end
   end
@@ -316,10 +316,15 @@ describe Status, "(filtering by date)" do
   end
   
   def compare_arrays(actual, expected)
+    puts expected.inspect
     expected.each do |e| 
       a_index = actual.index(statuses(e))
       e_index = expected.index(e)
-      fail "Record #{e.inspect} is in wrong position: #{a_index.inspect} instead of #{e_index.inspect}" unless a_index == e_index
+      if a_index.nil?
+        fail "Record #{e.inspect} was not in the array, but should have been"
+      else
+        fail "Record #{e.inspect} is in wrong position: #{a_index.inspect} instead of #{e_index.inspect}" unless a_index == e_index
+      end
     end
     
     actual.size.should == expected.size
