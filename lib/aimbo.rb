@@ -55,7 +55,7 @@ class Aimbo
         #  self.class.send :remove_const, :IM
         #end
         load File.dirname(__FILE__) + "/im/response.rb"
-        self.class.send :include, IM::Response
+        self.class.send :include, IM
       elsif buddy.screen_name == "aolsystemmsg"
         # do nothing
       else
