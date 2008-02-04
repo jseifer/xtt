@@ -35,7 +35,6 @@ module IM
     def create_status(message)
       status = @user.post(message, nil)
       if status and status.project 
-        status.update_attribute :source, "AIM"
         reply = "Created status for #{status.project.name}: '#{status.message}'"
       else
         reply = "Out: '#{status.message}"
@@ -43,6 +42,7 @@ module IM
       if status and status.new_record? # not saved
         return "Couldn't create your status. Debug: #{status.errors.full_messages.join(";")}"
       else
+        status.update_attribute(:source, "AIM") if status
         return reply
       end
     end
