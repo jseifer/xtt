@@ -69,7 +69,7 @@
           <label for="status">Total hours worked:</label>
         </th>
         <td>
-          <input type="text" id="hours-worked" name="status[set_hours_worked]" value="<%= @status.hours %>" />
+          <input type="text" id="hours-worked" name="xstatus[set_hours_worked]" value="<%= @status.hours %>" />
           <p class="quiet">Changing the hours worked will change the finish time of this status and the start time of your following status: <strong>&ldquo;<%=h @status.followup.message %>&rdquo;</strong></p>
         </td>
       </tr>
@@ -96,16 +96,16 @@
           <span class="quiet">Previous status: <em><%=h @status.previous.message %></em></span>
           <span class="start-fin">
             <span class="start">
-              <span class="time"><%= start_time_for(@status.previous) %></span>
+              <span class="number"><%= start_time_for(@status.previous) %></span>
               <span class="month">January 22</span>
             </span>
             <span class="dash">-</span>
             <span class="finish">
-              <span class="time"><%= finish_time_for(@status.previous) %></span>
+              <span class="number"><%= finish_time_for(@status.previous) %></span>
               <span class="month">January 22</span>
             </span>
             <span class="hours">
-              <span class="time"><%= @status.previous.hours %></span>
+              <span class="number"><%= @status.previous.hours %></span>
               <span class="month">hours</span>
             </span>
           </span>

@@ -16,7 +16,9 @@ module LiveTimer
     incrementer = Time.now.to_f
     if status.followup.nil?
       (@content_for_dom_loaded ||= "")
-      @content_for_dom_loaded += "new PeriodicalExecuter(function() { XTT.timerIncrement('timer_#{dom_id(status)}_#{incrementer}') }, 1);"
+      # @content_for_dom_loaded += "new PeriodicalExecuter(function() { XTT.timerIncrement('timer_#{dom_id(status)}_#{incrementer}') }, 1);"
+      # FUCK SHIT FUCK
+      # TODO: FUCKING PUT THIS BACK
     end # no status followup
     "<span style=\"display:none\" id=\"timer_#{dom_id status}_#{incrementer}\">#{status.created_at.to_f}</span><span class=\"timer\">#{nice_time(status.accurate_time)}</span>"
   end

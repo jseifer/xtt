@@ -38,7 +38,7 @@ module ApplicationHelper
   end
   
   def finish_time_for(status)
-    js_formatted_time status.followup.created_at
+    js_formatted_time status.finished_at
   end
 
   @@default_jstime_format = "%d %b, %Y %I:%M %p"

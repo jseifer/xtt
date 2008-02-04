@@ -485,6 +485,7 @@ li.daybreak {
   display: block;
 }
 
+#status-list .number,
 #status-list .time {
   font-weight: bold;
   font-size: 120%;
