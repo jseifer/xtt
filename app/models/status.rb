@@ -16,7 +16,7 @@ class Status < ActiveRecord::Base
   
   after_create :cache_user_status
   after_create :set_previous_finish_time
-#  before_update :calculate_hours
+  before_update :calculate_hours
   
   acts_as_state_machine :initial => :pending
   state :pending, :enter => :process_previous
@@ -116,10 +116,11 @@ protected
 
   def followup_is_valid
     return if (user.nil? || followup.nil? || followup.followup.nil?)
-    value = followup.followup_time
-    if followup_time > value
-      errors.add :followup_time, "Cannot extend this status to after the next status' end-point. Delete the next status." 
-    end
+    # no longer check for validity. :()
+    #value = followup.followup_time
+    #if followup_time > value
+    #  errors.add :followup_time, "Cannot extend this status to after the next status' end-point. Delete the next status." 
+    #end
   end
   
   def previous_is_valid

@@ -1,4 +1,8 @@
 class Status
+
+  def set_hours_worked=(hours)
+    self.finished_at = created_at + hours.to_f.hours
+  end
   
   # The accurate amount of time (not rounded) this project has taken.
   def accurate_time
