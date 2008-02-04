@@ -31,11 +31,13 @@ class Aimbo
   }
   
   attr_accessor :client
-
+  include IM
+  
   def initialize
-    @client = Net::TOC.new(@@credentials[:username], @@credentials[:password]) 
-    setup_error_notification
-    setup_im
+    @client ||= Net::TOC.new(@@credentials[:username], @@credentials[:password]) 
+    @error_notifier ||= setup_error_notification
+    @im_notifier ||= setup_im
+    @setup_away ||= setup_away
   end
   
   def setup_error_notification
@@ -47,9 +49,38 @@ class Aimbo
   
   def setup_im
     @client.on_im do |message, buddy|
-      IM::Response.new message, buddy
+      if message =~ /reload/ and buddy.screen_name == @@credentials[:admin]
+        puts "Reloading IM::Response"
+        #if defined?(IM)
+        #  self.class.send :remove_const, :IM
+        #end
+        load File.dirname(__FILE__) + "/im/response.rb"
+        self.class.send :include, IM::Response
+      elsif buddy.screen_name == "aolsystemmsg"
+        # do nothing
+      else
+        IM::Response.new message, buddy
+      end
     end
   end
+  
+  def setup_away
+    @users = User.find(:all, :conditions => ['aim_login is not null'])
+    @users.each do |user|  
+      if pal = client.buddy_list.buddy_named(user.aim_login)
+        puts pal.to_s
+        pal.on_status do |status|
+          puts "Buddy changed status to #{status}"
+          # todo: hash the screen name
+          File.open("buddy.#{pal.screen_name}.status.txt", "w+") do |f|
+            # todo: write xml
+            f.write "{ time:#{Time.now.utc.to_f}, status: '#{status}' }"
+          end
+        end
+      end
+    end
+  end
+
 end
 
 
@@ -57,22 +88,6 @@ aimbo = Aimbo.new
 client = aimbo.client
 client.connect
 puts "buddy list is #{client.buddy_list.inspect}"
-
-@users = User.find(:all, :conditions => ['aim_login is not null'])
-@users.each do |user|  
-  if pal = client.buddy_list.buddy_named(user.aim_login)
-    puts pal.to_s
-    pal.on_status do |status|
-      puts "Buddy changed status to #{status}"
-      # todo: hash the screen name
-      File.open("buddy.#{pal.screen_name}.status.txt", "w+") do |f|
-        # todo: write xml
-        f.write "{ time:#{Time.now.utc.to_f}, status: '#{status}' }"
-      end
-    end
-  end
-end
-
 client.wait
 
 

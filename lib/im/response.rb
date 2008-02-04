@@ -17,8 +17,14 @@ module IM
       case message
         when "help": 
           "<HTML>I'm a time-tracker bot. Send me a status message like <b>@project hacking on \#54</b></HTML> or 'commands' for a list of commands"
+        when "status":
+          if status = @user.statuses.latest
+            "Your current status is: #{status.project && status.project.code} #{status.message}"
+          else
+            "No current status"
+          end
         when "commands":
-          "Available commands are: help, projects, commands."
+          "Available commands are: help, projects, commands, status."
         when "projects": 
           "Your projects are: #{user.projects.map(&:code).to_sentence}"
         else
@@ -29,9 +35,10 @@ module IM
     def create_status(message)
       status = @user.post(message, nil)
       if status and status.project 
+        status.update_attribute :source, "AIM"
         reply = "Created status for #{status.project.name}: '#{status.message}'"
       else
-        reply = "Out: '#{@status.message}"
+        reply = "Out: '#{status.message}"
       end
       if status and status.new_record? # not saved
         return "Couldn't create your status. Debug: #{status.errors.full_messages.join(";")}"
