@@ -35,11 +35,7 @@ ActiveRecord::Schema.define(:version => 22) do
 
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
-<<<<<<< HEAD:db/schema.rb
     t.decimal  "hours",       :default => 0.0
-=======
-    t.decimal  "hours",      :default => 0.0
->>>>>>> 7497a15e80a55c4a96a7ee62b9f13bb257766f1e:db/schema.rb
     t.string   "message"
     t.string   "state"
     t.datetime "created_at"
