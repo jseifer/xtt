@@ -33,28 +33,17 @@ document.observe('dom:loaded', function() {
     } 
   });
 
+  /**
+   * Format any UTC timestamp on the page to the users local timezone.
+   * Use timeAgoInWords by default unless the class 'formatted' in supplied.
+   * FIXME: This is to specific, modify so format can be specified.
+   */
   $$('span.timestamp').each(function(span) {
 		if(span.hasClassName("formatted"))
 			span.update(Date.parseUTC(span.innerHTML).strftime("%I:%m %p"));
 		else
     	span.update(Date.parseUTC(span.innerHTML).timeAgoInWords());
   });
-  
-  var startTime   = $('created-at');
-  var finishTime  = $('finished-at');
-  var hoursWorked = $('hours-worked');
-  
-  if(hoursWorked && startTime && finishTime) {
-    var hours = $F(hoursWorked);
-    var started = new Date(Date.parse(startTime.readAttribute('title')));
-    console.log(started);
-    hoursWorked.observe('keyup', function() {
-      var newHours = parseFloat($F(this));
-      if(newHours != hours) {
-        finishTime.setValue((newHours).since(started).toDate().strftime("%I:%m %p"));
-      }
-    });
-  }
 });
 
 
@@ -111,14 +100,21 @@ var strftime_funks = {
   '%': function(t) { return '%' }
 };
 
-Date.prototype.strftime = function (fmt) {
-    var t = this;
+
+Object.extend(Date.prototype, {
+  strftime: function(format) {
     for (var s in strftime_funks) {
-        if (s.length == 1 )
-            fmt = fmt.replace('%' + s, strftime_funks[s](t));
+      if (s.length == 1 )
+        format = format.replace('%' + s, strftime_funks[s](this));
     }
-    return fmt;
-};
+    return format;
+  },
+  
+  timeAgoInWords: function() {
+    var relative_to = (arguments.length > 0) ? arguments[1] : new Date();
+    return Date.distanceOfTimeInWords(this, relative_to, arguments[2]);
+  }
+});
 
 // http://twitter.pbwiki.com/RelativeTimeScripts
 Date.distanceOfTimeInWords = function(fromTime, toTime, includeTime) {
@@ -148,12 +144,7 @@ Date.distanceOfTimeInWords = function(fromTime, toTime, includeTime) {
   }
 }
 
-Date.prototype.timeAgoInWords = function() {
-  var relative_to = (arguments.length > 0) ? arguments[1] : new Date();
-  return Date.distanceOfTimeInWords(this, relative_to, arguments[2]);
-}
-
-// for those times when you get a UTC string like 18 May 09:22 AM
+// For those times when you get a UTC string like 18 May 09:22 AM
 Date.parseUTC = function(value) {
   var localDate = new Date(value);
   var utcSeconds = Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate(), localDate.getHours(), localDate.getMinutes(), localDate.getSeconds())

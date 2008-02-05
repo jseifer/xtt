@@ -14,6 +14,6 @@ module StatusesHelper
       when Status then status_or_date.created_at
       else status_or_date
     end
-    created_at && "#{js_time_ago_in_words created_at} ago"
+    created_at && "#{js_time_ago_in_words created_at}"
   end
 end
