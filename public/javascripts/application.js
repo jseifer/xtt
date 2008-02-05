@@ -11,23 +11,25 @@ document.observe('dom:loaded', function() {
       }
     });
   
-  
-  // Grab all the day badges and if the user has their browser 
-  // wide enough, show them on page load.  Also, when the user resizes 
-  // their browser window run this check again.
+  /**
+   * Grab all the day and time badges and if the user has their browser 
+   * wide enough, show them on page load.  Also, when the user resizes 
+   * their browser window run this check again.
+   */
   var dayBadges = $$('p.day-break');
+  var timeBadges = $$('span.time-span');
   var showing = false;
   if(document.viewport.getWidth() > 1175) {
-    dayBadges.invoke('show');
+    [timeBadges, dayBadges].invoke('invoke', 'show');
     showing = true;
   }
   Event.observe(window, 'resize', function() {
     var vpWidth = document.viewport.getWidth();
     if(vpWidth > 1175) {
       showing = true;
-      dayBadges.invoke('show');
+      [timeBadges, dayBadges].invoke('invoke', 'show');      
     } else if(vpWidth < 1175 && showing) {
-      dayBadges.invoke('hide');
+      [timeBadges, dayBadges].invoke('invoke', 'hide');            
     } 
   });
 
@@ -57,8 +59,7 @@ document.observe('dom:loaded', function() {
 
 
 (function() {
-  // Get users Timezone offset, add it as a hidden field and 
-  // submit it with every form
+  // Get users Timezone offset and set it in a cookie.
   var date = new Date();
   var offset = date.getTimezoneOffset();
   Cookie.set({tzoffset: offset});

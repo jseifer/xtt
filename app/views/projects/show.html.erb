@@ -54,7 +54,7 @@
           <span class="num"><%= status.created_at.strftime("%b %d") %></span>
         </p>
         <% else  %>
-        <span class="time-span"><%= status.created_at.to_s :time %></span>
+        <span class="time-span" style="display:none"><%= status.created_at.to_s :time %></span>
         <% end rescue '' %>
         <% prev_status = status %>
         
