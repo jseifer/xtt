@@ -39,8 +39,8 @@ protected
   end
 
   def set_timezone
-    if logged_in? && browser_timezone
-      current_user.update_attribute(:time_zone, browser_timezone.name) if logged_in? && browser_timezone.name != current_user.time_zone
+    if logged_in? && browser_timezone && browser_timezone.name != current_user.time_zone
+      current_user.update_attribute(:time_zone, browser_timezone.name)
     end
     Time.zone = logged_in? ? current_user.time_zone : browser_timezone
   end

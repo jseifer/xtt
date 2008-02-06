@@ -32,7 +32,7 @@ describe User::Inviter do
   end
   
   it "retrieves unique users" do
-    @inviter.users.should == [users(:foo), users(:bar)]
+    compare_stubs :users, @inviter.users, [:foo, :bar]
   end
   
   it "creates memberships and emails users" do

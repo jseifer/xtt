@@ -8,6 +8,7 @@ class StatusesController < ApplicationController
     @statuses ||= current_user.statuses
 
     respond_to do |format|
+      format.html # index.html.erb
       format.xml  { render :xml  => @statuses }
     end
   end

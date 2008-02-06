@@ -24,4 +24,19 @@ Spec::Runner.configure do |config|
   def authorize_as(user)
     @request.env["HTTP_AUTHORIZATION"] = user ? "Basic #{Base64.encode64("#{users(user).login}:test")}" : nil
   end
+
+  # TODO: Make a nifty rspec matcher
+  def compare_stubs(model, actual, expected)
+    expected.each do |e| 
+      a_index = actual.index(send(model, e))
+      e_index = expected.index(e)
+      if a_index.nil?
+        fail "Record #{e.inspect} was not in the array, but should have been"
+      else
+        fail "Record #{e.inspect} is in wrong position: #{a_index.inspect} instead of #{e_index.inspect}" unless a_index == e_index
+      end
+    end
+    
+    actual.size.should == expected.size
+  end
 end

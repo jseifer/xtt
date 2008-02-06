@@ -265,68 +265,54 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows recent statuses with no filter" do
-    compare_arrays Status.filter(nil, nil)[0],  [:default, :status_day, :status_week_1, :status_week_2,
+    compare_stubs :statuses, Status.filter(nil, nil)[0],  [:default, :status_day, :status_week_1, :status_week_2,
       :status_biweek_1, :status_biweek_2, :status_month_1, :status_month_2, :archive]
   end
   
   it "shows recent statuses by user" do
-    compare_arrays Status.filter(5, nil)[0],  [:default, :status_week_1,  :status_biweek_2, :status_month_2, :archive]
+    compare_stubs :statuses, Status.filter(5, nil)[0],  [:default, :status_week_1,  :status_biweek_2, :status_month_2, :archive]
   end
   
   it "shows today's statuses" do
-    compare_arrays Status.filter(nil, 'daily')[0],  [:default, :status_day]
+    compare_stubs :statuses, Status.filter(nil, 'daily')[0],  [:default, :status_day]
   end
   
   it "shows today's statuses by user" do
-    compare_arrays Status.filter(5, 'daily')[0],  [:default]
+    compare_stubs :statuses, Status.filter(5, 'daily')[0],  [:default]
   end
   
   it "shows this week's statuses" do
-    compare_arrays Status.filter(nil, 'weekly')[0],  [:default, :status_day, :status_week_1, :status_week_2]
+    compare_stubs :statuses, Status.filter(nil, 'weekly')[0],  [:default, :status_day, :status_week_1, :status_week_2]
   end
   
   it "shows this week's statuses by user" do
-    compare_arrays Status.filter(5, 'weekly')[0],  [:default, :status_week_1]
+    compare_stubs :statuses, Status.filter(5, 'weekly')[0],  [:default, :status_week_1]
   end
   
   it "shows this fortnight's statuses" do
-    compare_arrays Status.filter(nil, 'bi-weekly')[0],  [:default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2]
+    compare_stubs :statuses, Status.filter(nil, 'bi-weekly')[0],  [:default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2]
   end
   
   it "shows this fortnight's statuses by user" do
-    compare_arrays Status.filter(5, 'bi-weekly')[0],  [:default, :status_week_1, :status_biweek_2]
+    compare_stubs :statuses, Status.filter(5, 'bi-weekly')[0],  [:default, :status_week_1, :status_biweek_2]
   end
   
   it "shows earlier fortnight's statuses" do
     Time.stub!(:now).and_return(Time.utc(2007, 6, 14, 6))
-    compare_arrays Status.filter(nil, 'bi-weekly')[0],  [:status_month_1, :status_month_2]
+    compare_stubs :statuses, Status.filter(nil, 'bi-weekly')[0],  [:status_month_1, :status_month_2]
   end
   
   it "shows earlier fortnight's statuses by user" do
     Time.stub!(:now).and_return(Time.utc(2007, 6, 14, 6))
-    compare_arrays Status.filter(5, 'bi-weekly')[0],  [:status_month_2]
+    compare_stubs :statuses, Status.filter(5, 'bi-weekly')[0],  [:status_month_2]
   end
   
   it "shows this month's statuses" do
-    compare_arrays Status.filter(nil, 'monthly')[0],  [:default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2, :status_month_1, :status_month_2]
+    compare_stubs :statuses, Status.filter(nil, 'monthly')[0],  [:default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2, :status_month_1, :status_month_2]
   end
   
   it "shows this month's statuses by user" do
-    compare_arrays Status.filter(5, 'monthly')[0],  [:default, :status_week_1, :status_biweek_2, :status_month_2]
-  end
-  
-  def compare_arrays(actual, expected)
-    expected.each do |e| 
-      a_index = actual.index(statuses(e))
-      e_index = expected.index(e)
-      if a_index.nil?
-        fail "Record #{e.inspect} was not in the array, but should have been"
-      else
-        fail "Record #{e.inspect} is in wrong position: #{a_index.inspect} instead of #{e_index.inspect}" unless a_index == e_index
-      end
-    end
-    
-    actual.size.should == expected.size
+    compare_stubs :statuses, Status.filter(5, 'monthly')[0],  [:default, :status_week_1, :status_biweek_2, :status_month_2]
   end
 end
 
