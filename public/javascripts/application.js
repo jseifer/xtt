@@ -54,6 +54,12 @@ document.observe('dom:loaded', function() {
   Cookie.set({tzoffset: offset});
 })();
 
+var Timer = Class.create({
+  initialize: function(element) {
+    
+  }
+});
+
 Element.addMethods('INPUT', {
   /**
    * Add hints to input elements.
@@ -77,37 +83,31 @@ Element.addMethods('INPUT', {
   }
 });
 
-// http://redhanded.hobix.com/inspect/showingPerfectTime.html
-/* other support functions -- thanks, ecmanaut! */
-var strftime_funks = {
-  zeropad: function( n ){ return n > 9 ? n : '0' + n; },
-  a: function(t) { return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][t.getDay()] },
-  A: function(t) { return ['Sunday','Monday','Tuedsay','Wednesday','Thursday','Friday','Saturday'][t.getDay()] },
-  b: function(t) { return ['Jan','Feb','Mar','Apr','May','Jun', 'Jul','Aug','Sep','Oct','Nov','Dec'][t.getMonth()] },
-  B: function(t) { return ['January','February','March','April','May','June', 'July','August',
-      'September','October','November','December'][t.getMonth()] },
-  c: function(t) { return t.toString() },
-  d: function(t) { return this.zeropad(t.getDate()) },
-  H: function(t) { return this.zeropad(t.getHours()) },
-  I: function(t) { return this.zeropad((t.getHours() + 12) % 12) },
-  m: function(t) { return this.zeropad(t.getMonth()+1) }, // month-1
-  M: function(t) { return this.zeropad(t.getMinutes()) },
-  p: function(t) { return this.H(t) < 12 ? 'AM' : 'PM'; },
-  S: function(t) { return this.zeropad(t.getSeconds()) },
-  w: function(t) { return t.getDay() }, // 0..6 == sun..sat
-  y: function(t) { return this.zeropad(this.Y(t) % 100); },
-  Y: function(t) { return t.getFullYear() },
-  '%': function(t) { return '%' }
-};
-
-
 Object.extend(Date.prototype, {
   strftime: function(format) {
-    for (var s in strftime_funks) {
-      if (s.length == 1 )
-        format = format.replace('%' + s, strftime_funks[s](this));
-    }
-    return format;
+    var day = this.getDay(), month = this.getMonth();
+    var hours = this.getHours(), minutes = this.getMinutes();
+    function pad(num) { return num.toPaddedString(2); };
+
+    return format.gsub(/\%([aAbBcdHImMpSwyY])/, function(part) {
+      switch(part[1]) {
+        case 'a': return $w("Sun Mon Tue Wed Thu Fri Sat")[day]; break;
+        case 'A': return $w("Sunday Monday Tuesday Wednesday Thursday Friday Saturday")[day]; break;
+        case 'b': return $w("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec")[month]; break;
+        case 'B': return $w("January February March April May June July August September October November December")[month]; break;
+        case 'c': return this.toString(); break;
+        case 'd': return pad(this.getDate()); break;
+        case 'H': return pad(hours); break;
+        case 'I': return pad((hours + 12) % 12); break;
+        case 'm': return pad(month + 1); break;
+        case 'M': return pad(minutes); break;
+        case 'p': return hours > 12 ? 'PM' : 'AM'; break;
+        case 'S': return pad(this.getSeconds()); break;
+        case 'w': return day; break;
+        case 'y': return pad(this.getFullYear() % 100); break;
+        case 'Y': return this.getFullYear().toString(); break;
+      }
+    }.bind(this));
   },
   
   timeAgoInWords: function() {
