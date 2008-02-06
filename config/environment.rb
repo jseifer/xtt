@@ -55,8 +55,7 @@ Rails::Initializer.run do |config|
   config.active_record.observers = :user_observer
 
   # Make Active Record use UTC-base instead of local time
-  config.active_record.default_timezone = :utc
-  # config.time_zone = "UTC"
+  config.time_zone = "UTC"
   
   config.after_initialize do
     %w(ostruct md5 gchart has_finder bj).each { |lib| require lib }
