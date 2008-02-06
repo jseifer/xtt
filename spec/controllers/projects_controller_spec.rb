@@ -29,7 +29,8 @@ describe ProjectsController, "GET #show" do
     
   before do
     @project = projects(:default)
-    @statuses = []
+    @statuses   = []
+    @date_range = :date_range
     Project.stub!(:find).with('1').and_return(@project)
     @project.stub!(:statuses).and_return([])
     controller.stub!(:login_required)
@@ -45,16 +46,16 @@ describe ProjectsController, "GET #show" do
     {:user_id => 'me',  :filter => 'weekly', :args => [55,  'weekly']},
     {:user_id => '5',   :filter => 'weekly', :args => [5,   'weekly']} ].each do |options|
       
-    describe ProjectsController, "(xml)" do
+    describe ProjectsController, "(filtered)" do
       define_models
       
       act! { get :show, options.merge(:id => 1) }
       
       before do
-        @project.statuses.stub!(:filter).with(*options[:args]).and_return(@statuses)
+        @project.statuses.should_receive(:filter).with(*options[:args]).and_return([@statuses, @date_range])
       end
       
-      it_assigns :project, :statuses
+      it_assigns :project, :statuses, :date_range
       it_renders :template, :show
 
       describe ProjectsController, "(xml)" do
