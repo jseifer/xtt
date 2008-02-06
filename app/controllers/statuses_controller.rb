@@ -55,7 +55,7 @@ class StatusesController < ApplicationController
         format.html { redirect_to(@status) }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
+        format.html { render :action => "show" }
         format.xml  { render :xml  => @status.errors, :status => :unprocessable_entity }
       end
     end
