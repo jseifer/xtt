@@ -33,7 +33,7 @@ describe ProjectsController, "GET #show" do
     Project.stub!(:find).with('1').and_return(@project)
     @project.stub!(:statuses).and_return([])
     controller.stub!(:login_required)
-    controller.stub!(:current_user).and_return(mock_model User, :id => 55, :active? => true, :time_zone => "UTC")
+    controller.stub!(:current_user).and_return(mock_model(User, :id => 55, :active? => true, :time_zone => "UTC"))
   end
 
   [ {:user_id => nil,   :filter => nil, :args => [nil, nil]},

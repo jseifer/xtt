@@ -5,7 +5,7 @@ require File.dirname(__FILE__) + '/../spec_helper'
 describe StatusesController, "GET #index for user" do
   define_models
 
-  act! { get :index }
+  act! { get :index, :format => 'xml' }
 
   before do
     @statuses = [statuses(:default)]
@@ -14,16 +14,7 @@ describe StatusesController, "GET #index for user" do
   end
   
   it_assigns :statuses
-  it_renders :template, :index
-
-  describe StatusesController, "(xml)" do
-    define_models
-    
-    act! { get :index, :format => 'xml' }
-
-    it_assigns :statuses
-    it_renders :xml, :statuses
-  end
+  it_renders :xml, :statuses
 end
 
 describe StatusesController, "GET #new" do
