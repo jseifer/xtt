@@ -11,63 +11,11 @@ describe Status do
   it "#next retrieves followup status" do
     statuses(:in_project).followup.should == statuses(:pending)
   end
-  
-  it "sets finished_at to the same day, or after, as created_at" do
-    Time.zone = "UTC"
-    s = statuses(:in_project)
-    puts s.created_at
-    s.set_finished_at = "14:34"
-    s.finished_at.should == "1234"
-  end
-  
-  #it "adjusts followup time with accessor" do
-  #  time = 5.minutes.from_now
-  #
-  #  statuses(:pending).created_at.should_not == time
-  #  statuses(:pending).followup.should be_nil
-  #
-  #  s = statuses(:in_project)
-  #  s.followup.should == statuses(:pending)
-  #  s.followup.should_receive(:update_attribute).with(:created_at, time)
-  #
-  #  s.followup_time = time.to_s
-  #  s.should be_valid
-  #end
-  #
-  #it "does not allow setting followup time past the next status' finish time" do
-  #  time = 5.minutes.from_now
-  #  # order goes default -> in_project -> pending 
-  #  # so setting default.followup_time has to check all the way to 'pending' to ensure it
-  #  # doesn't exceed its bounds.
-  #  statuses(:in_project).followup.should == statuses(:pending) # created 47 hours ago
-  #  statuses(:default).followup.should == statuses(:in_project) # created 48 hours ago
-  #  statuses(:default).should be_valid
-  #
-  #  statuses(:default).followup_time = statuses(:pending).created_at + 1.second
-  #  statuses(:default).should_not be_valid
-  #end
-
-  it "sets the correct time" do
-    u = users(:default) #mock_model(User, :id => '1')
-    s1 = Status.create! :created_at => "Fri Jan 18 2008 00:00:00", :user => u, :message => "foo", :project_id => 1
-    s2 = Status.create! :created_at => "Fri Jan 19 2008 00:00:00", :user => u, :message => "bar", :project_id => 1
-    s3 = Status.create! :created_at => "Fri Jan 20 2008 00:00:00", :user => u, :message => "bar", :project_id => 1    
-    
-    s1.followup(true).should == s2
-    
-    s1.attributes = {
-      "set_created_at" => "Fri Jan 18 2008 12:45:01 GMT-0800 (PST)"
-      #{}"followup_time"  => "Fri Jan 19 2008 12:45:01 GMT-0800 (PST)"
-    }
-    
-    s1.created_at.should == Time.parse("2008-01-18 20:45:01 UTC").utc
-    #s2.reload.created_at.should == Time.parse("2008-01-19 20:45:01 UTC").utc
-  end
-
 
   it "does not allow time travel backwards" do
+    pending "PDI"
     statuses(:in_project).previous.should == statuses(:default)
-    lambda{
+    lambda {
       statuses(:in_project).set_created_at = statuses(:default).created_at.utc - 10.minutes
       statuses(:in_project).errors.on(:created_at).should_not be_nil
     }.should_not change { statuses(:in_project).created_at }
@@ -76,24 +24,9 @@ describe Status do
     #statuses(:in_project).should_not be_valid
   end
   
-  #it "assigns date if the input string is from javascript" do
-  #  statuses(:default).followup_time = "2008-12-12 00:00:00 GMT-0800"
-  #  statuses(:in_project).reload.created_at.should == Time.parse("2008-12-12 08:00:00 UTC")
-  #end
-  
-  it "assigns created-at to utc if input string is from javascript" do
-    statuses(:default).set_created_at = "2008-12-12 00:00:00 GMT-0800 (PST)"
-    statuses(:default).created_at.should == Time.parse("2008-12-12 08:00:00 UTC").utc
-  end
-  
   it "#next retrieves previous status" do
     statuses(:pending).previous.should == statuses(:in_project)
   end
-  
-  #it "rounds down to the nearest 5 minutes" do
-  #  statuses(:default).fixed_created_at = "2008-01-01 15:34:00 UTC"
-  #  statuses(:default).created_at.should == Time.parse("2008-01-01 15:30:00 UTC")
-  #end
 end
 
 describe Status, "being created" do
@@ -116,7 +49,7 @@ describe Status, "being created" do
   
   it "is related properly to the previous status" do
     @new.save!
-    @new.previous(true).should    == @status
+    @new.previous.should    == @status
     @status.followup.should == @new
   end
   
@@ -124,8 +57,7 @@ describe Status, "being created" do
     @status.should be_pending
     @status.should be_valid
     @new.save!
-    @status.reload
-    @status.should be_processed
+    @status.reload.should be_processed
     @status.hours.to_f.should == 5.0
   end
   

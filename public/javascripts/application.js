@@ -44,6 +44,13 @@ document.observe('dom:loaded', function() {
 		else
     	span.update(Date.parseUTC(span.innerHTML).timeAgoInWords());
   });
+
+	$$('.edit-status-link').each(function(link) {
+		link.observe('click', function() {
+			$('edit-status-times').toggle()
+			$('edit-status-hours').toggle()
+		})
+	});
 });
 
 

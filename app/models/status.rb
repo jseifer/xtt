@@ -15,11 +15,10 @@ class Status < ActiveRecord::Base
   has_finder :without_project, :conditions => {:project_id => nil}, :extend => LatestExtension
   
   after_create :cache_user_status
-  after_create :set_previous_finish_time
-  before_update :calculate_hours
+  after_create :process_previous
   
   acts_as_state_machine :initial => :pending
-  state :pending, :enter => :process_previous
+  state :pending
   state :processed
   
   event :process do
@@ -98,16 +97,11 @@ class Status < ActiveRecord::Base
 protected
   def calculate_hours
     return false if followup.nil?
-    quarters = (accurate_time.to_f / 15.minutes.to_f).ceil
-    self.hours = quarters.to_f / 4.0
-  end
-  
-  def set_previous_finish_time
-    previous.update_attribute(:finished_at, created_at) if previous(true) and previous.pending?
+    self.finished_at = followup.created_at
   end
   
   def process_previous
-    previous.process! if previous(true) && previous.pending?
+    previous.process! if previous
   end
   
   def cache_user_status
@@ -124,9 +118,9 @@ protected
   end
   
   def previous_is_valid
-    return if (user.nil? || previous.nil?)
-    if previous.created_at > created_at
-      errors.add :created_at, "Cannot travel back in time with this status in hand."
-    end
+    #return if (user.nil? || previous.nil?)
+    #if previous.created_at > created_at
+    #  errors.add :created_at, "Cannot travel back in time with this status in hand."
+    #end
   end
 end

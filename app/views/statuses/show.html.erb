@@ -37,19 +37,44 @@
   <% box :normal, 'form' do |box| %>
     <% box.title = "Modify this status" %>
     <% box.content = capture do %>
-    <% form_for @status, :html => { :id => 'edit-status', :class => 'form' } do |f| %>
+    <% form_for @status, :html => { :id => 'edit-status-hours', :class => 'form' } do |f| %>
     <table cellspacing="0" cellpadding="0" class="tblform">
       <tr>
         <th>
-          <label for="status">Total hours worked:</label>
+					<%= f.label :set_hours, "Total hours worked:" %>
         </th>
         <td>
-          <input type="text" id="hours-worked" name="status[set_hours_worked]" value="<%= @status.hours %>" />
+					<%= f.text_field :set_hours %>
           <p class="quiet">Modifying your time could potentially cause overlap with your other statuses.</p>
         </td>
       </tr>
       <tr>
-        <td colspan="2"><p class="btns"><%= save_button %></p></td>
+        <td colspan="2"><p class="btns"><%= save_button %> or <%= link_to 'edit times', '#', :class => 'edit-status-link' %></p></td>
+      </tr>
+    </table>
+      <% end %>
+    <% form_for @status, :html => { :id => 'edit-status-times', :class => 'form', :style => 'display:none' } do |f| %>
+    <table cellspacing="0" cellpadding="0" class="tblform">
+			<tr>
+				<th>
+					<%= f.label :created_at, "Start Time:" %>
+				</th>
+				<td>
+					<%= f.date_select :created_at %><br />
+					<%= f.time_select :created_at %>
+				</td>
+			</tr>
+			<tr>
+				<th>
+					<%= f.label :finished_at, "End Time:" %>
+				</th>
+				<td>
+					<%= f.date_select :finished_at %><br />
+					<%= f.time_select :finished_at %>
+				</td>
+			</tr>
+      <tr>
+        <td colspan="2"><p class="btns"><%= save_button %> or <%= link_to 'edit hours', '#', :class => 'edit-status-link' %></p></td>
       </tr>
     </table>
       <% end %>
