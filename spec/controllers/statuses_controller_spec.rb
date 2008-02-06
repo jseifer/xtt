@@ -56,7 +56,7 @@ describe StatusesController, "POST #create" do
     
     before { @status.stub!(:new_record?).and_return(false) }
     
-    it_assigns :status, :flash => { :notice => :not_nil }
+    it_assigns :status
     it_redirects_to { root_path }
   end
   
@@ -72,7 +72,7 @@ describe StatusesController, "POST #create" do
       @status.stub!(:new_record?).and_return(false)
     end
     
-    it_assigns :status, :flash => { :notice => :not_nil }
+    it_assigns :status
     it_redirects_to { project_path(projects(:default)) }
   end
 

@@ -30,7 +30,6 @@ class StatusesController < ApplicationController
         format.html { render :action => "new" }
         format.xml  { render :xml  => @status.errors, :status => :unprocessable_entity }
       else
-        #flash[:notice] = 'Status was successfully created.'
         format.html { redirect_to @project || root_path }
         format.xml  { render :xml  => @status, :status => :created, :location => @status }
       end
