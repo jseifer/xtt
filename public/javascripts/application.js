@@ -39,8 +39,8 @@ document.observe('dom:loaded', function() {
    * FIXME: This is to specific, modify so format can be specified.
    */
   $$('span.timestamp').each(function(span) {
-		utc = Date.parseUTC(span.innerHTML)
-		rel = span.getAttribute('rel')
+		var utc = Date.parseUTC(span.innerHTML);
+		var rel = span.readAttribute('rel');
 		span.update(rel == 'words' ? utc.timeAgoInWords() : utc.strftime(Date.strftimeFormats[rel]))
   });
 
