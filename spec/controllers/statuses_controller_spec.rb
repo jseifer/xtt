@@ -169,7 +169,7 @@ describe StatusesController, "PUT #update" do
     end
     
     it_assigns :status
-    it_renders :template, :edit
+    it_renders :template, :show
   end
   
   describe StatusesController, "(successful save, xml)" do

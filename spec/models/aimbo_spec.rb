@@ -22,15 +22,15 @@ describe IM::Response do
   
   it "creates a status" do
     @project = mock_model(Project, :name => "Fools!")
-    @status  = mock_model(Status, :project => @project, :message => "thanks!", :update_attribute => true)
-    @user.should_receive(:post).with("@foo bar", nil).and_return(@status)
+    @status  = mock_model(Status, :project => @project, :message => "thanks!")
+    @user.should_receive(:post).with("@foo bar", nil, 'AIM').and_return(@status)
     @aim.should_receive :send_im
     im = IM::Response.new "@foo bar", @aim
   end
   
   it "creates a status with no project" do
     @status = mock_model(Status, :message => "thanks!", :project => nil)
-    @user.should_receive(:post).with("@foo bar", nil).and_return(@status)
+    @user.should_receive(:post).with("@foo bar", nil, 'AIM').and_return(@status)
     @aim.should_receive :send_im
     im = IM::Response.new "@foo bar", @aim
   end

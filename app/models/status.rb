@@ -126,7 +126,7 @@ protected
   end
   
   def times_are_sane
-    if !active? and created_at > finished_at
+    if finished_at and created_at > finished_at
       errors.add_to_base "Can't finish before you start! (Extreme GTD)"
     end
   end

@@ -107,7 +107,7 @@ describe Status, "in pending state" do
     @status.should be_pending
   end
   
-  {0 => 0, 10 => 0.25, 15 => 0.25, 25 => 0.5, 30 => 0.5, 45 => 0.75}.each do |min, result|
+  {0 => 0.0, 10 => 0.25, 15 => 0.25, 25 => 0.5, 30 => 0.5, 45 => 0.75}.each do |min, result|
     it "processes @status hours in quarters at #{min} minutes past the hour" do
       @new.created_at = @new.created_at + min.minutes
       @new.save

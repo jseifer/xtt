@@ -21,10 +21,10 @@ class User < ActiveRecord::Base
 
   has_finder :all, :order => 'login'
   
-  def post(message, forced_project = nil)
+  def post(message, forced_project = nil, source = 'the web')
     code, message = extract_code_and_message(message)
     project       = forced_project || (code.nil? ? last_status_project : projects.find_by_code(code))
-    statuses.create :project => project, :message => message
+    statuses.create :project => project, :message => message, :source => source
   end
   
   def related_users
