@@ -1,5 +1,13 @@
 require 'digest/sha1'
 class User
+  class << self
+    attr_accessor :email_format
+    attr_accessor :login_format
+  end
+  
+  self.email_format = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/
+  self.login_format = /^[a-z0-9_-]+$/
+
   # Virtual attribute for the unencrypted password
   attr_accessor :password
 
@@ -8,8 +16,10 @@ class User
   validates_presence_of     :password_confirmation,      :if => :password_required?
   validates_length_of       :password, :within => 4..40, :if => :password_required?
   validates_confirmation_of :password,                   :if => :password_required?
-  validates_length_of       :login,    :within => 3..40
-  validates_length_of       :email,    :within => 3..100
+  validates_length_of       :login,    :within => 2..40
+  validates_length_of       :email,    :within => 2..200
+  validates_format_of       :login, :with => login_format
+  validates_format_of       :email, :with => email_format
   validates_uniqueness_of   :login, :email
   before_save :encrypt_password
   

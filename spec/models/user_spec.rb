@@ -375,6 +375,42 @@ describe User do
     users(:default).projects.should include(project)
     project.memberships.should_not be_empty
   end
+  
+  describe "validation" do
+    before do
+      @user = create_user :login => nil # eh, don't save it
+      @user.login = 'quire'
+      fail @user.error_messages.to_sentence unless @user.valid?
+    end
+    
+    it "accepts valid login" do
+      [' aaa ', 'bbb', 'cc1', 'dd1-2', 'ee1_3'].each do |l| 
+        @user.login = l
+        fail "#{l.inspect} is not valid" unless @user.valid?
+      end
+    end
+    
+    it "sanitizes invalid logins" do
+      %w(! & ` , ? ' ").each do |char|
+        @user.login = char + "AAA"
+        fail "#{char.inspect} wasn't escaped. #{@user.login.inspect}" unless @user.valid? || @user.login != 'aaa'
+      end
+    end
+    
+    it "accepts valid emails" do
+      %w(bob@foo.com bob+fred@foo.co.uk).each do |email|
+        @user.email = email
+        fail "#{email.inspect} is not valid" unless @user.valid?
+      end
+    end
+    
+    it "rejects invalid emails" do
+      %w(! & ` , ? ' ").each do |char|
+        @user.email = char + 'bob@foo.com'
+        fail "#{@user.email.inspect} is valid" if @user.valid?
+      end
+    end
+  end
 
 protected
   def create_user(options = {})

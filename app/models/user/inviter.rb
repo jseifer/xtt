@@ -8,8 +8,9 @@ class User::Inviter
   end
   
   def initialize(project_id, string)
-    @project = Project.find project_id
-    @emails, @logins = parse(string)
+    @project = Project.find(project_id)
+    @emails, @logins = [], []
+    parse(string)
   end
   
   def invite
@@ -28,15 +29,23 @@ class User::Inviter
   end
   
   def new_emails
-    @new_emails ||= begin
-      existing = Set.new users.collect { |u| u.email }
-      @emails.reject { |e| existing.include? e }
-    end
+    @new_emails ||= @emails - existing_emails
+  end
+  
+  def existing_emails
+    @existing_emails ||= users.collect { |u| u.email }
+  end
+  
+  def to_job
+    %{script/runner "User::Inviter.invite(#{@project.id}, '#{(logins + emails) * ", "}')"}
   end
   
 protected
   def parse(string)
-    entries = string.split(',').each { |s| s.strip! ; s.downcase! }
-    entries.partition { |e| e =~ /\W/ }
+    string.split(',').each do |s| 
+      s.strip! ; s.downcase!
+      @emails << s if s =~ User.email_format
+      @logins << s if s =~ User.login_format
+    end
   end
 end

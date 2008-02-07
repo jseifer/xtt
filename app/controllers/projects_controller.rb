@@ -67,6 +67,13 @@ class ProjectsController < ApplicationController
       format.xml  { head :ok }
     end
   end
+  
+  def invite
+    inviter = User::Inviter.new(params[:id], params[:emails])
+    flash[:notice] = "Users invited: #{(inviter.logins + inviter.emails) * ", "}"
+    Bj.submit inviter.to_job
+    redirect_to project_path(params[:id])
+  end
 
 protected
   def find_project

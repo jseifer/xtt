@@ -16,7 +16,9 @@ describe User::Inviter do
   end
   
   before do
-    @inviter = User::Inviter.new(projects(:default).id, "FOO, bar , BAZ@email.com , newb@email.com")
+    @project = projects(:default)
+    @string  = "FOO, bar , BAZ@email.com , newb@email.com"
+    @inviter = User::Inviter.new(@project.id, @string)
   end
 
   it "parses logins" do
@@ -32,7 +34,9 @@ describe User::Inviter do
   end
   
   it "retrieves unique users" do
-    compare_stubs :users, @inviter.users, [:foo, :bar]
+    @inviter.should have(2).users
+    @inviter.users.should include(users(:foo))
+    @inviter.users.should include(users(:bar))
   end
   
   it "creates memberships and emails users" do
@@ -40,5 +44,18 @@ describe User::Inviter do
       User::Mailer.should_receive(:deliver_project_invitation).with(@inviter.project, user)
     end
     lambda { @inviter.invite }.should change(Membership, :count).by(2)
+  end
+  
+  it "rejects invalid emails or logins" do
+    ['', ', ; cat foo', ', && cat foo ', ', `cat foo`'].each do |extra|
+      inviter = User::Inviter.new(@project.id, @string + extra)
+      inviter.logins.should == @inviter.logins
+      inviter.emails.should == @inviter.emails
+      inviter.to_job.should == @inviter.to_job
+    end
+  end
+  
+  it "creates valid job string" do
+    @inviter.to_job.should == %{script/runner "User::Inviter.invite(#{@project.id}, 'foo, bar, baz@email.com, newb@email.com')"}
   end
 end
