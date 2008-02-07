@@ -12,21 +12,7 @@
           <h2><%=h @user.login %></h2>
         </li>
         <li class="clearfix" style="border-bottom:0">
-             <%= image_tag(Gchart.bar(
-                :bg => 'CACACA', 
-                :data => [1,2,4,2,3,5,1], 
-                :line_colors => ['224499'],
-                :max_value => 'auto',
-                :bar_width => '100',
-                :size => '380x120',
-                :custom => "chxr=1,0,24&amp;chg=0,25,1,0&amp;chbh=40",            
-                :axis_labels => ["Sun|Mon|Tue|Wed|Thu|Fri|Sat"],
-                :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => 'week-chart', :class => 'special-chart') %>
-          <p class="special-num">
-            <span class="main-num"><%= @hours.to_f %></span>
-            <span class="quiet">hours this <%=h params[:filter] %> period.</span>
-            <%= paging_for_period(@date_range) %>
-          </p>
+<%= render :partial => "statuses/chart", :locals => {:hours => @hours, :date_range => @date_range} %>
         </li>
       </ul>
     <% end %>

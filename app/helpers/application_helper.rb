@@ -66,22 +66,4 @@ module ApplicationHelper
     return nil if flash[key].blank?
     content_tag(:div, content_tag(:div, h(flash[key]), :class => 'mblock-cnt'), :class => 'mblock', :id => key.to_s.downcase)
   end
-
-  def link_to_filtered_statuses(text, options = {})
-    user_id = options.key?(:user_id) ? options[:user_id] : params[:user_id]
-    filter  = options.key?(:filter)  ? options[:filter]  : params[:filter]
-    args    = {:id => params[:id]}
-    prefix, args  = filter.blank? ? [nil, args] : ["filtered_", args.update(:filter => filter)]
-    url = 
-      if controller.controller_name == 'projects'
-        case user_id
-          when nil, :all then send("#{prefix}project_for_all_path",  args)
-          when :me       then send("#{prefix}project_for_me_path",   args.update(:user_id => :me))
-          else                send("#{prefix}project_for_user_path", args.update(:user_id => user_id))
-        end
-      else
-        send("#{prefix}user_path", args)
-      end
-    link_to text, url
-  end
 end

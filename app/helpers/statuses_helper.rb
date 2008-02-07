@@ -23,4 +23,55 @@ module StatusesHelper
     end
     created_at && "#{js_time_ago_in_words created_at}"
   end
+
+  def link_to_filtered_statuses(text, options = {})
+    user_id = options.key?(:user_id) ? options[:user_id] : params[:user_id]
+    filter  = options.key?(:filter)  ? options[:filter]  : params[:filter]
+    args    = {:id => params[:id], :date => options[:date] || params[:date]}
+    prefix, args  = filter.blank? ? [nil, args] : ["filtered_", args.update(:filter => filter)]
+    url = 
+      if controller.controller_name == 'projects'
+        case user_id
+          when nil, :all then send("#{prefix}project_for_all_path",  args)
+          when :me       then send("#{prefix}project_for_me_path",   args.update(:user_id => :me))
+          else                send("#{prefix}project_for_user_path", args.update(:user_id => user_id))
+        end
+      else
+        send("#{prefix}user_path", args)
+      end
+    link_to text, url
+  end
+
+  def chart_labels_for(filter, date_range)
+    case filter
+      when 'weekly' then "Mon|Tue|Wed|Thu|Fri|Sat|Sun"
+      when 'monthly', 'bi-weekly' then (date_range.first.day..date_range.last.day).to_a * "|"
+      else raise "Invalid filter: #{filter.inspect}"
+    end
+  end
+
+  def paging_for_period(date_range)
+    return if date_range.nil?
+    now = Time.zone.now
+    start_date = date_range.first
+    prev_date, next_date = nil, nil
+    case params[:filter]
+      when 'daily'
+        prev_date = start_date - 1.day
+        next_date = start_date + 1.day if now > date_range.last
+      when 'weekly'
+        prev_date = start_date - 1.week
+        next_date = start_date + 1.week if now > date_range.last
+      when 'bi-weekly'
+        prev_date = start_date.day == 1 ? (start_date - 1.day).beginning_of_month + 14.days : start_date.beginning_of_month
+        next_date = start_date.day == 1 ? start_date + 14.days : (start_date + 1.month).beginning_of_month if now > date_range.last
+      when 'monthly'
+        prev_date = start_date - 1.month
+        next_date = start_date + 1.month if now > date_range.last
+    end
+    %(<span class="paging">
+        #{link_to_filtered_statuses('&larr; previous', :date => prev_date.strftime("%Y-%m-%d")) if prev_date}
+        #{link_to_filtered_statuses('next &rarr;', :date => next_date.strftime("%Y-%m-%d")) if next_date}
+      </span>)
+  end
 end
