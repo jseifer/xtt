@@ -31,20 +31,21 @@ describe ProjectsController, "GET #show" do
     @project = projects(:default)
     @statuses   = []
     @date_range = :date_range
+    @hours      = 75.0
     Project.stub!(:find).with('1').and_return(@project)
     @project.stub!(:statuses).and_return([])
     controller.stub!(:login_required)
     controller.stub!(:current_user).and_return(mock_model(User, :id => 55, :active? => true, :time_zone => "UTC"))
   end
 
-  [ {:user_id => nil,   :filter => nil, :args => [nil, nil]},
-    {:user_id => 'all', :filter => nil, :args => [nil, nil]},
-    {:user_id => 'me',  :filter => nil, :args => [55,  nil]},
-    {:user_id => '5',   :filter => nil, :args => [5,   nil]},
-    {:user_id => nil,   :filter => 'weekly', :args => [nil, 'weekly']},
-    {:user_id => 'all', :filter => 'weekly', :args => [nil, 'weekly']},
-    {:user_id => 'me',  :filter => 'weekly', :args => [55,  'weekly']},
-    {:user_id => '5',   :filter => 'weekly', :args => [5,   'weekly']} ].each do |options|
+  [ {:user_id => nil,   :filter => nil, :args => [nil, 'weekly', nil]},
+    {:user_id => 'all', :filter => nil, :args => [nil, 'weekly', nil]},
+    {:user_id => 'me',  :filter => nil, :args => [55,  'weekly', nil]},
+    {:user_id => '5',   :filter => nil, :args => [5,   'weekly', nil]},
+    {:user_id => nil,   :filter => 'weekly', :args => [nil, 'weekly', nil]},
+    {:user_id => 'all', :filter => 'weekly', :args => [nil, 'weekly', nil]},
+    {:user_id => 'me',  :filter => 'weekly', :args => [55,  'weekly', nil]},
+    {:user_id => '5',   :filter => 'weekly', :args => [5,   'weekly', nil]} ].each do |options|
       
     describe ProjectsController, "(filtered)" do
       define_models
@@ -53,9 +54,10 @@ describe ProjectsController, "GET #show" do
       
       before do
         @project.statuses.should_receive(:filter).with(*options[:args]).and_return([@statuses, @date_range])
+        @project.statuses.should_receive(:filtered_hours).with(options[:args][1]).and_return(@hours)
       end
       
-      it_assigns :project, :statuses, :date_range
+      it_assigns :project, :statuses, :date_range, :hours
       it_renders :template, :show
 
       describe ProjectsController, "(xml)" do

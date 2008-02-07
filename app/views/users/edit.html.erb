@@ -1,7 +1,18 @@
-
-<% form_for @user do |f| -%>
-  <%= f.error_messages %>
-  <%= error_messages_for @user %>
-  <%= render :partial => "form", :object => f %>
-  <p><%= submit_tag 'Save' %></p>
-<% end -%>
+<% box(:special, 'profile') do |box| %>
+  <% box.title = "Your profile" %>
+  <% box.header_utils = capture do %>
+    <%= link_to 'Profile', {}, :id => 'tab-profile' %> 
+    <%= link_to 'Notifications', :id => 'tab-notification' %>
+    <%= link_to 'Colors', :id => 'tab-colors' %>
+  <% end %>
+  
+  <% box.content = capture do %>
+  <div id="profile-content">
+    <% form_for @user, :html => { :class => 'form' } do |f| -%>
+      <%= render :partial => 'form', :object => f %>
+      <p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
+    <% end %>
+  </div>
+  <% end %>
+  
+<% end %>

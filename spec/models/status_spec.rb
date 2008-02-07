@@ -186,22 +186,29 @@ end
 describe Status, "(filtering by date)" do
   define_models :copy => false do
     time 2007, 6, 30, 6
+    model User do
+      stub :login => 'bob'
+      stub :other, :login => 'fred'
+    end
+    
     model Status do
-      stub :message => 'default', :state => 'processed', :hours => 5, :created_at => current_time - 5.minutes, :user_id => 5
-      stub :status_day,      :created_at => current_time - 8.minutes, :user_id => 3
-      stub :status_week_1,   :created_at => current_time - 3.days
-      stub :status_week_2,   :created_at => current_time - (4.days + 20.hours), :user_id => 3
-      stub :status_biweek_1, :created_at => current_time - 8.days, :user_id => 3
-      stub :status_biweek_2, :created_at => current_time - (14.days + 20.hours)
-      stub :status_month_1,  :created_at => current_time - 20.days, :user_id => 3
-      stub :status_month_2,  :created_at => current_time - (28.days + 20.hours)
-      stub :archive, :created_at => current_time - 35.days
+      stub :message => 'default', :state => 'processed', :hours => 5, :created_at => current_time - 5.minutes, :user => all_stubs(:user)
+      stub :status_day, :message => 'status_day', :created_at => current_time - 8.minutes, :user => all_stubs(:other_user)
+      stub :status_week_1, :message => 'status_week_1', :created_at => current_time - 3.days
+      stub :status_week_2, :message => 'status_week_2', :created_at => current_time - (4.days + 20.hours), :user => all_stubs(:other_user)
+      stub :status_biweek_1, :message => 'status_biweek_1', :created_at => current_time - 8.days, :user => all_stubs(:other_user)
+      stub :status_biweek_2, :message => 'status_biweek_2', :created_at => current_time - (14.days + 20.hours)
+      stub :status_month_1, :message => 'status_month_1', :created_at => current_time - 20.days, :user => all_stubs(:other_user)
+      stub :status_month_2, :message => 'status_month_2', :created_at => current_time - (28.days + 20.hours)
+      stub :archive, :message => 'archive', :created_at => current_time - 35.days
     end
   end
   
   before do
     @old = Time.zone
     Time.zone = -28800
+    @user  = users :default
+    @other = users :other
   end
   
   after do
@@ -209,54 +216,122 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows recent statuses with no filter" do
-    compare_stubs :statuses, Status.filter(nil, nil)[0],  [:default, :status_day, :status_week_1, :status_week_2,
+    compare_stubs :statuses, Status.filter(nil, nil)[0], [:default, :status_day, :status_week_1, :status_week_2,
       :status_biweek_1, :status_biweek_2, :status_month_1, :status_month_2, :archive]
   end
   
+  it "counts recent status hours with no filter" do
+    Status.filtered_hours(nil, nil).should == 9 * 5
+  end
+  
   it "shows recent statuses by user" do
-    compare_stubs :statuses, Status.filter(5, nil)[0],  [:default, :status_week_1,  :status_biweek_2, :status_month_2, :archive]
+    expected = [:default, :status_week_1,  :status_biweek_2, :status_month_2, :archive]
+    compare_stubs :statuses, Status.filter(@user.id, nil)[0], expected
+    compare_stubs :statuses, @user.statuses.filter(nil)[0],   expected
+  end
+  
+  it "counts recent status hours by user with no filter" do
+    Status.filtered_hours(@user.id, nil).should == 5 * 5
+    @user.statuses.filtered_hours(nil).should   == 5 * 5
   end
   
   it "shows today's statuses" do
-    compare_stubs :statuses, Status.filter(nil, 'daily')[0],  [:default, :status_day]
+    compare_stubs :statuses, Status.filter(nil, 'daily')[0], [:default, :status_day]
+  end
+  
+  it "counts today's status hours" do
+    Status.filtered_hours(nil, 'daily').should == 2 * 5
   end
   
   it "shows today's statuses by user" do
-    compare_stubs :statuses, Status.filter(5, 'daily')[0],  [:default]
+    expected = [:default]
+    compare_stubs :statuses, Status.filter(@user.id, 'daily')[0], expected
+    compare_stubs :statuses, @user.statuses.filter('daily')[0],   expected
+  end
+  
+  it "counts today's status hours by user" do
+    Status.filtered_hours(@user.id, 'daily').should == 5
+    @user.statuses.filtered_hours('daily').should   == 5
   end
   
   it "shows this week's statuses" do
-    compare_stubs :statuses, Status.filter(nil, 'weekly')[0],  [:default, :status_day, :status_week_1, :status_week_2]
+    compare_stubs :statuses, Status.filter(nil, 'weekly')[0], [:default, :status_day, :status_week_1, :status_week_2]
+  end
+  
+  it "counts this week's status hours" do
+    Status.filtered_hours(nil, 'weekly').should == 4 * 5
   end
   
   it "shows this week's statuses by user" do
-    compare_stubs :statuses, Status.filter(5, 'weekly')[0],  [:default, :status_week_1]
+    expected = [:default, :status_week_1]
+    compare_stubs :statuses, Status.filter(@user.id, 'weekly')[0], expected
+    compare_stubs :statuses, @user.statuses.filter[0],             expected
+  end
+  
+  it "counts this week's status hours by user" do
+    Status.filtered_hours(@user.id, 'weekly').should == 2 * 5
+    @user.statuses.filtered_hours('weekly').should   == 2 * 5
   end
   
   it "shows this fortnight's statuses" do
-    compare_stubs :statuses, Status.filter(nil, 'bi-weekly')[0],  [:default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2]
+    compare_stubs :statuses, Status.filter(nil, 'bi-weekly')[0], [:default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2]
+  end
+  
+  it "counts this fortnight's status hours" do
+    Status.filtered_hours(nil, 'bi-weekly').should == 6 * 5
   end
   
   it "shows this fortnight's statuses by user" do
-    compare_stubs :statuses, Status.filter(5, 'bi-weekly')[0],  [:default, :status_week_1, :status_biweek_2]
+    expected = [:default, :status_week_1, :status_biweek_2]
+    compare_stubs :statuses, Status.filter(@user.id, 'bi-weekly')[0], expected
+    compare_stubs :statuses, @user.statuses.filter('bi-weekly')[0],   expected
+  end
+  
+  it "counts this fortnight's status hours by user" do
+    Status.filtered_hours(@user.id, 'bi-weekly').should == 3 * 5
+    @user.statuses.filtered_hours('bi-weekly').should   == 3 * 5
   end
   
   it "shows earlier fortnight's statuses" do
     Time.stub!(:now).and_return(Time.utc(2007, 6, 14, 6))
-    compare_stubs :statuses, Status.filter(nil, 'bi-weekly')[0],  [:status_month_1, :status_month_2]
+    compare_stubs :statuses, Status.filter(nil, 'bi-weekly')[0], [:status_month_1, :status_month_2]
+  end
+  
+  it "counts earlier fortnight's status hours" do
+    Time.stub!(:now).and_return(Time.utc(2007, 6, 14, 6))
+    Status.filtered_hours(nil, 'bi-weekly').should == 2 * 5
   end
   
   it "shows earlier fortnight's statuses by user" do
     Time.stub!(:now).and_return(Time.utc(2007, 6, 14, 6))
-    compare_stubs :statuses, Status.filter(5, 'bi-weekly')[0],  [:status_month_2]
+    expected = [:status_month_2]
+    compare_stubs :statuses, Status.filter(@user.id, 'bi-weekly')[0], expected
+    compare_stubs :statuses, @user.statuses.filter('bi-weekly')[0],   expected
+  end
+  
+  it "counts earlier fortnights's status hours by user" do
+    Time.stub!(:now).and_return(Time.utc(2007, 6, 14, 6))
+    Status.filtered_hours(@user.id, 'bi-weekly').should == 5
+    @user.statuses.filtered_hours('bi-weekly').should   == 5
   end
   
   it "shows this month's statuses" do
     compare_stubs :statuses, Status.filter(nil, 'monthly')[0],  [:default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2, :status_month_1, :status_month_2]
   end
   
+  it "counts this month's status hours" do
+    Status.filtered_hours(nil, 'monthly').should == 8 * 5
+  end
+  
   it "shows this month's statuses by user" do
-    compare_stubs :statuses, Status.filter(5, 'monthly')[0],  [:default, :status_week_1, :status_biweek_2, :status_month_2]
+    expected = [:default, :status_week_1, :status_biweek_2, :status_month_2]
+    compare_stubs :statuses, Status.filter(@user.id, 'monthly')[0], expected
+    compare_stubs :statuses, @user.statuses.filter('monthly')[0],   expected
+  end
+  
+  it "counts this month's status hours by user" do
+    Status.filtered_hours(@user.id, 'monthly').should == 4 * 5
+    @user.statuses.filtered_hours('monthly').should   == 4 * 5
   end
 end
 

@@ -31,9 +31,9 @@ Spec::Runner.configure do |config|
       a_index = actual.index(send(model, e))
       e_index = expected.index(e)
       if a_index.nil?
-        fail "Record #{e.inspect} was not in the array, but should have been"
+        fail "Record #{model}(#{e.inspect}) was not in the array, but should have been."
       else
-        fail "Record #{e.inspect} is in wrong position: #{a_index.inspect} instead of #{e_index.inspect}" unless a_index == e_index
+        fail "Record #{model}(#{e.inspect}) is in wrong position: #{a_index.inspect} instead of #{e_index.inspect}" unless a_index == e_index
       end
     end
     

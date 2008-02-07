@@ -9,7 +9,11 @@ class UsersController < ApplicationController
 
   # user status page
   def show
-    @status = @user.statuses.latest
+    status_query = lambda do
+      @statuses, @date_range = @user.statuses.filter(params[:filter] ||= 'weekly', params[:page])
+      @hours = @user.statuses.filtered_hours(params[:filter])
+    end
+    @user == current_user ? status_query.call : Status.in_projects(current_user, &status_query)
   end
 
   # user signup
@@ -85,7 +89,8 @@ class UsersController < ApplicationController
 
 protected
   def find_user
-    @user = User.find(params[:id])
+    return false unless logged_in?
+    @user = current_user.id.to_s == params[:id] ? current_user : User.find(params[:id])
   end
   
   def authorized?

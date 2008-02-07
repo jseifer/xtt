@@ -1,6 +1,5 @@
 class User < ActiveRecord::Base
   concerned_with :authentication, :state_machine
-  include Status::Methods
   
   attr_readonly :last_status_project_id, :last_status_id, :last_status_message
   
@@ -8,6 +7,17 @@ class User < ActiveRecord::Base
   
   belongs_to :last_status_project, :class_name => "Project"
   belongs_to :last_status, :class_name => "Status"
+
+  has_many :statuses, :order => 'statuses.created_at desc', :extend => Status::Methods::AssociationExtension do
+    def filter(filter = 'weekly', page = 1)
+      Status.filter proxy_owner.id, filter, page
+    end
+
+    def filtered_hours(filter = 'weekly')
+      Status.filtered_hours proxy_owner.id, filter
+    end
+  end
+  
   has_many :owned_projects, :order => 'projects.name', :class_name => 'Project'
 
   has_many :memberships, :dependent => :delete_all

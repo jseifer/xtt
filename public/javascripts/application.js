@@ -91,7 +91,8 @@ Element.addMethods('INPUT', {
 
 Date.strftimeFormats = {
 	time: "%I:%M %p",
-	day:  "%B %d"
+	day:  "%B %d",
+	dayName: "%A"
 }
 
 Object.extend(Date.prototype, {

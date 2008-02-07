@@ -1,18 +1,81 @@
-<% box(:special, 'profile') do |box| %>
-  <% box.title = "Your profile" %>
-  <% box.header_utils = capture do %>
-    <%= link_to 'Profile', {}, :id => 'tab-profile' %> 
-    <%= link_to 'Notifications', :id => 'tab-notification' %>
-    <%= link_to 'Colors', :id => 'tab-colors' %>
-  <% end %>
-  
+<% box(:special, 'project-header') do |box| %>
+  <% box.title = "What are you doing?" %>
   <% box.content = capture do %>
-  <div id="profile-content">
-    <% form_for @user, :html => { :class => 'form' } do |f| -%>
-      <%= render :partial => 'form', :object => f %>
-      <p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
+    <% form_for current_user.statuses.build do |f| -%>
+      <ul class="media-list">
+        <li class="media-item status-form last">
+    			<%= f.text_area :message, :rows => 2, :cols => 55, :class => 'status-entry' %>
+					<%= f.hidden_field :project_id %>
+    			<p class="btns"><%= update_button %></p>
+        </li>
+        <li id="project-head">
+          <h2><%=h @user.login %></h2>
+        </li>
+        <li class="clearfix" style="border-bottom:0">
+             <%= image_tag(Gchart.bar(
+                :bg => 'CACACA', 
+                :data => [1,2,4,2,3,5,1], 
+                :line_colors => ['224499'],
+                :max_value => 'auto',
+                :bar_width => '100',
+                :size => '380x120',
+                :custom => "chxr=1,0,24&amp;chg=0,25,1,0&amp;chbh=40",            
+                :axis_labels => ["Sun|Mon|Tue|Wed|Thu|Fri|Sat"],
+                :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => 'week-chart', :class => 'special-chart') %>
+          <p class="special-num">
+            <span class="main-num"><%= @hours.to_f %></span>
+            <span class="quiet">hours this <%=h params[:filter] %> period.</span>
+            <%= paging_for_period(@date_range) %>
+          </p>
+        </li>
+      </ul>
     <% end %>
-  </div>
   <% end %>
-  
 <% end %>
+
+<div class="mblock">
+  <div class="mblock-hdr">
+    <h3><%= h(@user.login) %> Timeline</h3>
+    <div class="utils">
+			<%= link_to_filtered_statuses(:Daily, :filter => 'daily') %>
+			<%= link_to_filtered_statuses(:Week,  :filter => 'weekly') %>
+			<%= link_to_filtered_statuses('Bi-weekly', :filter => 'bi-weekly') %>
+			<%= link_to_filtered_statuses(:Month, :filter => 'monthly') %>
+    </div>
+  </div>
+  <div class="mblock-cnt">
+    <ol id="timeline" class="media-list">
+    <% prev_status = '' %>
+		<% if @statuses.each_with_index do |status, index| -%>
+      <li class="hentry media-item clearfix<%= %( last) if first_in_collection?(@statuses, index) %><%= %( daybreak)  if (status.created_at.day != prev_status.created_at.day) rescue '' %>">
+        <% if (index == 0) || (status.created_at.day != prev_status.created_at.day) %>        
+        <p class="day-break" style="display:none">
+          <span class="day"><%= js_day status.created_at %></span>
+          <span class="num"><%= js_day_name status.created_at %></span>
+        </p>
+        <% else  %>
+        <span class="time-span" style="display:none"><%= status.created_at.to_s :time %></span>
+        <% end -%>
+        <% prev_status = status %>
+        
+        <div class="media vcard author">
+          <%= link_to gravatar_for(status.user), status.user %>
+        </div>
+        <div class="media-content">
+          <h4 class="media-title status"><%= link_to(status_for(status), status, :class => 'entry-title entry-content') %></h4>
+          <p class="quiet">posted <%= status_at status %> from <strong><%=h status.source || "the web" %></strong></p>
+          <% if status.processed? -%>
+          <span class="others">
+            <span class="num"><%= status.hours.to_f %></span>
+            <span class="meta">hours</span>
+          </span>
+          <% end %>
+        </div>
+      </li>
+		<% end.empty? -%>
+			<li>No status updates have been posted yet.</li>
+		<% end -%>
+    </ol>
+		<%= will_paginate @statuses %>
+  </div>
+</div>

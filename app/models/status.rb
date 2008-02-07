@@ -32,6 +32,11 @@ class Status < ActiveRecord::Base
     with_scope :find => { :conditions => ['statuses.user_id = ?', user_id] }, &block
   end
   
+  def self.in_projects(user_or_projects, &block)
+    projects = user_or_projects.is_a?(User) ? user_or_projects.projects : user_or_projects
+    with_scope :find => { :conditions => ['statuses.project_id is null or statuses.project_id IN (?)', projects] }, &block
+  end
+  
   def self.with_date_filter(filter, now = nil, &block)
     now ||= Time.zone.now
     range = case filter
@@ -57,9 +62,15 @@ class Status < ActiveRecord::Base
   end
   
   # user_id can be an integer or nil
-  def self.filter(user_id, filter)
+  def self.filter(user_id, filter, page = 1)
     with_user user_id do
-      with_date_filter(filter) { find :all, :order => 'statuses.created_at desc' }
+      with_date_filter(filter) { paginate :order => 'statuses.created_at desc', :page => page }
+    end
+  end
+  
+  def self.filtered_hours(user_id, filter)
+    with_user user_id do
+      with_date_filter(filter) { calculate :sum, :hours }.first
     end
   end
    

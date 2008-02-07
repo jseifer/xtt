@@ -23,7 +23,7 @@
                 :axis_labels => ["Sun|Mon|Tue|Wed|Thu|Fri|Sat"],
                 :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => 'week-chart', :class => 'special-chart') %>
           <p class="special-num">
-            <span class="main-num"><%= @statuses.sum { |s| s.hours } %></span>
+            <span class="main-num"><%= @hours.to_f %></span>
             <span class="quiet">hours this <%=h params[:filter] %> period.</span>
             <%= paging_for_period(@date_range) %>
           </p>
@@ -47,19 +47,19 @@
     <ol id="timeline" class="media-list">
     <% prev_status = '' %>
 		<% if @statuses.each_with_index do |status, index| -%>
-      <li class="hentry media-item clearfix<%= %( last) if first_in_collection?(@project.statuses, index) %><%= %( daybreak)  if (status.created_at.day != prev_status.created_at.day) rescue '' %>">
+      <li class="hentry media-item clearfix<%= %( last) if first_in_collection?(@statuses, index) %><%= %( daybreak)  if (status.created_at.day != prev_status.created_at.day) rescue '' %>">
         <% if (index == 0) || (status.created_at.day != prev_status.created_at.day) %>        
         <p class="day-break" style="display:none">
-          <span class="day"><%= status.created_at.strftime("%A") %></span>
-          <span class="num"><%= status.created_at.strftime("%b %d") %></span>
+          <span class="day"><%= js_day status.created_at %></span>
+          <span class="num"><%= js_day_name status.created_at %></span>
         </p>
         <% else  %>
         <span class="time-span" style="display:none"><%= status.created_at.to_s :time %></span>
-        <% end rescue '' %>
+        <% end -%>
         <% prev_status = status %>
         
         <div class="media vcard author">
-          <%= gravatar_for status.user %>
+          <%= link_to gravatar_for(status.user), status.user %>
         </div>
         <div class="media-content">
           <h4 class="media-title status"><%= link_to(status_for(status), status, :class => 'entry-title entry-content') %></h4>
@@ -76,6 +76,7 @@
 			<li>No status updates have been posted yet.</li>
 		<% end -%>
     </ol>
+		<%= will_paginate @statuses %>
   </div>
 </div>
 
