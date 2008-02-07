@@ -2,9 +2,7 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'users', :action => 'index'
 
   map.resources :statuses
-  map.resources :projects do |project|
-    project.resources :statuses, :controller => 'project_statuses'
-  end
+  map.resources :projects
   
   map.with_options :controller => 'projects', :action => 'show' do |project|
     project.project_for_all  'projects/:id/all'
