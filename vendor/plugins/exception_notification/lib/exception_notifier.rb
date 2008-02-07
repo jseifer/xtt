@@ -50,9 +50,7 @@ class ExceptionNotifier < ActionMailer::Base
                   :sections => sections })
   end
 
-  def template_root
-    "#{File.dirname(__FILE__)}/../views"
-  end
+  self.template_root = "#{File.dirname(__FILE__)}/../views"
 
   private
 
