@@ -1,9 +1,8 @@
 <% box(:special, "overview") do |box| %>
-
   <% if @status.finished_at %>
-    <% box.title = "#{@status.created_at.strftime('%A, %B %d %I:%m %p')}  - #{@status.finished_at.strftime("%A, %B %d %I:%m %p")}" %>
+    <% box.title = "#{@status.created_at.strftime('%A, %B %d %I:%M %p')}  - #{@status.finished_at.strftime("%A, %B %d %I:%M %p")}" %>
   <% else %>
-    <% box.title = %(#{@status.created_at.strftime('%A, %B %d %I:%m %p')} - Now) %>
+    <% box.title = %(#{@status.created_at.strftime('%A, %B %d %I:%M %p')} - Now) %>
   <% end %>
   
   <% box.content = capture do %>

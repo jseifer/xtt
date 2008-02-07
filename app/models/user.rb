@@ -53,6 +53,14 @@ class User < ActiveRecord::Base
     @member_hours[project.id]   = nil if reload
     @member_hours[project.id] ||= Status.since(1.month.ago) { calculate_member_project_hours(project) }
   end
+  
+  def can_access?(status)
+    status.project_id.nil? ||
+      status.user_id == id ||
+      (projects.loaded? ? 
+        projects.collect { |p| p.id }.include?(status.project_id) :
+        projects.exists?(['projects.id = ?', status.project_id]))
+  end
 
 protected
   def calculate_total_project_hours(projects)
