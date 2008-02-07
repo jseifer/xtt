@@ -32,10 +32,6 @@ class Project < ActiveRecord::Base
   def owned_by?(user)
     user && user_id == user.id
   end
-  
-  def invitable_users
-    @invitable_users ||= User.find(:all) - users
-  end
 
 protected
   def create_membership
