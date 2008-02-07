@@ -63,7 +63,6 @@ class StatusesController < ApplicationController
 
   def destroy
     @status.destroy
-
     respond_to do |format|
       format.html { redirect_to(statuses_url) }
       format.xml  { head :ok }

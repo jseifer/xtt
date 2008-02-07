@@ -164,7 +164,10 @@
           <%= gravatar_for user %>
         </div>
         <div class="media-content">
-          <h4 class="media-title"><%= link_to_filtered_statuses h(user.login), :user_id => (user == current_user ? :me : user) %></h4>
+          <h4 class="media-title">
+						<%= link_to_filtered_statuses h(user.login), :user_id => (user == current_user ? :me : user) %>
+						<% if user.id == @project.user_id -%>(owner)<% end -%>
+					</h4>
           <p class="quiet"><% if user.last_status_id -%>Active <%= js_time_ago_in_words user.last_status_at %><% else -%>Inactive<% end -%></p>
           <span class="you">
             <span class="num"><%= number_with_precision @project.daily_member_hours[user.id].to_f, 2 %></span>

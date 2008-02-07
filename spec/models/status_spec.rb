@@ -125,7 +125,11 @@ describe Status, 'permissions' do
   define_models do
     model User do
       stub :other, :login => 'other'
-      stub :admin, :login => 'admin'
+      stub :admin, :login => 'admin', :admin => true
+    end
+    
+    model Status do
+      stub :other_in_project, :message => 'other-in-project', :user => all_stubs(:other_user), :created_at => current_time - 47.hours, :project => all_stubs(:project)
     end
   end
   
@@ -135,6 +139,14 @@ describe Status, 'permissions' do
   
   it "allow status owner to edit" do
     @status.should be_editable_by(users(:default))
+  end
+  
+  it "allow admin to edit" do
+    @status.should be_editable_by(users(:admin))
+  end
+  
+  it "allow project owner to edit" do
+    statuses(:other_in_project).should be_editable_by(users(:default))
   end
   
   it "restrict other user from editing" do

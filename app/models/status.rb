@@ -92,7 +92,10 @@ class Status < ActiveRecord::Base
   end
 
   def editable_by?(user)
-    user && user_id == user.id
+    user &&
+      (user.admin?         ||
+      (user_id == user.id) || # status owner
+      (project? && project.owned_by?(user))) # project owner
   end
 
 protected
@@ -126,7 +129,7 @@ protected
   end
   
   def times_are_sane
-    if finished_at and created_at > finished_at
+    if finished_at && created_at > finished_at
       errors.add_to_base "Can't finish before you start! (Extreme GTD)"
     end
   end
