@@ -39,10 +39,14 @@ document.observe('dom:loaded', function() {
    * FIXME: This is to specific, modify so format can be specified.
    */
   $$('span.timestamp').each(function(span) {
-		if(span.hasClassName("formatted"))
-			span.update(Date.parseUTC(span.innerHTML).strftime("%I:%m %p"));
-		else
+		if(span.hasClassName("formatted_time"))
+			span.update(Date.parseUTC(span.innerHTML).strftime("%I:%M %p"));
+		else if(span.hasClassName("formatted_words"))
     	span.update(Date.parseUTC(span.innerHTML).timeAgoInWords());
+		else if(span.hasClassName("formatted_day"))
+			span.update(Date.parseUTC(span.innerHTML).strftime("%B %d"));
+		else
+			span.update(Date.parseUTC(span.innerHTML).strftime("AAA %I:%M %p"));
   });
 
 	$$('.edit-status-link').each(function(link) {

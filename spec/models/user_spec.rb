@@ -94,14 +94,16 @@ describe User do
   
   describe "#can_access?(status)" do
     define_models :copy => false do
-      model User do
-        stub :login => 'default'
-        stub :other, :login => 'other'
-      end
-      
       model Project do
         stub :default, :name => 'default'
         stub :other, :name => 'other'
+      end
+
+      model User do
+        stub :login => 'default'
+        stub :other,   :login => 'other',   :last_status_project_id => 23
+        stub :project, :login => 'project', :last_status_project => all_stubs(:project)
+        stub :out,     :login => 'out',     :last_status_message => 'hi'
       end
       
       model Membership do
@@ -138,8 +140,24 @@ describe User do
       @user.can_access?(statuses(:default)).should == true
     end
 
-    it "doesn't allow a status by a different user/project" do
+    it "doesn't access a status by a different user/project" do
       @user.can_access?(statuses(:other)).should == false
+    end
+    
+    it "allows access to itself" do
+      @user.can_access?(@user).should == true
+    end
+
+    it "allows a User#last_status posted in a user's project" do
+      @user.can_access?(users(:project)).should == true
+    end
+
+    it "allows an OUT User#last_status" do
+      @user.can_access?(users(:out)).should == true
+    end
+
+    it "doesn't access a User#last_status by a different user/project" do
+      @user.can_access?(users(:other)).should == false
     end
   end
   

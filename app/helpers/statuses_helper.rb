@@ -1,11 +1,18 @@
 module StatusesHelper
   def status_summary(project)
-    project.nil? ? "is out" : "is working on #{h(project.name)}"
+    return 'is out' if project.nil?
+    current_user.can_access?(project) ? "is working on #{h(project.name)}" : "is busy"
   end
   
   def status_for(user_or_status)
     message = user_or_status.is_a?(User) ? user_or_status.last_status_message : user_or_status.message
-    message.blank? ? "No update" : h(message)
+    if message.blank?
+      'No update'
+    elsif current_user.can_access?(user_or_status)
+      h(message)
+    else
+      'Busy'
+    end
   end
   
   def status_at(status_or_date)
