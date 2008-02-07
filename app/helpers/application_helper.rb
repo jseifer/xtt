@@ -47,15 +47,15 @@ module ApplicationHelper
   end
   
   def js_time_ago_in_words(time)
-    js_datetime time, :formatted_words
+    js_datetime time, 'formatted-words'
   end
   
   def js_time(time)
-    js_datetime time, :formatted_time
+    js_datetime time, 'formatted-time'
   end
   
   def js_day(time)
-    js_datetime time, :formatted_day
+    js_datetime time, 'formatted-day'
   end
   
   def display_flash(key)
