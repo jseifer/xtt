@@ -12,17 +12,19 @@
 ActiveRecord::Schema.define(:version => 23) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
-    t.text "hostname"
-    t.text "key"
-    t.text "value"
-    t.text "cast"
+    t.string "hostname"
+    t.string "key"
+    t.text   "value"
+    t.string "cast"
   end
+
+  add_index "bj_config", ["hostname", "key"], :name => "index_bj_config_on_hostname_and_key"
 
   create_table "bj_job", :primary_key => "bj_job_id", :force => true do |t|
     t.text     "command"
-    t.text     "state"
+    t.string   "state"
     t.integer  "priority"
-    t.text     "tag"
+    t.string   "tag"
     t.integer  "is_restartable"
     t.text     "submitter"
     t.text     "runner"
@@ -39,9 +41,9 @@ ActiveRecord::Schema.define(:version => 23) do
 
   create_table "bj_job_archive", :primary_key => "bj_job_archive_id", :force => true do |t|
     t.text     "command"
-    t.text     "state"
+    t.string   "state"
     t.integer  "priority"
-    t.text     "tag"
+    t.string   "tag"
     t.integer  "is_restartable"
     t.text     "submitter"
     t.text     "runner"
