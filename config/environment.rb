@@ -58,6 +58,7 @@ Rails::Initializer.run do |config|
   config.time_zone = "UTC"
   
   config.after_initialize do
+    gem 'bj', '1.0.1'
     %w(ostruct md5 gchart has_finder bj).each { |lib| require lib }
   end
 end
