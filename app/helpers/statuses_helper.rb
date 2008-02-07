@@ -52,20 +52,20 @@ module StatusesHelper
   
   def chart_data_for(labels, filter, hours)
     reversed = labels.reverse
-    returning [] do |data|
-      case filter
-        when 'weekly'
-          reversed.each do |label|
-            hours.pop unless hours.empty? || hours.last.first.strftime("%A")[label]
-            data.unshift(hours.empty? ? 0.0 : hours.last.last.to_f)
-          end
-        when 'monthly', 'bi-weekly'
-          reversed.each do |label|
-            hours.pop unless hours.empty? || hours.last.first.day <= label
-            data.unshift(hours.empty? || hours.last.first.day != label ? 0.0 : hours.last.last.to_f)
-          end
-      end
+    data = []
+    case filter
+      when 'weekly'
+        reversed.each do |label|
+          hours.pop unless hours.empty? || hours.last.first.strftime("%A")[label]
+          data.unshift(hours.empty? ? 0.0 : hours.last.last.to_f)
+        end
+      when 'monthly', 'bi-weekly'
+        reversed.each do |label|
+          hours.pop unless hours.empty? || hours.last.first.day <= label
+          data.unshift(hours.empty? || hours.last.first.day != label ? 0.0 : hours.last.last.to_f)
+        end
     end
+    data.sum > 0 ? data : []
   end
 
   def paging_for_period(date_range)
