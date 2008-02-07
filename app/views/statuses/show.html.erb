@@ -54,6 +54,7 @@
     </table>
       <% end %>
     <% form_for @status, :html => { :id => 'edit-status-times', :class => 'form', :style => 'display:none' } do |f| %>
+    <%= f.error_messages %>
     <table cellspacing="0" cellpadding="0" class="tblform">
 			<tr>
 				<th>
