@@ -39,14 +39,9 @@ document.observe('dom:loaded', function() {
    * FIXME: This is to specific, modify so format can be specified.
    */
   $$('span.timestamp').each(function(span) {
-		if(span.hasClassName("formatted-time"))
-			span.update(Date.parseUTC(span.innerHTML).strftime("%I:%M %p"));
-		else if(span.hasClassName("formatted-words"))
-    	span.update(Date.parseUTC(span.innerHTML).timeAgoInWords());
-		else if(span.hasClassName("formatted-day"))
-			span.update(Date.parseUTC(span.innerHTML).strftime("%B %d"));
-		else
-			span.update(Date.parseUTC(span.innerHTML).strftime("AAA %I:%M %p"));
+		var utc = Date.parseUTC(span.innerHTML);
+		var rel = span.readAttribute('rel');
+		span.update(rel == 'words' ? utc.timeAgoInWords() : utc.strftime(Date.strftimeFormats[rel]))
   });
 
 	$$('.edit-status-link').each(function(link) {
@@ -93,6 +88,11 @@ Element.addMethods('INPUT', {
     });
   }
 });
+
+Date.strftimeFormats = {
+	time: "%I:%M %p",
+	day:  "%B %d"
+}
 
 Object.extend(Date.prototype, {
   strftime: function(format) {

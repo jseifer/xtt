@@ -42,20 +42,20 @@ module ApplicationHelper
   end
 
   @@default_jstime_format = "%d %b, %Y %I:%M %p"
-  def js_datetime(time, custom = nil)
-    content_tag('abbr', content_tag('span', time.utc.strftime(@@default_jstime_format), :class => "timestamp #{custom}".strip), :title => time.xmlschema, :class => 'published')
+  def js_datetime(time, rel = :datetime)
+    content_tag('abbr', content_tag('span', time.utc.strftime(@@default_jstime_format), :class => :timestamp, :rel => rel), :title => time.xmlschema, :class => 'published')
   end
   
   def js_time_ago_in_words(time)
-    js_datetime time, 'formatted-words'
+    js_datetime time, :words
   end
   
   def js_time(time)
-    js_datetime time, 'formatted-time'
+    js_datetime time, :time
   end
   
   def js_day(time)
-    js_datetime time, 'formatted-day'
+    js_datetime time, :day
   end
   
   def display_flash(key)
