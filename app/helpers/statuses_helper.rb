@@ -44,9 +44,27 @@ module StatusesHelper
 
   def chart_labels_for(filter, date_range)
     case filter
-      when 'weekly' then "Mon|Tue|Wed|Thu|Fri|Sat|Sun"
-      when 'monthly', 'bi-weekly' then (date_range.first.day..date_range.last.day).to_a * "|"
+      when 'weekly' then %w(Mon Tue Wed Thu Fri Sat Sun)
+      when 'monthly', 'bi-weekly' then (date_range.first.day..date_range.last.day).to_a
       else raise "Invalid filter: #{filter.inspect}"
+    end
+  end
+  
+  def chart_data_for(labels, filter, hours)
+    reversed = labels.reverse
+    returning [] do |data|
+      case filter
+        when 'weekly'
+          reversed.each do |label|
+            hours.pop unless hours.empty? || hours.last.first.strftime("%A")[label]
+            data.unshift(hours.empty? ? 0.0 : hours.last.last.to_f)
+          end
+        when 'monthly', 'bi-weekly'
+          reversed.each do |label|
+            hours.pop unless hours.empty? || hours.last.first.day <= label
+            data.unshift(hours.empty? || hours.last.first.day != label ? 0.0 : hours.last.last.to_f)
+          end
+      end
     end
   end
 

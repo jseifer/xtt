@@ -66,4 +66,16 @@ module ApplicationHelper
     return nil if flash[key].blank?
     content_tag(:div, content_tag(:div, h(flash[key]), :class => 'mblock-cnt'), :class => 'mblock', :id => key.to_s.downcase)
   end
+  
+  def number_to_running_time(seconds)
+    seconds = seconds.to_i
+    is_negative = seconds < 0
+    seconds = seconds.abs
+    return '0' unless seconds > 0
+    hours   = seconds / 1.hour
+    seconds = seconds % 1.hour
+    minutes = seconds / 1.minute
+    seconds = seconds % 1.minute
+    (is_negative ? '-' : '') + (hours > 0 ? "#{hours}:" : '') + ('%02d:%02d' % [minutes, seconds])
+  end  
 end
