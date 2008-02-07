@@ -43,13 +43,13 @@
   <% box.title = "What's everyone else doing?" %>
   <% box.content = capture do %>
     <ul id="timeline" class="media-list">
-		<% current_user.related_users.each do |user| -%>
-      <li class="media-item clearfix">
+		<% current_user.related_users.each_with_index do |user, index| -%>
+      <li class="media-item clearfix<%= %( last) if first_in_collection?(current_user.related_users, index) %>">
         <div class="media">
           <%= link_to gravatar_for(user), user %>
         </div>
         <div class="media-content">
-          <h4 class="media-title"><a href="/video/2323"><%= link_to_user user %> <%= status_summary user.last_status_project %></a></h4>
+          <h4 class="media-title"><%= link_to_user user %> <%= status_summary user.last_status_project %></h4>
           <p class="quiet"><%= status_for user %></p>
           <span class="datetime"><%= status_at user %></span>
         </div>
