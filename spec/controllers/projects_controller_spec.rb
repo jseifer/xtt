@@ -54,7 +54,7 @@ describe ProjectsController, "GET #show" do
       
       before do
         @project.statuses.should_receive(:filter).with(*options[:args]).and_return([@statuses, @date_range])
-        @project.statuses.should_receive(:filtered_hours).with(options[:args][1]).and_return(@hours)
+        @project.statuses.should_receive(:filtered_hours).with(*options[:args][0..-2]).and_return(@hours)
       end
       
       it_assigns :project, :statuses, :date_range, :hours

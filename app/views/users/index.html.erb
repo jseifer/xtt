@@ -46,7 +46,7 @@
 		<% current_user.related_users.each do |user| -%>
       <li class="media-item clearfix">
         <div class="media">
-          <%= gravatar_for user %>
+          <%= link_to gravatar_for(user), user %>
         </div>
         <div class="media-content">
           <h4 class="media-title"><a href="/video/2323"><%= link_to_user user %> <%= status_summary user.last_status_project %></a></h4>
