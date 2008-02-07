@@ -38,14 +38,14 @@ describe ProjectsController, "GET #show" do
     controller.stub!(:current_user).and_return(mock_model(User, :id => 55, :active? => true, :time_zone => "UTC"))
   end
 
-  [ {:user_id => nil,   :filter => nil, :args => [nil, 'weekly', nil]},
-    {:user_id => 'all', :filter => nil, :args => [nil, 'weekly', nil]},
-    {:user_id => 'me',  :filter => nil, :args => [55,  'weekly', nil]},
-    {:user_id => '5',   :filter => nil, :args => [5,   'weekly', nil]},
-    {:user_id => nil,   :filter => 'weekly', :args => [nil, 'weekly', nil]},
-    {:user_id => 'all', :filter => 'weekly', :args => [nil, 'weekly', nil]},
-    {:user_id => 'me',  :filter => 'weekly', :args => [55,  'weekly', nil]},
-    {:user_id => '5',   :filter => 'weekly', :args => [5,   'weekly', nil]} ].each do |options|
+  [ {:user_id => nil,   :filter => nil, :args => [nil, 'weekly', {:date => nil, :page => nil}]},
+    {:user_id => 'all', :filter => nil, :args => [nil, 'weekly', {:date => nil, :page => nil}]},
+    {:user_id => 'me',  :filter => nil, :args => [55,  'weekly', {:date => nil, :page => nil}]},
+    {:user_id => '5',   :filter => nil, :args => [5,   'weekly', {:date => nil, :page => nil}]},
+    {:user_id => nil,   :filter => 'weekly', :args => [nil, 'weekly', {:date => nil, :page => nil}]},
+    {:user_id => 'all', :filter => 'weekly', :args => [nil, 'weekly', {:date => nil, :page => nil}]},
+    {:user_id => 'me',  :filter => 'weekly', :args => [55,  'weekly', {:date => nil, :page => nil}]},
+    {:user_id => '5',   :filter => 'weekly', :args => [5,   'weekly', {:date => nil, :page => nil}]} ].each do |options|
       
     describe ProjectsController, "(filtered)" do
       define_models
@@ -54,7 +54,7 @@ describe ProjectsController, "GET #show" do
       
       before do
         @project.statuses.should_receive(:filter).with(*options[:args]).and_return([@statuses, @date_range])
-        @project.statuses.should_receive(:filtered_hours).with(*options[:args][0..-2]).and_return(@hours)
+        @project.statuses.should_receive(:filtered_hours).with(*options[:args][0..-2] + [{:date => nil}]).and_return(@hours)
       end
       
       it_assigns :project, :statuses, :date_range, :hours

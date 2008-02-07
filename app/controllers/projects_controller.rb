@@ -12,8 +12,8 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @statuses, @date_range = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter] ||= 'weekly', params[:page])
-    @hours = @project.statuses.filtered_hours(user_status_for(params[:user_id]), params[:filter])
+    @statuses, @date_range = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter] ||= 'weekly', :date => params[:date], :page => params[:page])
+    @hours = @project.statuses.filtered_hours(user_status_for(params[:user_id]), params[:filter], :date => params[:date])
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml  => @project }

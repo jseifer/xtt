@@ -10,8 +10,8 @@ class UsersController < ApplicationController
   # user status page
   def show
     status_query = lambda do
-      @statuses, @date_range = @user.statuses.filter(params[:filter] ||= 'weekly', params[:page])
-      @hours = @user.statuses.filtered_hours(params[:filter])
+      @statuses, @date_range = @user.statuses.filter(params[:filter] ||= 'weekly', :date => params[:date], :page => params[:page])
+      @hours = @user.statuses.filtered_hours(params[:filter], :date => params[:date])
     end
     @user == current_user ? status_query.call : Status.in_projects(current_user, &status_query)
   end
