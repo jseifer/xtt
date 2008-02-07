@@ -2,7 +2,8 @@ class Status < ActiveRecord::Base
   validates_presence_of :user_id, :message
   validate :followup_is_valid
   validate :previous_is_valid
-
+  validate :times_are_sane
+  
   concerned_with :hacky_date_methods
   
   attr_writer :followup
@@ -122,5 +123,11 @@ protected
     #if previous.created_at > created_at
     #  errors.add :created_at, "Cannot travel back in time with this status in hand."
     #end
+  end
+  
+  def times_are_sane
+    if !active? and created_at > finished_at
+      errors.add_to_base "Can't finish before you start! (Extreme GTD)"
+    end
   end
 end

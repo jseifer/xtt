@@ -28,7 +28,7 @@ module ApplicationHelper
   
   def link_to_status(status)
     ret = ""
-    ret << link_to(h(status.project.name), status.project) + ": " if status.project
+    ret << (status.project ? link_to(h(status.project.name), status.project) + ": " : "Out: ")
     ret << link_to(h(status.message), status)
     ret
   end

@@ -12,7 +12,7 @@
         <%= gravatar_for current_user %>
       </div>
       <div class="media-content">
-        <h4 class="media-title"><%=h @status.message %></h4>
+        <h4 class="media-title"><%= link_to_status @status %></h4>
         <p class="quiet">posted <%= status_at @status %></p>
         <% if @status.followup.nil? %>
         <span class="others">
@@ -29,64 +29,83 @@
     </li>
   </ul>
   <% end %>
-
 <% end %>
 
-<% unless @status.active? %>
-  <% box :normal, 'form' do |box| %>
-    <% box.title = "Modify this status" %>
+<% if @status.created_at < @status.previous.finished_at -%>
+  <% box :normal, 'valid' do |box| -%>
+    <% box.title = "Warning: Overlap" -%>
     <% box.content = capture do %>
-    <% form_for @status, :html => { :id => 'edit-status-hours', :class => 'form' } do |f| %>
-    <table cellspacing="0" cellpadding="0" class="tblform">
-      <tr>
-        <th>
-					<%= f.label :set_hours, "Total hour(s) worked:" %>
-        </th>
-        <td>
-					<%= f.text_field :set_hours %>
-          <p class="quiet">Modifying your time could potentially cause overlap with your other statuses.</p>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2"><p class="btns"><%= save_button %> or <%= link_to 'edit times', '#', :class => 'edit-status-link' %></p></td>
-      </tr>
-    </table>
-      <% end %>
-    <% form_for @status, :html => { :id => 'edit-status-times', :class => 'form', :style => 'display:none' } do |f| %>
-    <%= f.error_messages %>
-    <table cellspacing="0" cellpadding="0" class="tblform">
-			<tr>
-				<th>
-					<%= f.label :created_at, "Start Time:" %>
-				</th>
-				<td>
-					<%= f.date_select :created_at %>
-					<%= f.time_select :created_at %>
-				</td>
-			</tr>
-			<tr>
-				<th>
-					<%= f.label :finished_at, "End Time:" %>
-				</th>
-				<td>
-					<%= f.date_select :finished_at %>
-					<%= f.time_select :finished_at %>
-				</td>
-			</tr>
-      <tr>
-        <td colspan="2"><p class="btns"><%= save_button %> or <%= link_to 'edit hours', '#', :class => 'edit-status-link' %></p></td>
-      </tr>
-    </table>
+      <p>This status starts before the previous status finish time.  Adjust the start time, or finish 
+        <%= link_to "the previous status", @status.previous %> earlier.</p>
+    <% end %>
+  <% end -%>
+  <%= yield :valid_box %>
+<% end -%>
+
+<% box :normal, 'form' do |box| %>
+  <% box.title = "Modify this status" %>
+  <% box.content = capture do %>
+    <% unless @status.active? -%>
+      <% form_for @status, :html => { :id => 'edit-status-hours', :class => 'form', :style => @status.valid? ? "" : "display:none" } do |f| %>
+      <table cellspacing="0" cellpadding="0" class="tblform">
+        <tr>
+          <th>
+  					<%= f.label :set_hours, "Total hour(s) worked:" %>
+          </th>
+          <td>
+  					<%= f.text_field :set_hours %>
+            <p class="quiet">Modifying your time could potentially cause overlap with your other statuses.</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <p class="btns"><%= save_button %> or <%= link_to 'edit times', '#', :class => 'edit-status-link' %></p>
+          </td>
+        </tr>
+      </table>
+      <% end # form -%>
+    <% end # active -%>
+      <% form_for @status, :html => { :id => 'edit-status-times', 
+          :class => 'form', 
+          :style => (!@status.valid? or @status.active?) ? '' : 'display:none' } do |f| %>
+        <%= f.error_messages %>
+        <table cellspacing="0" cellpadding="0" class="tblform">
+    			<tr>
+    				<th>
+    					<%= f.label :created_at, "Start Time:" %>
+    				</th>
+    				<td>
+    					<%= f.date_select :created_at %>
+    					<%= f.time_select :created_at %>
+    				</td>
+    			</tr>
+    			<% unless @status.active? -%>
+    			<tr>
+    				<th>
+    					<%= f.label :finished_at, "End Time:" %>
+    				</th>
+    				<td>
+    					<%= f.date_select :finished_at %>
+    					<%= f.time_select :finished_at %>
+    				</td>
+    			</tr>
+    			<% end -%>
+          <tr>
+            <td colspan="2">
+              <p class="btns"><%= save_button %> 
+              <% unless @status.active? %> or <%= link_to 'edit hours', '#', :class => 'edit-status-link' %><% end %></p>
+            </td>
+          </tr>
+        </table>
       <% end %>
     <% end %>
-  <% end %>
 <% end %>
 
 <%= yield :normal_box %>
 
 
 <% box(:sidebar, 'details') do |sbox| %>
-  <% sbox.title = "Other status details" %>
+  <% sbox.title = "Timeline" %>
   <% sbox.content_classes = "nopad" %>
   <% sbox.content = capture do %>
     <ul id="status-list">
@@ -94,7 +113,7 @@
       <li<%= %( class="last") if @status.followup.nil? %>>
         <a href="<%= status_path(@status.previous) %>">
           <span class="quiet">Previous status</span>
-          <em><%=h @status.previous.message %></em>
+          <em><%= @status.previous.project ? @status.previous.project.name : "Out" %>: <%=h @status.previous.message %></em>
           <span class="start-fin">
             <span class="start">
               <span class="time"><%= start_time_for(@status.previous) %></span>
@@ -118,7 +137,7 @@
       <li class="last">
         <a href="<%= status_path(@status.followup) %>">
           <span class="quiet">Next status</span>
-           <em><%=h @status.followup.message %></em>
+           <em><%= @status.followup.project ? @status.followup.project.name : "Out" %>: <%=h @status.followup.message %></em>
           <span class="start-fin">
             <span class="start">
               <span class="time"><%= start_time_for(@status.followup) %></span>
