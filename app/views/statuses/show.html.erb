@@ -1,9 +1,8 @@
 <% box(:special, "overview") do |box| %>
-
   <% if @status.finished_at %>
-    <% box.title = "#{@status.created_at.strftime('%A, %B %d %I:%m %p')}  - #{@status.finished_at.strftime("%A, %B %d %I:%m %p")}" %>
+    <% box.title = "#{@status.created_at.strftime('%A, %B %d %I:%M %p')}  - #{@status.finished_at.strftime("%A, %B %d %I:%M %p")}" %>
   <% else %>
-    <% box.title = %(#{@status.created_at.strftime('%A, %B %d %I:%m %p')} - Now) %>
+    <% box.title = %(#{@status.created_at.strftime('%A, %B %d %I:%M %p')} - Now) %>
   <% end %>
   
   <% box.content = capture do %>
@@ -23,7 +22,7 @@
         <% else %>
         <span class="others">
           <span class="num"><%= @status.hours.to_f %></span>
-          <span class="meta">hours</span>
+          <span class="meta">hour<%= :s unless @status.hours == 1.0 %></span>
         </span>
         <% end %>
       </div>
@@ -41,7 +40,7 @@
     <table cellspacing="0" cellpadding="0" class="tblform">
       <tr>
         <th>
-					<%= f.label :set_hours, "Total hours worked:" %>
+					<%= f.label :set_hours, "Total hour(s) worked:" %>
         </th>
         <td>
 					<%= f.text_field :set_hours %>
@@ -61,7 +60,7 @@
 					<%= f.label :created_at, "Start Time:" %>
 				</th>
 				<td>
-					<%= f.date_select :created_at %><br />
+					<%= f.date_select :created_at %>
 					<%= f.time_select :created_at %>
 				</td>
 			</tr>
@@ -70,7 +69,7 @@
 					<%= f.label :finished_at, "End Time:" %>
 				</th>
 				<td>
-					<%= f.date_select :finished_at %><br />
+					<%= f.date_select :finished_at %>
 					<%= f.time_select :finished_at %>
 				</td>
 			</tr>
@@ -99,17 +98,17 @@
           <span class="start-fin">
             <span class="start">
               <span class="time"><%= start_time_for(@status.previous) %></span>
-              <span class="month">January 22</span>
+              <span class="month"><%= js_day @status.previous.created_at %></span>
             </span>
             <span class="dash">-</span>
             <span class="finish">
               <span class="time"><%= finish_time_for(@status.previous) %></span>
-              <span class="month">January 22</span>
+              <span class="month"><%= js_day @status.previous.finished_at %></span>
             </span>
             <span class="equals">=</span>
             <span class="hours">
               <span class="time"><%= @status.previous.hours %></span>
-              <span class="month">hours</span>
+              <span class="month">hour<%= :s unless @status.previous.hours == 1.0 %></span>
             </span>
           </span>
         </a>
@@ -123,22 +122,22 @@
           <span class="start-fin">
             <span class="start">
               <span class="time"><%= start_time_for(@status.followup) %></span>
-              <span class="month">January 23</span>
+              <span class="month"><%= js_day @status.created_at %></span>
             </span>
             <span class="dash">-</span>
             <span class="finish">              
               <% unless @status.followup.active? %>
               <span class="time"><%= finish_time_for(@status.followup) %></span>
-              <span class="month"><%= @status.followup.finished_at.strftime("%B %d") %></span>
+              <span class="month"><%= js_day @status.followup.finished_at %></span>
               <% else %>
               <span class="time">Now</span>
-              <span class="month"><%= Time.now.strftime("%B %d") %></span>
+              <span class="month"><%= js_day Time.now %></span>
               <% end %>
             </span>
             <span class="equals">=</span>
             <span class="hours">
               <span class="time"><%= @status.followup.hours %></span>
-              <span class="month">hours</span>
+              <span class="month">hour<%= :s unless @status.followup.hours == 1.0 %></span>
             </span>
           </span>
         </a>

@@ -92,6 +92,75 @@ describe User do
     end
   end
   
+  describe "#can_access?(status)" do
+    define_models :copy => false do
+      model Project do
+        stub :default, :name => 'default'
+        stub :other, :name => 'other'
+      end
+
+      model User do
+        stub :login => 'default'
+        stub :other,   :login => 'other',   :last_status_project_id => 23
+        stub :project, :login => 'project', :last_status_project => all_stubs(:project)
+        stub :out,     :login => 'out',     :last_status_message => 'hi'
+      end
+      
+      model Membership do
+        stub :default, :user => all_stubs(:user), :project => all_stubs(:project)
+      end
+      
+      model Status do
+        stub :message => 'default', :user => all_stubs(:other_user)
+        stub :user,    :message => 'same_user', :user => all_stubs(:user),       :project => all_stubs(:other_project)
+        stub :project, :message => 'same_user', :user => all_stubs(:other_user), :project => all_stubs(:project)
+        stub :other,   :message => 'same_user', :user => all_stubs(:other_user), :project => all_stubs(:other_project)
+      end
+    end
+    
+    before do
+      @user = users(:default)
+    end
+
+    it "allows a status posted by the user" do
+      @user.can_access?(statuses(:user)).should == true
+    end
+
+    it "allows a status posted in a user's project" do
+      @user.can_access?(statuses(:project)).should == true
+    end
+
+    it "allows a status posted in a user's project (with loaded projects association)" do
+      @user.projects.to_a # load projects association
+      Membership.delete_all
+      @user.can_access?(statuses(:project)).should == true
+    end
+
+    it "allows an OUT status" do
+      @user.can_access?(statuses(:default)).should == true
+    end
+
+    it "doesn't access a status by a different user/project" do
+      @user.can_access?(statuses(:other)).should == false
+    end
+    
+    it "allows access to itself" do
+      @user.can_access?(@user).should == true
+    end
+
+    it "allows a User#last_status posted in a user's project" do
+      @user.can_access?(users(:project)).should == true
+    end
+
+    it "allows an OUT User#last_status" do
+      @user.can_access?(users(:out)).should == true
+    end
+
+    it "doesn't access a User#last_status by a different user/project" do
+      @user.can_access?(users(:other)).should == false
+    end
+  end
+  
   describe "#post" do
     define_models :users
   

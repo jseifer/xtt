@@ -53,6 +53,15 @@ class User < ActiveRecord::Base
     @member_hours[project.id]   = nil if reload
     @member_hours[project.id] ||= Status.since(1.month.ago) { calculate_member_project_hours(project) }
   end
+  
+  def can_access?(user_or_status_or_project)
+    case user_or_status_or_project
+      when Status  then can_access_status?(user_or_status_or_project)
+      when User    then can_access_user?(user_or_status_or_project)
+      when Project then accessible_project_id?(user_or_status_or_project.id)
+      else false
+    end
+  end
 
 protected
   def calculate_total_project_hours(projects)
@@ -71,5 +80,21 @@ protected
       code = c[1..-1]; ''
     end
     [code, message.strip]
+  end
+  
+  def can_access_status?(status)
+    status.project_id.nil? ||
+      status.user_id == id ||
+      accessible_project_id?(status.project_id)
+  end
+  
+  def can_access_user?(user)
+    user == self || user.last_status_project_id.nil? || accessible_project_id?(user.last_status_project_id)
+  end
+  
+  def accessible_project_id?(project_id)
+    projects.loaded? ? 
+      projects.collect { |p| p.id }.include?(project_id) :
+      projects.exists?(['projects.id = ?', project_id])
   end
 end
