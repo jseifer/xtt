@@ -57,7 +57,15 @@ class Status
   
   def self.filtered_hours(user_id, filter, options = {})
     with_user user_id do
-      with_date_filter(filter, options[:date]) { calculate :sum, :hours }.first
+      hours = with_date_filter(filter, options[:date]) { calculate :sum, :hours, :group => "DATE(CONVERT_TZ(created_at, '+00:00', '#{Time.zone.utc_offset_string}'))" }.first
+      hours.collect! { |(date, hour)| [Time.parse(date), hour] }
+      def hours.total()
+        @total ||= values.inject(0.0) { |t, h| t + h }
+      end
+      def hours.values()
+        @values ||= collect { |(d, h)| h }
+      end
+      hours
     end
   end
    
