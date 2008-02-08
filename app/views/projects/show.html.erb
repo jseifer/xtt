@@ -23,10 +23,10 @@
   <div class="mblock-hdr">
     <h3><%= h(@project.name) %> Timeline</h3>
     <div class="utils">
-			<%= link_to_filtered_statuses(:Daily, :filter => 'daily') %>
-			<%= link_to_filtered_statuses(:Week,  :filter => 'weekly') %>
-			<%= link_to_filtered_statuses('Bi-weekly', :filter => 'bi-weekly') %>
-			<%= link_to_filtered_statuses(:Month, :filter => 'monthly') %>
+			<%= link_to_filtered_statuses(:Daily, :filter => 'daily', :date => nil) %>
+			<%= link_to_filtered_statuses(:Week,  :filter => 'weekly', :date => nil) %>
+			<%= link_to_filtered_statuses('Bi-weekly', :filter => 'bi-weekly', :date => nil) %>
+			<%= link_to_filtered_statuses(:Month, :filter => 'monthly', :date => nil) %>
     </div>
   </div>
   <div class="mblock-cnt">
@@ -54,6 +54,11 @@
           <span class="others">
             <span class="num"><%= status.hours.to_f %></span>
             <span class="meta">hours</span>
+          </span>
+          <% elsif !status.out? %>
+          <span class="others">
+            <span class="num livetime" title="<%= status.created_at.utc.strftime("%d %b, %Y %I:%M %p") %>"><%= status.hours.to_f %></span>
+            <span class="meta">logged</span>
           </span>
           <% end %>
         </div>
@@ -152,7 +157,7 @@
         </div>
         <div class="media-content">
           <h4 class="media-title">
-						<%= link_to_filtered_statuses h(user.login), :user_id => (user == current_user ? :me : user) %>
+						<%= link_to_filtered_statuses h(user.login), :user_id => (user == current_user ? :me : user), :date => nil %>
 						<% if user.id == @project.user_id -%>(owner)<% end -%>
 					</h4>
           <p class="quiet"><% if user.last_status_id -%>Active <%= js_time_ago_in_words user.last_status_at %><% else -%>Inactive<% end -%></p>
