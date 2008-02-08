@@ -10,6 +10,14 @@ document.observe('dom:loaded', function() {
         this.up('form').submit();
       }
     });
+    
+  	$$('span.livetime').each(function(span) {
+  	  var UTCDate = span.readAttribute('title');
+  	  span.update(Date.differenceFromNow(Date.parseUTC(UTCDate)).join(":"));
+  	  new Timer(span, function(time) {
+    	  this.element.update(time.join(":"));
+    	});
+  	});
   
   /**
    * Grab all the day and time badges and if the user has their browser 
@@ -50,10 +58,7 @@ document.observe('dom:loaded', function() {
 			$('edit-status-hours').toggle()
 		})
 	});
-	
-	new Timer('blah', function(time) {
-	  console.log(time);
-	});
+
 });
 
 
@@ -149,7 +154,7 @@ Object.extend(Date, {
     var hours   = Math.floor(seconds / 3600).toPaddedString(2);
     seconds     = Math.floor(seconds % 3600);
     var minutes = Math.floor(seconds / 60).toPaddedString(2);
-    seconds = (seconds % 60);
+    seconds = (seconds % 60).toPaddedString(2);
     return [hours, minutes, seconds];
   }
 })

@@ -55,6 +55,11 @@
             <span class="num"><%= status.hours.to_f %></span>
             <span class="meta">hours</span>
           </span>
+          <% elsif !status.out? %>
+          <span class="others">
+            <span class="num livetime" title="<%= status.created_at.utc.strftime("%d %b, %Y %I:%M %p") %>"><%= status.hours.to_f %></span>
+            <span class="meta">logged</span>
+          </span>
           <% end %>
         </div>
       </li>
