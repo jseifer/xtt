@@ -37,7 +37,7 @@ class User::Inviter
   end
   
   def to_job
-    %{script/runner "User::Inviter.invite(#{@project.id}, '#{(logins + emails) * ", "}')"}
+    %{script/runner -e production "User::Inviter.invite(#{@project.id}, '#{(logins + emails) * ", "}')"}
   end
   
 protected
