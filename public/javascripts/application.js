@@ -111,6 +111,7 @@ Element.addMethods('INPUT', {
 Date.strftimeFormats = {
 	time: "%I:%M %p",
 	day:  "%B %d",
+	short: '%b %d',
 	dayName: "%A"
 }
 

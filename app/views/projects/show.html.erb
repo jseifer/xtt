@@ -36,8 +36,8 @@
       <li class="hentry media-item clearfix<%= %( last) if first_in_collection?(@statuses, index) %><%= %( daybreak)  if (status.created_at.day != prev_status.created_at.day) rescue '' %>">
         <% if (index == 0) || (status.created_at.day != prev_status.created_at.day) %>        
         <p class="day-break" style="display:none">
-          <span class="day"><%= js_day status.created_at %></span>
           <span class="num"><%= js_day_name status.created_at %></span>
+          <span class="day"><%= js_datetime status.created_at, :short %></span>
         </p>
         <% else  %>
         <span class="time-span" style="display:none"><%= status.created_at.to_s :time %></span>
