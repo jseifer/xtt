@@ -11,16 +11,18 @@
 
 ActiveRecord::Schema.define(:version => 23) do
 
-  create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
-    t.string "hostname"
-    t.string "key"
-    t.text   "value"
-    t.string "cast"
+  create_table "bj_config", :id => false, :force => true do |t|
+    t.integer "bj_config_id", :null => false
+    t.string  "hostname"
+    t.string  "key"
+    t.text    "value"
+    t.string  "cast"
   end
 
   add_index "bj_config", ["hostname", "key"], :name => "index_bj_config_on_hostname_and_key"
 
-  create_table "bj_job", :primary_key => "bj_job_id", :force => true do |t|
+  create_table "bj_job", :id => false, :force => true do |t|
+    t.integer  "bj_job_id",      :null => false
     t.text     "command"
     t.string   "state"
     t.integer  "priority"
@@ -39,7 +41,8 @@ ActiveRecord::Schema.define(:version => 23) do
     t.integer  "exit_status"
   end
 
-  create_table "bj_job_archive", :primary_key => "bj_job_archive_id", :force => true do |t|
+  create_table "bj_job_archive", :id => false, :force => true do |t|
+    t.integer  "bj_job_archive_id", :null => false
     t.text     "command"
     t.string   "state"
     t.integer  "priority"
@@ -81,17 +84,15 @@ ActiveRecord::Schema.define(:version => 23) do
     t.string   "code"
   end
 
-  add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
-
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
-    t.decimal  "hours",       :precision => 8, :scale => 2, :default => 0.0
+    t.decimal  "hours",       :default => 0.0
     t.string   "message"
     t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "project_id"
-    t.string   "source",                                    :default => "the web"
+    t.string   "source",      :default => "the web"
     t.datetime "finished_at"
   end
 

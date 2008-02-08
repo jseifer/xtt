@@ -5,26 +5,50 @@
 
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-  <title>The page you were looking for doesn't exist (404)</title>
-	<style type="text/css">
-		body { background-color: #fff; color: #666; text-align: center; font-family: arial, sans-serif; }
-		div.dialog {
-			width: 25em;
-			padding: 0 4em;
-			margin: 4em auto 0 auto;
-			border: 1px solid #ccc;
-			border-right-color: #999;
-			border-bottom-color: #999;
-		}
-		h1 { font-size: 100%; color: #f00; line-height: 1.5em; }
+  <title>Oops! Something went wrong.</title>
+	<link rel="stylesheet" href="/stylesheets/screen.css" type="text/css" media="screen" charset="utf-8" />
+	<style type="text/css" media="screen">
+	 #content {
+	   color: #333;
+	   width: 500px;
+	   margin: 10% auto 10% auto;
+	 }
+	 
+	 .mblock-cnt {
+	   font-size: 120%;
+	   color: #555;
+	 }
+	 
+	 .mblock-cnt p {
+	   margin-bottom: 18px;
+   }
 	</style>
 </head>
 
 <body>
-  <!-- This file lives in public/404.html -->
-  <div class="dialog">
-    <h1>The page you were looking for doesn't exist.</h1>
-    <p>You may have mistyped the address or the page may have moved.</p>
+  <!-- This file lives in public/500.html -->
+  <!-- wrapper -->
+  <div id="wrapper">
+    <!-- content -->
+    <div id="content">
+      <div class="mblock" id="normalbox-<%= box.name %>">
+        <div class="mblock-hdr">
+          <h3>The page you're looking for doesn't exist.</h3>
+        </div>
+        <div class="mblock-cnt">
+          <p>Looks like you've found your way to a page that doesn't exist.</p>
+          <p><img src="/images/monkey.gif" alt="Monkey" /></p>
+          <p style="text-align:center;font-weight:bold">
+            <a href="/">&laquo; Back to the homepage</a>
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- /content -->
+    
   </div>
+  <!-- /wrapper -->
+  
+
 </body>
 </html>
