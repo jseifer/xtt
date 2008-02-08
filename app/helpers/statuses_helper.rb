@@ -27,7 +27,7 @@ module StatusesHelper
   def link_to_filtered_statuses(text, options = {})
     user_id = options.key?(:user_id) ? options[:user_id] : params[:user_id]
     filter  = options.key?(:filter)  ? options[:filter]  : params[:filter]
-    args    = {:id => params[:id], :date => options[:date] || params[:date]}
+    args    = {:id => params[:id], :date => options.key?(:date) ? options[:date] : params[:date]}
     prefix, args  = filter.blank? ? [nil, args] : ["filtered_", args.update(:filter => filter)]
     url = 
       if controller.controller_name == 'projects'
