@@ -17,10 +17,6 @@
           <h4 class="media-title"><%= link_to_project current_user.last_status_project, "You're working on #{current_user.last_status_project.name}" %></h4>
   			<% end -%>
           <p class="quiet"><%=h current_user.last_status_message %></p>
-          <!-- <span class="datetime">
-            <%= link_to "more", current_user.last_status %> |
-            <%= js_time_ago_in_words current_user.last_status_at %>
-          </span> -->
           <% unless current_user.last_status.out? %>
           <span class="others">
             <span class="num livetime" title="<%= current_user.last_status.created_at.utc.strftime("%d %b, %Y %I:%M %p") %>"><%= current_user.last_status.hours.to_f %></span>
@@ -35,7 +31,7 @@
             :size => '540x100',
             :custom => "chxr=1,0,5&amp;chg=0,50,1,0&amp;chbh=60,10",            
             :axis_labels => ["Sun|Mon|Tue|Wed|Thu|Fri|Sat"],
-            :axis_with_labels => %w(x y)), :style => 'margin-top:27px' %>
+            :axis_with_labels => %w(x y)), :style => 'margin-top:36px' %>
         </div>
   		<% end -%>
       </li>
