@@ -50,6 +50,10 @@ document.observe('dom:loaded', function() {
 			$('edit-status-hours').toggle()
 		})
 	});
+	
+	new Timer('blah', function(time) {
+	  console.log(time);
+	});
 });
 
 
@@ -61,10 +65,20 @@ document.observe('dom:loaded', function() {
 })();
 
 var Timer = Class.create({
-  initialize: function(element) {
-    
+  initialize: function(element, callback) {
+    this.callback = callback || Prototype.K;
+    this.element = $(element);
+    if(!this.element) return;
+    new PeriodicalExecuter(this.incrementTimer.bind(this), 1);
+  },
+  
+  incrementTimer: function() {
+    var UTCDate = this.element.readAttribute('title');
+    var diff = Date.differenceFromNow(Date.parseUTC(UTCDate));
+    this.callback.call(this, diff);
   }
 });
+
 
 Element.addMethods('INPUT', {
   /**
@@ -127,6 +141,18 @@ Object.extend(Date.prototype, {
     return Date.distanceOfTimeInWords(this, relative_to, arguments[2]);
   }
 });
+
+
+Object.extend(Date, {
+  differenceFromNow: function(to) {
+    var seconds = Math.ceil((new Date().getTime() - to.getTime()) / 1000);
+    var hours   = Math.floor(seconds / 3600).toPaddedString(2);
+    seconds     = Math.floor(seconds % 3600);
+    var minutes = Math.floor(seconds / 60).toPaddedString(2);
+    seconds = (seconds % 60);
+    return [hours, minutes, seconds];
+  }
+})
 
 // http://twitter.pbwiki.com/RelativeTimeScripts
 Date.distanceOfTimeInWords = function(fromTime, toTime, includeTime) {
