@@ -31,7 +31,7 @@
   <% end %>
 <% end %>
 
-<% if @status.created_at < @status.previous.finished_at -%>
+<% if @status.previous && @status.created_at < @status.previous.finished_at.change(:sec => 0) -%>
   <% box :normal, 'valid' do |box| -%>
     <% box.title = "Warning: Overlap" -%>
     <% box.content = capture do %>
@@ -48,6 +48,14 @@
     <% unless @status.active? -%>
       <% form_for @status, :html => { :id => 'edit-status-hours', :class => 'form', :style => @status.valid? ? "" : "display:none" } do |f| %>
       <table cellspacing="0" cellpadding="0" class="tblform">
+				<tr>
+					<th>
+						<%= f.label :message %>
+					</th>
+					<td>
+						<%= f.text_field :message %>
+					</td>
+				</tr>
         <tr>
           <th>
   					<%= f.label :set_hours, "Total hour(s) worked:" %>
@@ -70,6 +78,14 @@
           :style => (!@status.valid? or @status.active?) ? '' : 'display:none' } do |f| %>
         <%= f.error_messages %>
         <table cellspacing="0" cellpadding="0" class="tblform">
+					<tr>
+						<th>
+							<%= f.label :message %>
+						</th>
+						<td>
+							<%= f.text_field :message %>
+						</td>
+					</tr>
     			<tr>
     				<th>
     					<%= f.label :created_at, "Start Time:" %>
