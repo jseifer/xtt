@@ -111,6 +111,7 @@ Element.addMethods('INPUT', {
 Date.strftimeFormats = {
 	time: "%I:%M %p",
 	day:  "%B %d",
+	short: '%b %d',
 	dayName: "%A"
 }
 
@@ -156,8 +157,18 @@ Object.extend(Date, {
     var minutes = Math.floor(seconds / 60).toPaddedString(2);
     seconds = (seconds % 60).toPaddedString(2);
     return [hours, minutes, seconds];
+  },
+  
+  parseUTC: function() {
+    var localDate = new Date(value);
+    var utcSeconds = Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate(), localDate.getHours(), localDate.getMinutes(), localDate.getSeconds())
+    return new Date(utcSeconds);
+  },
+  
+  distanceOfTimeInWords: function(fromTime, toTime, includeTime) {
+    
   }
-})
+});
 
 // http://twitter.pbwiki.com/RelativeTimeScripts
 Date.distanceOfTimeInWords = function(fromTime, toTime, includeTime) {
@@ -185,11 +196,4 @@ Date.distanceOfTimeInWords = function(fromTime, toTime, includeTime) {
       return days + " days ago"
     }
   }
-}
-
-// For those times when you get a UTC string like 18 May 09:22 AM
-Date.parseUTC = function(value) {
-  var localDate = new Date(value);
-  var utcSeconds = Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate(), localDate.getHours(), localDate.getMinutes(), localDate.getSeconds())
-  return new Date(utcSeconds);
 }

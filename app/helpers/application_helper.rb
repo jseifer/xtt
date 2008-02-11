@@ -42,8 +42,10 @@ module ApplicationHelper
   end
 
   @@default_jstime_format = "%d %b, %Y %I:%M %p"
-  def js_datetime(time, rel = :datetime)
-    content_tag('abbr', content_tag('span', time.utc.strftime(@@default_jstime_format), :class => :timestamp, :rel => rel, :title => time.utc.strftime(@@default_jstime_format)), :title => time.iso8601, :class => 'published')
+  def js_datetime(time, rel = :datetime, abbr = false)
+    span = content_tag('span', time.utc.strftime(@@default_jstime_format), :class => :timestamp, :rel => rel, :title => time.utc.strftime(@@default_jstime_format))
+    return content_tag('abbr', span, :title => time.iso8601, :class => 'published') if abbr
+    span
   end
   
   def js_time_ago_in_words(time)
