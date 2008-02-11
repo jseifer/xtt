@@ -18,6 +18,9 @@ class User::Inviter
       @project.users << user
       User::Mailer.deliver_project_invitation @project, user
     end
+    invitations.each do |invite|
+      User::Mailer.deliver_new_invitation @project, invite
+    end
   end
   
   def users

@@ -60,6 +60,9 @@ describe User::Inviter do
     @inviter.users.each do |user|
       User::Mailer.should_receive(:deliver_project_invitation).with(@inviter.project, user)
     end
+    @inviter.invitations.each do |invite|
+      User::Mailer.should_receive(:deliver_new_invitation).with(@inviter.project, invite)
+    end
     lambda { @inviter.invite }.should change(Membership, :count).by(2)
   end
   

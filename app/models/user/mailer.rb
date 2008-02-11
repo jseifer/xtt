@@ -20,7 +20,7 @@ class User::Mailer < ActionMailer::Base
     @body[:url]     = project_url(:id => project, :host => TT_HOST)
   end
   
-  def deliver_new_invitation(project, invitation)
+  def new_invitation(project, invitation)
     setup_user invitation
     @subject = "[tt] You've been invited to the #{project.name.inspect} project."
     @body[:project] = project
