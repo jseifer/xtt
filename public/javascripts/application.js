@@ -159,7 +159,7 @@ Object.extend(Date, {
     return [hours, minutes, seconds];
   },
   
-  parseUTC: function() {
+  parseUTC: function(value) {
     var localDate = new Date(value);
     var utcSeconds = Date.UTC(localDate.getFullYear(), localDate.getMonth(), localDate.getDate(), localDate.getHours(), localDate.getMinutes(), localDate.getSeconds())
     return new Date(utcSeconds);
