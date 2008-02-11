@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 23) do
+ActiveRecord::Schema.define(:version => 24) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -67,6 +67,16 @@ ActiveRecord::Schema.define(:version => 23) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "invitations", :force => true do |t|
+    t.string   "code"
+    t.string   "email"
+    t.string   "project_ids"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "invitations", ["code"], :name => "index_invitations_on_code"
 
   create_table "memberships", :force => true do |t|
     t.integer "project_id"

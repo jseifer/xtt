@@ -36,6 +36,14 @@ class User::Inviter
     @existing_emails ||= users.collect { |u| u.email }
   end
   
+  def invitations
+    @invitations ||= new_emails.collect do |email| 
+      inv = Invitation.find_or_initialize_by_email(email)
+      inv.project_ids << @project.id.to_s
+      inv.save! ; inv
+    end
+  end
+  
   def to_job
     %{script/runner -e #{RAILS_ENV} "User::Inviter.invite(#{@project.id}, '#{(logins + emails) * ", "}')"}
   end

@@ -13,6 +13,7 @@ describe User::Inviter do
     end
     
     model Membership
+    model Invitation
   end
   
   before do
@@ -37,6 +38,22 @@ describe User::Inviter do
     @inviter.should have(2).users
     @inviter.users.should include(users(:foo))
     @inviter.users.should include(users(:bar))
+  end
+  
+  it "retrieves invitations" do
+    @inviter.should have(1).invitations
+    @inviter.invitations[0].project_ids.should == [@project.id.to_s]
+    @inviter.invitations[0][:project_ids].should == @project.id.to_s
+    @inviter.invitations[0].should_not be_new_record
+    @inviter.invitations[0].code.should_not be_nil
+    @inviter.invitations[0].email.should == 'newb@email.com'
+  end
+  
+  it "retrieves adds extra project_id to existing invitation" do
+    Invitation.create :email => 'newb@email.com', :project_ids => '55'
+    @inviter.should have(1).invitations
+    @inviter.invitations[0].project_ids.should   == ['55', @project.id.to_s]
+    @inviter.invitations[0][:project_ids].should == "55, #{@project.id.to_s}"
   end
   
   it "creates memberships and emails users" do

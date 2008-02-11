@@ -11,7 +11,7 @@ class User
   end
   
   event :activate do
-    transitions :from => :pending, :to => :active 
+    transitions :from => [:pending, :passive], :to => :active 
   end
   
   event :suspend do
