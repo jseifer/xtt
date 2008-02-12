@@ -115,7 +115,7 @@ describe UsersController, "POST #create (with invitation)" do
     end
     
     it_assigns :user, :invitation
-    it_redirects_to { root_path }
+    it_redirects_to { login_path }
     
     it "invites user to project" do
       act!
