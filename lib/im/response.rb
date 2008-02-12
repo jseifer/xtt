@@ -7,7 +7,7 @@ module IM
       if @user = User.find_by_aim_login(buddy.screen_name)
         message = parse_message(message)
         reply = extract_command(message)
-        @buddy.send_im reply
+        @buddy.send_im "<HTML>#{reply}</HTML>"
       else
         buddy.send_im "I don't have you in my system. Please add your aim_login to your xtt account first."
       end
@@ -16,7 +16,7 @@ module IM
     def extract_command(message)
       case message
         when "help": 
-          "<HTML>I'm a time-tracker bot. Send me a status message like <b>@project hacking on \#54</b></HTML> or 'commands' for a list of commands"
+          "I'm a time-tracker bot. Send me a status message like <b>@project hacking on \#54</b> or 'commands' for a list of commands"
         when "status":
           if status = @user.statuses.latest
             project = status.project ? "#{status.project.name} (@#{status.project.code})": "Out"
