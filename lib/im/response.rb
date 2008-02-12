@@ -19,7 +19,8 @@ module IM
           "<HTML>I'm a time-tracker bot. Send me a status message like <b>@project hacking on \#54</b></HTML> or 'commands' for a list of commands"
         when "status":
           if status = @user.statuses.latest
-            "Your current status is: #{status.project && status.project.code} #{status.message}"
+            project = status.project ? "#{status.project.name} (@#{status.project.code})": "Out"
+            "Your current status is: <b>#{project}</b> <code>#{status.message}</code>"
           else
             "No current status"
           end
