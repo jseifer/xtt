@@ -35,9 +35,9 @@ module IM
     def create_status(message)
       status = @user.post(message, nil, 'AIM')
       if status and status.project 
-        reply = "Created status for #{status.project.name}: '#{status.message}'"
+        reply = "Created status for <b>#{status.project.name}</b>: '<code>#{status.message}</code>'"
       else
-        reply = "Out: '#{status.message}"
+        reply = "Out: '<code>#{status.message}</code>'"
       end
       if status and status.new_record? # not saved
         return "Couldn't create your status. Debug: #{status.errors.full_messages.join(";")}"

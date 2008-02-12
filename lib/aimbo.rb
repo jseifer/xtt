@@ -83,48 +83,25 @@ class Aimbo
 
 end
 
-
 aimbo = Aimbo.new
 client = aimbo.client
-client.connect
-puts "buddy list is #{client.buddy_list.inspect}"
-client.wait
 
-
-return
-
-########################################
-
-loop do
-  buddy_name, message = *gets.chomp.split("<<",2)
-  buddy_name = last_buddy if buddy_name == ""
-
-  unless buddy_name.nil? or message.nil?
-    last_buddy = buddy_name
-    client.buddy_list.buddy_named(buddy_name).send_im(message)
+while(true) do
+  begin
+  client.connect
+  puts "buddy list is #{client.buddy_list.inspect}"
+  client.wait
+  rescue Errno::ECONNRESET => err
+    puts "DISCONNECT"
+    client.disconnect
+    client.connect # reconnect
   end
 end
 
 return
-#################
 
-client do |msg, buddy|
-  puts "Talking to #{buddy.screen_name} #{msg}"
- buddy.send_im "Hi, #{buddy.screen_name}"
-end
-
-  #@responses_line_counter[screen_name] = 0 if @responses_line_counter[screen_name].nil?
-
-  #curr_line     = @responses_line_counter[screen_name] % @responses.size
-  #next_response = @responses[curr_line]
-
-  #@responses_line_counter[screen_name] += 1
-
-  sleep rand(5)
-  buddy.send_im(next_response)
-
-  # Save counter after each response.
-  #File.open(@filename, "w+") do |f|
-  #  Marshal.dump(@responses_line_counter, f)
-  #end
-#end
+#/var/www/xtt/releases/20080208021931/vendor/rails/railties/lib/commands/runner.rb:47: 
+#/usr/lib64/ruby/gems/1.8/gems/net-toc-0.2/./net/toc.rb:218:in `recv': Connection reset by peer - recvfrom(2) (Errno::ECONNRESET)
+#from /usr/lib64/ruby/gems/1.8/gems/net-toc-0.2/./net/toc.rb:529:in `join'
+#     from /usr/lib64/ruby/gems/1.8/gems/net-toc-0.2/./net/toc.rb:529:in `wait'
+#     from /var/www/xtt/releases/20080208021931/lib/aimbo.rb:91
