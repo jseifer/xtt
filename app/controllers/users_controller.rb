@@ -20,13 +20,28 @@ class UsersController < ApplicationController
   def new
     @user = User.new
   end
+  
+  def invite
+    @invitation = Invitation.find_by_code params[:code] unless params[:code].blank?
+    raise ActiveRecord::RecordNotFound unless @invitation
+    @user       = User.new
+    @user.email = @invitation.email
+    render :action => 'new'
+  end
 
   # user signup
   def create
     cookies.delete :auth_token
-    @user = User.new(params[:user])
+    @user       = User.new(params[:user])
+    @invitation = Invitation.find_by_code(params[:code]) unless params[:code].blank?
     @user.register! if @user.valid?
     if @user.errors.empty?
+      if @invitation
+        @invitation.project_ids.each do |project|
+          @user.memberships.create(:project_id => project)
+        end
+        @invitation.destroy
+      end
       self.current_user = @user
       flash[:notice] = "Thanks for signing up!"
       redirect_back_or_default

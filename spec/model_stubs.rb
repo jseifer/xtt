@@ -18,6 +18,10 @@ ModelStubbing.define_models do
     stub :in_project, :message => 'in-project', :created_at => current_time - 47.hours, :project => all_stubs(:project)
   end
   
+  model Invitation do
+    stub :code => 'abc', :email => 'invited-user@example.com', :project_ids => '55'
+  end
+  
   model Membership
 end
 

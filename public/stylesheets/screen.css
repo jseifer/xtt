@@ -439,7 +439,7 @@ li.daybreak {
 }
 
 .num {
-  font-size: 120%;
+  font-size: 110%;
   font-weight: bold;
   display: block;
   color: #555;
@@ -604,9 +604,10 @@ form input.hintable {
   width: 80px;
 }
 
-.btn.save {
-  background: url(../images/btns/save.gif) 0 0 no-repeat;
-}
+.btn.save { background: url(../images/btns/save.gif) 0 0 no-repeat; }
+.btn.signin { background: url(../images/btns/signin.gif) 0 0 no-repeat; }
+.btn.send { background: url(../images/btns/send.gif) 0 0 no-repeat; }
+
 
 .btn:hover {
   background-position: 0 -20px;

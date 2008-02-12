@@ -18,6 +18,9 @@ class User::Inviter
       @project.users << user
       User::Mailer.deliver_project_invitation @project, user
     end
+    invitations.each do |invite|
+      User::Mailer.deliver_new_invitation @project, invite
+    end
   end
   
   def users
@@ -34,6 +37,14 @@ class User::Inviter
   
   def existing_emails
     @existing_emails ||= users.collect { |u| u.email }
+  end
+  
+  def invitations
+    @invitations ||= new_emails.collect do |email| 
+      inv = Invitation.find_or_initialize_by_email(email)
+      inv.project_ids << @project.id.to_s
+      inv.save! ; inv
+    end
   end
   
   def to_job

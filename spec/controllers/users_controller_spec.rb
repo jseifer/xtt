@@ -78,3 +78,70 @@ describe UsersController do
       :password => 'quire', :password_confirmation => 'quire' }.merge(options)
   end
 end
+
+describe UsersController, "GET #invite" do
+  define_models
+  act! { get :invite, :code => invitations(:default).code }
+  before do
+    @invitation = invitations(:default)
+  end
+
+  it_assigns :invitation
+
+  it "assigns @user and email" do
+    act!
+    assigns[:user].should be_new_record
+    assigns[:user].email.should == @invitation.email
+  end
+  
+  it_renders :template, :new
+end
+
+describe UsersController, "POST #create (with invitation)" do
+  before do
+    @attributes = { :login => 'quire', :email => 'quire@example.com', :password => 'quire', :password_confirmation => 'quire' }.stringify_keys
+    @invitation = invitations(:default)
+    @project    = projects(:default)
+    @user       = User.new @attributes
+    User.stub!(:new).with(@attributes).and_return(@user)
+  end
+
+  describe UsersController, "(successful creation)" do
+    define_models
+    act! { post :create, :user => @attributes, :code => @invitation.code }
+    
+    before do
+      Invitation.update_all ['project_ids = ?', @project.id.to_s]
+    end
+    
+    it_assigns :user, :invitation
+    it_redirects_to { root_path }
+    
+    it "invites user to project" do
+      act!
+      @user.can_access?(@project).should == true
+    end
+    
+    it "deletes invitation" do
+      act!
+      lambda { @invitation.reload }.should raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe UsersController, "(unsuccessful creation)" do
+    define_models
+    act! { post :create, :user => @attributes, :code => @invitation.code }
+  
+    before do
+      @user.errors.stub!(:empty?).and_return(false)
+    end
+    
+    it_assigns :user, :invitation
+    it_renders :template, :new
+    
+    it "spares invitation" do
+      act!
+      lambda { @invitation.reload }.should_not raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+end
