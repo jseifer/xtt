@@ -20,13 +20,19 @@
       <%= check_box_tag 'remember_me' %></p>
       -->
 
-      <p class="btns"><%= img_button('signin') %></p>
+      <p class="btns">
+				<%= img_button('signin') %>
+				<%= hidden_field_tag :to, params[:to] unless params[:to].blank? %>
+			</p>
     <% end -%>
     </div>
     
     <div id="reset">
-      Put this form here fool
+			<% form_tag reset_password_users_path, :class => 'form' do -%>
+      <p><label for="email">Email</label>
+      <%= text_field_tag 'email' %></p>
       <p class="btns"><%= img_button('send') %></p>
+			<% end -%>
     </div>
   </div>
 </div>

@@ -71,12 +71,10 @@ module AuthenticatedSystem
     def access_denied
       respond_to do |format|
         format.html do
-          store_location
-          redirect_to new_session_path
+          redirect_to denied_path(:to => request.request_uri)
         end
         format.iphone do
-          store_location
-          redirect_to new_session_path
+          redirect_to denied_path(:to => request.request_uri)
         end
         format.any do
           request_http_basic_authentication 'Web Password'
@@ -84,18 +82,10 @@ module AuthenticatedSystem
       end
     end
 
-    # Store the URI of the current request in the session.
-    #
-    # We can return to this location by calling #redirect_back_or_default.
-    def store_location
-      session[:return_to] = request.request_uri
-    end
-
     # Redirect to the URI stored by the most recent store_location call or
     # to the passed default.
     def redirect_back_or_default(default = nil)
-      redirect_to(session[:return_to] || default || root_path)
-      session[:return_to] = nil
+      redirect_to(default || params[:to] || root_path)
     end
 
     # Inclusion hook to make #current_user and #logged_in?

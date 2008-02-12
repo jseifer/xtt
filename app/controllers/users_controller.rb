@@ -43,8 +43,8 @@ class UsersController < ApplicationController
         @invitation.destroy
       end
       self.current_user = @user
-      flash[:notice] = "Thanks for signing up!"
-      redirect_back_or_default
+      flash[:notice] = "Thanks for signing up!  Watch your email address for an activation link before you can log in."
+      redirect_back_or_default(login_path)
     else
       render :action => 'new'
     end
@@ -58,6 +58,20 @@ class UsersController < ApplicationController
       flash[:notice] = "Signup complete!"
     end
     redirect_back_or_default
+  end
+  
+  def reset_password
+    @user = User.find_by_email(params[:email]) unless params[:email].blank?
+    if @user
+      @user.reset_activation_code
+      @user.save
+      User::Mailer.deliver_forgot_password(@user)
+      flash[:notice] = "Check #{@user.email.inspect} for an activation email."
+      redirect_to login_path
+    else
+      flash[:notice] = "No user found for this email address."
+      redirect_to login_path(:anchor => 'reset')
+    end
   end
   
   # private user editing
