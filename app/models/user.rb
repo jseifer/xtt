@@ -16,6 +16,10 @@ class User < ActiveRecord::Base
     def filtered_hours(filter = 'weekly', options = {})
       Status.filtered_hours proxy_owner.id, filter, options
     end
+    
+    def hours(filter = 'weekly', options = {})
+      Status.hours proxy_owner.id, filter, options
+    end
   end
   
   has_many :owned_projects, :order => 'projects.name', :class_name => 'Project'
@@ -55,13 +59,13 @@ class User < ActiveRecord::Base
   def daily_member_hours(project, reload = false)
     @daily_member_hours ||= {}
     @daily_member_hours[project.id]   = nil if reload
-    @daily_member_hours[project.id] ||= Status.since(Time.now) { calculate_member_project_hours(project) }
+    @daily_member_hours[project.id] ||= Status.since(Time.zone.now) { calculate_member_project_hours(project) }
   end
   
   def member_hours(project, reload = false)
     @member_hours ||= {}
     @member_hours[project.id]   = nil if reload
-    @member_hours[project.id] ||= Status.since(1.month.ago) { calculate_member_project_hours(project) }
+    @member_hours[project.id] ||= Status.since(1.month.ago(Time.zone.now)) { calculate_member_project_hours(project) }
   end
   
   def can_access?(user_or_status_or_project)

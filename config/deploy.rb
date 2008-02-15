@@ -1,7 +1,8 @@
 set :application, "xtt"
-set :repository,  "git@activereload.net:lh-time.git"
+set :repository,  "git@entp:tt.git"
 set :deploy_to, "/var/www/#{application}"
 set :scm, :git
+set :rails_revision, 8872
 
 set :deploy_via, "copy"
 
@@ -13,7 +14,8 @@ task :after_update_code, :roles => :app do
   run "ln -s #{shared_path}/rails #{release_path}/vendor/"
   put(File.read('config/database.yml'), "#{release_path}/config/database.yml", :mode => 0444) 
   run <<-CMD
-    cd #{release_path} && rake tmp:create
+    cd #{release_path} && rake tmp:create &&
+    rake edge REVISION=#{rails_version} RAILS_PATH=/var/www/#{application}/shared/rails
   CMD
   run "ln -s #{shared_path}/mongrel_cluster.yml #{release_path}/config/"
 end

@@ -57,7 +57,7 @@ class User
   end
 
   def remember_me_for(time)
-    remember_me_until time.from_now.utc
+    remember_me_until time.from_now(Time.zone.now).utc
   end
 
   def remember_me_until(time)

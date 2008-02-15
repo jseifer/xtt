@@ -47,7 +47,7 @@ describe SessionsController do
   
   it 'fails expired cookie login' do
     users(:default).remember_me
-    users(:default).update_attribute :remember_token_expires_at, 5.minutes.ago
+    users(:default).update_attribute :remember_token_expires_at, 5.minutes.ago(Time.zone.now)
     request.cookies["auth_token"] = cookie_for(:default)
     get :new
     controller.send(:logged_in?).should_not be_true

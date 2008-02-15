@@ -24,13 +24,12 @@ class User::Mailer < ActionMailer::Base
     setup_user invitation
     @subject = "[tt] You've been invited to the #{project.name.inspect} project."
     @body[:project] = project
-    @body[:url]     = invitation_url(:code => invitation.code, :host => TT_HOST)
+    @body[:url]     = invite_url(:code => invitation.code, :host => TT_HOST)
   end
 
 protected
   def setup_user(user)
-    @from        = "#{TT_EMAIL}"
-    @sent_on     = Time.now
+    @from        = TT_EMAIL.to_s
     @recipients  = "#{user.email}"
     @body[:user] = user
   end

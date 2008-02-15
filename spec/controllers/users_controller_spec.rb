@@ -79,6 +79,38 @@ describe UsersController do
   end
 end
 
+describe UsersController, "GET #show" do
+  before do
+    @user = users(:default)
+    @statuses   = [mock_model(Status, :project_id => 1), mock_model(Status, :project_id => 3), mock_model(Status, :project_id => 1)]
+    @projects   = [mock_model(Project), mock_model(Project)]
+    @date_range = :date_range
+    @hours      = 75.0
+    controller.stub!(:login_required)
+    controller.stub!(:current_user).and_return(@user)
+  end
+
+  [ {:filter => nil, :args => ['weekly', {:date => nil, :page => nil}]},
+    {:filter => nil, :args => ['weekly', {:date => nil, :page => nil}]},
+    {:filter => 'weekly', :args => ['weekly', {:date => nil, :page => nil}]}].each do |options|
+      
+    describe UsersController, "(filtered)" do
+      define_models
+      
+      act! { get :show, options.merge(:id => @user.id) }
+      
+      before do
+        @user.statuses.should_receive(:filter).with(*options[:args]).and_return([@statuses, @date_range])
+        @user.statuses.should_receive(:filtered_hours).with(*options[:args][0..-2] + [{:date => nil}]).and_return(@hours)
+        Project.should_receive(:find_all_by_id).with([1,3]).and_return(@projects)
+      end
+      
+      it_assigns :user, :statuses, :date_range, :hours, :projects
+      it_renders :template, :show
+    end
+  end
+end
+
 describe UsersController, "GET #invite" do
   define_models
   act! { get :invite, :code => invitations(:default).code }
@@ -115,7 +147,7 @@ describe UsersController, "POST #create (with invitation)" do
     end
     
     it_assigns :user, :invitation
-    it_redirects_to { root_path }
+    it_redirects_to { login_path }
     
     it "invites user to project" do
       act!
