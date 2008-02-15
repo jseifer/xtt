@@ -4,7 +4,11 @@ module IM
     
     def initialize(message, buddy)
       @buddy = buddy
-      if @user = User.find_by_aim_login(buddy.screen_name)
+
+      ActiveRecord::Base.verify_active_connections!
+
+      @user = User.find_by_aim_login(buddy.screen_name)
+      if @user
         message = parse_message(message)
         reply = extract_command(message)
         @buddy.send_im "<HTML>#{reply}</HTML>"
