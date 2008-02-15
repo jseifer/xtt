@@ -21,9 +21,9 @@ class Status
   
   def self.with_date_filter(filter, now = nil, &block)
     now = case now
-      when String then Time.parse(now).change_time_zone_to_current
+      when String then Time.parse(now).in_current_time_zone
       when nil    then Time.zone.now
-      when Time, DateTime, Date, ActiveSupport::TimeWithZone then now
+      when Time, DateTime, Date, ActiveSupport::TimeWithZone then now.in_current_time_zone
       else raise "Invalid date filteR: #{now.inspect}"
     end
     range = case filter

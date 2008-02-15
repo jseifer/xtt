@@ -25,9 +25,18 @@ module StatusesHelper
   end
 
   def link_to_filtered_statuses(text, options = {})
+    link_to text, url_for_filtered_statuses(options)
+  end
+  
+  # :user_id
+  # :filter
+  # :date
+  # :project
+  def url_for_filtered_statuses(options = {})
     user_id = options.key?(:user_id) ? options[:user_id] : params[:user_id]
     filter  = options.key?(:filter)  ? options[:filter]  : params[:filter]
-    args    = {:id => params[:id], :date => options.key?(:date) ? options[:date] : params[:date]}
+    args    = {:date => options.key?(:date) ? options[:date] : params[:date]}
+    args[:id] = options.key?(:project) ? options[:project] : params[:id]
     prefix, args  = filter.blank? ? [nil, args] : ["filtered_", args.update(:filter => filter)]
     url = 
       if controller.controller_name == 'projects'
@@ -39,7 +48,6 @@ module StatusesHelper
       else
         send("#{prefix}user_path", args)
       end
-    link_to text, url
   end
 
   def chart_labels_for(filter, date_range)
