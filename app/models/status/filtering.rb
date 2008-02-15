@@ -1,4 +1,13 @@
 class Status
+  module FilteredHourMethods
+    def total
+      @total ||= values.inject(0.0) { |t, h| t + h }
+    end
+    def values
+      @values ||= collect { |(d, h)| h }
+    end
+  end
+
   has_finder :for_project, lambda { |project| { :conditions => {:project_id => project.id}, :extend => LatestExtension } }
   has_finder :without_project, :conditions => {:project_id => nil}, :extend => LatestExtension
   
@@ -55,17 +64,19 @@ class Status
     end
   end
   
+  def self.hours(user_id, filter, options = {})
+    with_user user_id do
+      with_date_filter(filter, options[:date]) { calculate :sum, :hours }.first
+    end
+  end
+  
   def self.filtered_hours(user_id, filter, options = {})
     with_user user_id do
-      hours = with_date_filter(filter, options[:date]) { calculate :sum, :hours, :group => "DATE(CONVERT_TZ(created_at, '+00:00', '#{Time.zone.utc_offset_string}'))" }.first
+      hours = with_date_filter(filter, options[:date]) do
+        calculate :sum, :hours, :group => "DATE(CONVERT_TZ(created_at, '+00:00', '#{Time.zone.utc_offset_string}'))"
+      end.first
+      hours.extend FilteredHourMethods
       hours.collect! { |(date, hour)| [Time.parse(date), hour] }
-      def hours.total()
-        @total ||= values.inject(0.0) { |t, h| t + h }
-      end
-      def hours.values()
-        @values ||= collect { |(d, h)| h }
-      end
-      hours
     end
   end
    

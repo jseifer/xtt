@@ -60,7 +60,8 @@ module StatusesHelper
   
   def chart_data_for(labels, filter, hours)
     reversed = labels.reverse
-    data = []
+    hours    = hours.dup
+    data     = []
     case filter
       when 'weekly'
         reversed.each do |label|
