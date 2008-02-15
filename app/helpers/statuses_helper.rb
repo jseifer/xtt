@@ -65,13 +65,13 @@ module StatusesHelper
     case filter
       when 'weekly'
         reversed.each do |label|
-          hours.pop unless hours.empty? || hours.last.first.strftime("%A")[label]
+          hours.pop unless hours.empty? || hours.last[1].strftime("%A")[label]
           data.unshift(hours.empty? ? 0.0 : hours.last.last.to_f)
         end
       when 'monthly', 'bi-weekly'
         reversed.each do |label|
-          hours.pop unless hours.empty? || hours.last.first.day <= label
-          data.unshift(hours.empty? || hours.last.first.day != label ? 0.0 : hours.last.last.to_f)
+          hours.pop unless hours.empty? || hours.last[1].day <= label
+          data.unshift(hours.empty? || hours.last[1].day != label ? 0.0 : hours.last.last.to_f)
         end
     end
     data.sum > 0 ? data : []

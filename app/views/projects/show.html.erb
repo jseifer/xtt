@@ -162,12 +162,12 @@
 					</h4>
           <p class="quiet"><% if user.last_status_id -%>Active <%= js_time_ago_in_words user.last_status_at %><% else -%>Inactive<% end -%></p>
           <span class="you">
-            <span class="num"><%= number_with_precision @project.daily_member_hours[user.id].to_f, 2 %></span>
+            <span class="num"><%= number_with_precision @daily_hours.total(user.id), 2 %></span>
             <span class="meta">today</span>
           </span>
           <span class="others">
-            <span class="num"><%= number_with_precision @project.member_hours[user.id].to_f, 2 %></span>
-            <span class="meta">total</span>
+            <span class="num"><%= number_with_precision @hours.total(user.id), 2 %></span>
+            <span class="meta"><%=h params[:filter] %></span>
           </span>
         </div>
       </li>
