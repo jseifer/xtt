@@ -6,11 +6,12 @@ set :rails_revision, 8872
 
 set :deploy_via, "copy"
 
-role :app, "two"
-role :web, "two"
-role :db,  "two", :primary => true
+role :app, "entp.com:30187"
+role :web, "entp.com:30187"
+role :db,  "entp.com:30187", :primary => true
 
 task :after_update_code, :roles => :app do
+  run "ln -s #{shared_path}/rails #{release_path}/vendor/"
   put(File.read('config/database.yml'), "#{release_path}/config/database.yml", :mode => 0444) 
   run <<-CMD
     cd #{release_path} && rake tmp:create &&
@@ -53,5 +54,5 @@ task :backup, :roles => :db, :only => { :primary => true } do
   `rsync #{roles[:db][0].host}:#{filename} #{File.dirname(__FILE__)}/../backups/`
   run "rm -f #{filename}"
   
-  backup_public_dir
+#  backup_public_dir
 end

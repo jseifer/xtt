@@ -4,10 +4,14 @@ module IM
     
     def initialize(message, buddy)
       @buddy = buddy
-      if @user = User.find_by_aim_login(buddy.screen_name)
+
+      ActiveRecord::Base.verify_active_connections!
+
+      @user = User.find_by_aim_login(buddy.screen_name)
+      if @user
         message = parse_message(message)
         reply = extract_command(message)
-        @buddy.send_im reply
+        @buddy.send_im "<HTML>#{reply}</HTML>"
       else
         buddy.send_im "I don't have you in my system. Please add your aim_login to your xtt account first."
       end
@@ -16,10 +20,11 @@ module IM
     def extract_command(message)
       case message
         when "help": 
-          "<HTML>I'm a time-tracker bot. Send me a status message like <b>@project hacking on \#54</b></HTML> or 'commands' for a list of commands"
+          "I'm a time-tracker bot. Send me a status message like <b>@project hacking on \#54</b> or 'commands' for a list of commands"
         when "status":
           if status = @user.statuses.latest
-            "Your current status is: #{status.project && status.project.code} #{status.message}"
+            project = status.project ? "#{status.project.name} (@#{status.project.code})": "Out"
+            "Your current status is: <b>#{project}</b> <code>#{status.message}</code>"
           else
             "No current status"
           end
@@ -35,9 +40,9 @@ module IM
     def create_status(message)
       status = @user.post(message, nil, 'AIM')
       if status and status.project 
-        reply = "Created status for #{status.project.name}: '#{status.message}'"
+        reply = "Created status for <b>#{status.project.name}</b>: '<code>#{status.message}</code>'"
       else
-        reply = "Out: '#{status.message}"
+        reply = "Out: '<code>#{status.message}</code>'"
       end
       if status and status.new_record? # not saved
         return "Couldn't create your status. Debug: #{status.errors.full_messages.join(";")}"
