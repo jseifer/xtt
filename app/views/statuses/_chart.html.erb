@@ -1,4 +1,4 @@
-<% params[:filter] = params.key?(:filter) ? :weekly : params[:filter].to_sym -%>
+<% params[:filter] = params.key?(:filter) ? params[:filter].to_sym : :weekly -%>
 <% if Status.filter_types.include?(params[:filter]) -%>
 	<% unless params[:filter] == :daily -%>
 		<% chart_labels = chart_labels_for(params[:filter], date_range) -%>
