@@ -11,11 +11,10 @@ role :web, "entp.com:30187"
 role :db,  "entp.com:30187", :primary => true
 
 task :after_update_code, :roles => :app do
-  run "ln -s #{shared_path}/rails #{release_path}/vendor/"
-  put(File.read('config/database.yml'), "#{release_path}/config/database.yml", :mode => 0444) 
   run <<-CMD
     cd #{release_path} &&
-    ln -s #{shared_path}/mongrel_cluster.yml #{release_path}/config/ && 
+    ln -s #{shared_path}/config/mongrel_cluster.yml #{release_path}/config/ && 
+    ln -s #{shared_path}/config/database.yml        #{release_path}/config/ && 
     rake tmp:create &&
     sudo rake edge REVISION=#{rails_version} RAILS_PATH=/var/www/#{application}/shared/rails
   CMD

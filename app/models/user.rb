@@ -9,15 +9,15 @@ class User < ActiveRecord::Base
   belongs_to :last_status, :class_name => "Status"
 
   has_many :statuses, :order => 'statuses.created_at desc', :extend => Status::Methods::AssociationExtension do
-    def filter(filter = 'weekly', options = {})
+    def filter(filter = :weekly, options = {})
       Status.filter proxy_owner.id, filter, options
     end
 
-    def filtered_hours(filter = 'weekly', options = {})
+    def filtered_hours(filter = :weekly, options = {})
       Status.filtered_hours proxy_owner.id, filter, options
     end
     
-    def hours(filter = 'weekly', options = {})
+    def hours(filter = :weekly, options = {})
       Status.hours proxy_owner.id, filter, options
     end
   end

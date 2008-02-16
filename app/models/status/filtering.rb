@@ -30,7 +30,7 @@ class Status
     attr_accessor :filter_types
   end
   
-  self.filter_types = Set.new %w(daily weekly bi-weekly monthly)
+  self.filter_types = Set.new [:daily, :weekly, :'bi-weekly', :monthly]
 
   def self.with_user(user, &block)
     return block.call if user.nil?
