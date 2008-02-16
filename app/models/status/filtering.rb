@@ -45,7 +45,7 @@ class Status
   
   def self.with_date_filter(filter, now = nil, &block)
     now = case now
-      when String then Time.parse(now).in_current_time_zone
+      when String then Time.parse(now).change_time_zone(Time.zone)
       when nil    then Time.zone.now
       when Time, DateTime, Date, ActiveSupport::TimeWithZone then now.in_current_time_zone
       else raise "Invalid date filter: #{now.inspect}"
@@ -92,9 +92,5 @@ class Status
         calculate :sum, :hours, :group => "CONCAT(user_id, '::', DATE(CONVERT_TZ(created_at, '+00:00', '#{Time.zone.utc_offset_string}')))"
       end.first.extend(FilteredHourMethods)
     end
-  end
-   
-  def self.since(date, &block)
-    with_scope :find => { :conditions => ['hours is not null and created_at >= ?', date.utc.midnight] }, &block
   end
 end
