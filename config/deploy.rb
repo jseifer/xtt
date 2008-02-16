@@ -2,7 +2,7 @@ set :application, "xtt"
 set :repository,  "git@entp:tt.git"
 set :deploy_to, "/var/www/#{application}"
 set :scm, :git
-set :rails_revision, 8872
+set :rails_version, 8872
 
 set :deploy_via, "copy"
 
@@ -14,10 +14,11 @@ task :after_update_code, :roles => :app do
   run "ln -s #{shared_path}/rails #{release_path}/vendor/"
   put(File.read('config/database.yml'), "#{release_path}/config/database.yml", :mode => 0444) 
   run <<-CMD
-    cd #{release_path} && rake tmp:create &&
-    rake edge REVISION=#{rails_version} RAILS_PATH=/var/www/#{application}/shared/rails
+    cd #{release_path} &&
+    ln -s #{shared_path}/mongrel_cluster.yml #{release_path}/config/ && 
+    rake tmp:create &&
+    sudo rake edge REVISION=#{rails_version} RAILS_PATH=/var/www/#{application}/shared/rails
   CMD
-  run "ln -s #{shared_path}/mongrel_cluster.yml #{release_path}/config/"
 end
 
 namespace :deploy do
@@ -51,7 +52,7 @@ task :backup, :roles => :db, :only => { :primary => true } do
   end
 
   `mkdir -p #{File.dirname(__FILE__)}/../backups`
-  `rsync #{roles[:db][0].host}:#{filename} #{File.dirname(__FILE__)}/../backups/`
+  `rsync #{roles[:db][0].host}:#{filename} -e 'ssh -p 30187' #{File.dirname(__FILE__)}/../backups/`
   run "rm -f #{filename}"
   
 #  backup_public_dir
