@@ -57,7 +57,7 @@ class UsersController < ApplicationController
     self.current_user = params[:activation_code].blank? ? :false : User.find_by_activation_code(params[:activation_code])
     if current_user != :false && !current_user.active?
       current_user.activate!
-      flash[:notice] = "Signup complete!"
+      flash[:notice] = "Signup complete!  You might like to check out the Help section for how to get started."
     end
     redirect_back_or_default
   end
