@@ -260,41 +260,6 @@ describe User do
       @user.should be_pending
     end
   end
-  
-  describe "(counting project hours)" do
-    define_models :copy => :users do
-      model Status do
-        stub :uncounted, :message => 'uncounted', :created_at => current_time.midnight + 3.minutes, :hours => 7
-        stub :counted_1, :message => 'counted_1', :created_at => current_time.midnight + 5.minutes, :project => all_stubs(:project), :hours => 7
-        stub :counted_2, :message => 'counted_2', :created_at => current_time.midnight + 8.minutes, :project => all_stubs(:project), :hours => 8, :user => all_stubs(:admin_user)
-      end
-    end
-
-    before do
-      @user    = users(:default)
-      @project = projects(:default)
-    end
-    
-    it "calculates daily project total" do
-      @user.total_project_hours.size.should == 1
-      @user.total_project_hours[@project.id].should == 15
-    end
-    
-    it "calculates daily user project total" do
-      @user.project_hours.size.should == 1
-      @user.project_hours[@project.id].should == 7
-    end
-    
-    it "calculates daily total for project members" do
-      @user.daily_member_hours(@project)[@user.id].should == 7
-      @user.daily_member_hours(@project)[users(:admin).id].should == 8
-    end
-    
-    it "calculates total for project members" do
-      @user.member_hours(@project)[@user.id].should == 12
-      @user.member_hours(@project)[users(:admin).id].should == 8
-    end
-  end
 
   it 'resets password' do
     users(:default).update_attributes(:password => 'new password', :password_confirmation => 'new password')

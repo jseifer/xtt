@@ -90,8 +90,8 @@ describe UsersController, "GET #show" do
     controller.stub!(:current_user).and_return(@user)
   end
 
-  [ {:filter => nil, :args => ['weekly', {:date => nil, :page => nil}]},
-    {:filter => nil, :args => ['weekly', {:date => nil, :page => nil}]},
+  [ {:filter => nil, :args => [:weekly, {:date => nil, :page => nil}]},
+    {:filter => nil, :args => [:weekly, {:date => nil, :page => nil}]},
     {:filter => 'weekly', :args => ['weekly', {:date => nil, :page => nil}]}].each do |options|
       
     describe UsersController, "(filtered)" do
@@ -101,6 +101,7 @@ describe UsersController, "GET #show" do
       
       before do
         @user.statuses.should_receive(:filter).with(*options[:args]).and_return([@statuses, @date_range])
+        @user.statuses.should_receive(:filtered_hours).with(*options[:args][0..-3] + [:daily, {:date => nil}]).and_return(@hours)
         @user.statuses.should_receive(:filtered_hours).with(*options[:args][0..-2] + [{:date => nil}]).and_return(@hours)
         Project.should_receive(:find_all_by_id).with([1,3]).and_return(@projects)
       end

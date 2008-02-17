@@ -1,5 +1,6 @@
+<% params[:filter] = params.key?(:filter) ? params[:filter].to_sym : :weekly -%>
 <% if Status.filter_types.include?(params[:filter]) -%>
-	<% unless params[:filter] == 'daily' -%>
+	<% unless params[:filter] == :daily -%>
 		<% chart_labels = chart_labels_for(params[:filter], date_range) -%>
              <%= image_tag(Gchart.bar(
                 :bg => 'CACACA', 

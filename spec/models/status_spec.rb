@@ -239,7 +239,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows today's statuses" do
-    compare_stubs :statuses, Status.filter(nil, 'daily')[0], [:default, :status_day]
+    compare_stubs :statuses, Status.filter(nil, :daily)[0], [:default, :status_day]
   end
   
   it "counts today's status hours" do

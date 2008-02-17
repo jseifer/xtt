@@ -51,9 +51,10 @@ module StatusesHelper
   end
 
   def chart_labels_for(filter, date_range)
+    filter = filter.to_sym if filter
     case filter
-      when 'weekly' then %w(Mon Tue Wed Thu Fri Sat Sun)
-      when 'monthly', 'bi-weekly' then (date_range.first.day..date_range.last.day).to_a
+      when :weekly then %w(Mon Tue Wed Thu Fri Sat Sun)
+      when :monthly, :'bi-weekly' then (date_range.first.day..date_range.last.day).to_a
       else raise "Invalid filter: #{filter.inspect}"
     end
   end
@@ -62,16 +63,17 @@ module StatusesHelper
     reversed = labels.reverse
     hours    = hours.dup
     data     = []
+    filter   = filter.to_sym if filter
     case filter
-      when 'weekly'
+      when :weekly
         reversed.each do |label|
-          hours.pop unless hours.empty? || hours.last.first.strftime("%A")[label]
+          hours.pop unless hours.empty? || hours.last[1].strftime("%A")[label]
           data.unshift(hours.empty? ? 0.0 : hours.last.last.to_f)
         end
-      when 'monthly', 'bi-weekly'
+      when :monthly, :'bi-weekly'
         reversed.each do |label|
-          hours.pop unless hours.empty? || hours.last.first.day <= label
-          data.unshift(hours.empty? || hours.last.first.day != label ? 0.0 : hours.last.last.to_f)
+          hours.pop unless hours.empty? || hours.last[1].day <= label
+          data.unshift(hours.empty? || hours.last[1].day != label ? 0.0 : hours.last.last.to_f)
         end
     end
     data.sum > 0 ? data : []
@@ -82,17 +84,18 @@ module StatusesHelper
     now = Time.zone.now
     start_date = date_range.first
     prev_date, next_date = nil, nil
-    case params[:filter]
-      when 'daily'
+    filter = params[:filter].to_sym if params.key?(:filter)
+    case filter
+      when :daily
         prev_date = start_date - 1.day
         next_date = start_date + 1.day if now > date_range.last
-      when 'weekly'
+      when :weekly
         prev_date = start_date - 1.week
         next_date = start_date + 1.week if now > date_range.last
-      when 'bi-weekly'
+      when :'bi-weekly'
         prev_date = start_date.day == 1 ? (start_date - 1.day).beginning_of_month + 14.days : start_date.beginning_of_month
         next_date = start_date.day == 1 ? start_date + 14.days : (start_date + 1.month).beginning_of_month if now > date_range.last
-      when 'monthly'
+      when :monthly
         prev_date = start_date - 1.month
         next_date = start_date + 1.month if now > date_range.last
     end
