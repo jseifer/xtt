@@ -25,9 +25,18 @@ module StatusesHelper
   end
 
   def link_to_filtered_statuses(text, options = {})
+    link_to text, url_for_filtered_statuses(options)
+  end
+  
+  # :user_id
+  # :filter
+  # :date
+  # :project
+  def url_for_filtered_statuses(options = {})
     user_id = options.key?(:user_id) ? options[:user_id] : params[:user_id]
     filter  = options.key?(:filter)  ? options[:filter]  : params[:filter]
-    args    = {:id => params[:id], :date => options.key?(:date) ? options[:date] : params[:date]}
+    args    = {:date => options.key?(:date) ? options[:date] : params[:date]}
+    args[:id] = options.key?(:project) ? options[:project] : params[:id]
     prefix, args  = filter.blank? ? [nil, args] : ["filtered_", args.update(:filter => filter)]
     url = 
       if controller.controller_name == 'projects'
@@ -39,32 +48,35 @@ module StatusesHelper
       else
         send("#{prefix}user_path", args)
       end
-    link_to text, url
   end
 
   def chart_labels_for(filter, date_range)
+    filter = filter.to_sym if filter
     case filter
-      when 'weekly' then %w(Mon Tue Wed Thu Fri Sat Sun)
-      when 'monthly', 'bi-weekly' then (date_range.first.day..date_range.last.day).to_a
+      when :weekly then %w(Mon Tue Wed Thu Fri Sat Sun)
+      when :monthly, :'bi-weekly' then (date_range.first.day..date_range.last.day).to_a
       else raise "Invalid filter: #{filter.inspect}"
     end
   end
   
   def chart_data_for(labels, filter, hours)
     reversed = labels.reverse
-    data = []
+    hours    = hours.dup
+    data     = []
+    filter   = filter.to_sym if filter
     case filter
-      when 'weekly'
+      when :weekly
         reversed.each do |label|
-          hours.pop unless hours.empty? || hours.last.first.strftime("%A")[label]
+          hours.pop unless hours.empty? || hours.last[1].strftime("%A")[label]
           data.unshift(hours.empty? ? 0.0 : hours.last.last.to_f)
         end
-      when 'monthly', 'bi-weekly'
+      when :monthly, :'bi-weekly'
         reversed.each do |label|
-          hours.pop unless hours.empty? || hours.last.first.day <= label
-          data.unshift(hours.empty? || hours.last.first.day != label ? 0.0 : hours.last.last.to_f)
+          hours.pop unless hours.empty? || hours.last[1].day <= label
+          data.unshift(hours.empty? || hours.last[1].day != label ? 0.0 : hours.last.last.to_f)
         end
     end
+    
     data.sum > 0 ? data : []
   end
 
@@ -73,17 +85,18 @@ module StatusesHelper
     now = Time.zone.now
     start_date = date_range.first
     prev_date, next_date = nil, nil
-    case params[:filter]
-      when 'daily'
+    filter = params[:filter].to_sym if params.key?(:filter)
+    case filter
+      when :daily
         prev_date = start_date - 1.day
         next_date = start_date + 1.day if now > date_range.last
-      when 'weekly'
+      when :weekly
         prev_date = start_date - 1.week
         next_date = start_date + 1.week if now > date_range.last
-      when 'bi-weekly'
+      when :'bi-weekly'
         prev_date = start_date.day == 1 ? (start_date - 1.day).beginning_of_month + 14.days : start_date.beginning_of_month
         next_date = start_date.day == 1 ? start_date + 14.days : (start_date + 1.month).beginning_of_month if now > date_range.last
-      when 'monthly'
+      when :monthly
         prev_date = start_date - 1.month
         next_date = start_date + 1.month if now > date_range.last
     end

@@ -12,7 +12,7 @@
           <h2><%=h @project.name %></h2>
         </li>
         <li class="clearfix" style="border-bottom:0">
-<%= render :partial => "statuses/chart", :locals => {:hours => @hours, :date_range => @date_range} %>
+          <%= render :partial => "statuses/chart", :locals => {:hours => @hours, :date_range => @date_range} %>
         </li>
       </ul>
     <% end %>
@@ -23,10 +23,10 @@
   <div class="mblock-hdr">
     <h3><%= h(@project.name) %> Timeline</h3>
     <div class="utils">
-			<%= link_to_filtered_statuses(:Daily, :filter => 'daily', :date => nil) %>
-			<%= link_to_filtered_statuses(:Week,  :filter => 'weekly', :date => nil) %>
-			<%= link_to_filtered_statuses('Bi-weekly', :filter => 'bi-weekly', :date => nil) %>
-			<%= link_to_filtered_statuses(:Month, :filter => 'monthly', :date => nil) %>
+			<%= link_to_filtered_statuses(:Daily, :filter => :daily, :date => nil) %>
+			<%= link_to_filtered_statuses(:Week,  :filter => :weekly, :date => nil) %>
+			<%= link_to_filtered_statuses('Bi-weekly', :filter => :'bi-weekly', :date => nil) %>
+			<%= link_to_filtered_statuses(:Month, :filter => :monthly, :date => nil) %>
     </div>
   </div>
   <div class="mblock-cnt">
@@ -153,7 +153,7 @@
 		<% @project.users.each_with_index do |user, index| -%>
       <li class="media-item clearfix<%= %( last) if first_in_collection?(@project.users, index) %>">
         <div class="media">
-          <%= gravatar_for user %>
+          <%= link_to gravatar_for(user), user %>
         </div>
         <div class="media-content">
           <h4 class="media-title">
@@ -162,12 +162,12 @@
 					</h4>
           <p class="quiet"><% if user.last_status_id -%>Active <%= js_time_ago_in_words user.last_status_at %><% else -%>Inactive<% end -%></p>
           <span class="you">
-            <span class="num"><%= number_with_precision @project.daily_member_hours[user.id].to_f, 2 %></span>
+            <span class="num"><%= number_with_precision @daily_hours.total(user.id), 2 %></span>
             <span class="meta">today</span>
           </span>
           <span class="others">
-            <span class="num"><%= number_with_precision @project.member_hours[user.id].to_f, 2 %></span>
-            <span class="meta">total</span>
+            <span class="num"><%= number_with_precision @hours.total(user.id), 2 %></span>
+            <span class="meta"><%=h params[:filter] %></span>
           </span>
         </div>
       </li>

@@ -222,6 +222,7 @@ describe Status, "(filtering by date)" do
   
   it "counts recent status hours with no filter" do
     Status.filtered_hours(nil, nil).total.should == 9 * 5
+    Status.hours(nil, nil).should == 9 * 5
   end
   
   it "shows recent statuses by user" do
@@ -232,15 +233,18 @@ describe Status, "(filtering by date)" do
   
   it "counts recent status hours by user with no filter" do
     Status.filtered_hours(@user.id, nil).total.should == 5 * 5
+    Status.hours(@user.id, nil).should == 5 * 5
     @user.statuses.filtered_hours(nil).total.should   == 5 * 5
+    @user.statuses.hours(nil).should   == 5 * 5
   end
   
   it "shows today's statuses" do
-    compare_stubs :statuses, Status.filter(nil, 'daily')[0], [:default, :status_day]
+    compare_stubs :statuses, Status.filter(nil, :daily)[0], [:default, :status_day]
   end
   
   it "counts today's status hours" do
     Status.filtered_hours(nil, 'daily').total.should == 2 * 5
+    Status.hours(nil, 'daily').should == 2 * 5
   end
   
   it "shows today's statuses by user" do
@@ -252,6 +256,8 @@ describe Status, "(filtering by date)" do
   it "counts today's status hours by user" do
     Status.filtered_hours(@user.id, 'daily').total.should == 5
     @user.statuses.filtered_hours('daily').total.should   == 5
+    Status.hours(@user.id, 'daily').should == 5
+    @user.statuses.hours('daily').should   == 5
   end
   
   it "shows this week's statuses" do
@@ -260,6 +266,7 @@ describe Status, "(filtering by date)" do
   
   it "counts this week's status hours" do
     Status.filtered_hours(nil, 'weekly').total.should == 4 * 5
+    Status.hours(nil, 'weekly').should == 4 * 5
   end
   
   it "shows this week's statuses by user" do
@@ -271,6 +278,8 @@ describe Status, "(filtering by date)" do
   it "counts this week's status hours by user" do
     Status.filtered_hours(@user.id, 'weekly').total.should == 2 * 5
     @user.statuses.filtered_hours('weekly').total.should   == 2 * 5
+    Status.hours(@user.id, 'weekly').should == 2 * 5
+    @user.statuses.hours('weekly').should   == 2 * 5
   end
   
   it "shows this fortnight's statuses" do
@@ -279,6 +288,7 @@ describe Status, "(filtering by date)" do
   
   it "counts this fortnight's status hours" do
     Status.filtered_hours(nil, 'bi-weekly').total.should == 6 * 5
+    Status.hours(nil, 'bi-weekly').should == 6 * 5
   end
   
   it "shows this fortnight's statuses by user" do
@@ -290,6 +300,8 @@ describe Status, "(filtering by date)" do
   it "counts this fortnight's status hours by user" do
     Status.filtered_hours(@user.id, 'bi-weekly').total.should == 3 * 5
     @user.statuses.filtered_hours('bi-weekly').total.should   == 3 * 5
+    Status.hours(@user.id, 'bi-weekly').should == 3 * 5
+    @user.statuses.hours('bi-weekly').should   == 3 * 5
   end
   
   it "shows earlier fortnight's statuses" do
@@ -300,6 +312,7 @@ describe Status, "(filtering by date)" do
   it "counts earlier fortnight's status hours" do
     Time.stub!(:now).and_return(Time.utc(2007, 6, 14, 6))
     Status.filtered_hours(nil, 'bi-weekly').total.should == 2 * 5
+    Status.hours(nil, 'bi-weekly').should == 2 * 5
   end
   
   it "shows earlier fortnight's statuses by user" do
@@ -313,6 +326,8 @@ describe Status, "(filtering by date)" do
     Time.stub!(:now).and_return(Time.utc(2007, 6, 14, 6))
     Status.filtered_hours(@user.id, 'bi-weekly').total.should == 5
     @user.statuses.filtered_hours('bi-weekly').total.should   == 5
+    Status.hours(@user.id, 'bi-weekly').should == 5
+    @user.statuses.hours('bi-weekly').should   == 5
   end
   
   it "shows this month's statuses" do
@@ -321,6 +336,7 @@ describe Status, "(filtering by date)" do
   
   it "counts this month's status hours" do
     Status.filtered_hours(nil, 'monthly').total.should == 8 * 5
+    Status.hours(nil, 'monthly').should == 8 * 5
   end
   
   it "shows this month's statuses by user" do
@@ -332,6 +348,8 @@ describe Status, "(filtering by date)" do
   it "counts this month's status hours by user" do
     Status.filtered_hours(@user.id, 'monthly').total.should == 4 * 5
     @user.statuses.filtered_hours('monthly').total.should   == 4 * 5
+    Status.hours(@user.id, 'monthly').should == 4 * 5
+    @user.statuses.hours('monthly').should   == 4 * 5
   end
 end
 

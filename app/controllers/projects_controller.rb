@@ -12,8 +12,9 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    @statuses, @date_range = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter] ||= 'weekly', :date => params[:date], :page => params[:page])
-    @hours = @project.statuses.filtered_hours(user_status_for(params[:user_id]), params[:filter], :date => params[:date])
+    @statuses, @date_range = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :date => params[:date], :page => params[:page])
+    @daily_hours = @project.statuses.filtered_hours(user_status_for(params[:user_id]), :daily, :date => params[:date])
+    @hours       = @project.statuses.filtered_hours(user_status_for(params[:user_id]), params[:filter], :date => params[:date])
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml  => @project }
@@ -72,7 +73,7 @@ class ProjectsController < ApplicationController
   def invite
     inviter = User::Inviter.new(params[:id], params[:emails])
     flash[:notice] = "Users invited: #{(inviter.logins + inviter.emails) * ", "}"
-    Bj.submit inviter.to_job
+    Bj.submit inviter.to_job, :rails_env => RAILS_ENV, :tag => 'invites'
     redirect_to project_path(params[:id])
   end
 

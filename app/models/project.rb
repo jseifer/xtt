@@ -20,14 +20,6 @@ class Project < ActiveRecord::Base
   def editable_by?(user)
     users.include?(user)
   end
-
-  def daily_member_hours(reload = false)
-    user.daily_member_hours(self, reload)
-  end
-  
-  def member_hours(reload = false)
-    user.member_hours(self, reload)
-  end
   
   def owned_by?(user)
     user && user_id == user.id

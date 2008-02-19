@@ -23,10 +23,10 @@
   <div class="mblock-hdr">
     <h3><%= h(@user.login) %> Timeline</h3>
     <div class="utils">
-			<%= link_to_filtered_statuses(:Daily, :filter => 'daily', :date => nil) %>
-			<%= link_to_filtered_statuses(:Week,  :filter => 'weekly', :date => nil) %>
-			<%= link_to_filtered_statuses('Bi-weekly', :filter => 'bi-weekly', :date => nil) %>
-			<%= link_to_filtered_statuses(:Month, :filter => 'monthly', :date => nil) %>
+			<%= link_to_filtered_statuses(:Daily, :filter => :daily, :date => nil) %>
+			<%= link_to_filtered_statuses(:Week,  :filter => :weekly, :date => nil) %>
+			<%= link_to_filtered_statuses('Bi-weekly', :filter => :'bi-weekly', :date => nil) %>
+			<%= link_to_filtered_statuses(:Month, :filter => :monthly, :date => nil) %>
     </div>
   </div>
   <div class="mblock-cnt">
@@ -49,7 +49,11 @@
         </div>
         <div class="media-content">
           <h4 class="media-title status"><%= link_to(status_for(status), status, :class => 'entry-title entry-content') %></h4>
-          <p class="quiet">posted <%= status_at status %> from <strong><%=h status.source || "the web" %></strong></p>
+          <p class="quiet">
+						posted <%= status_at status %>
+						from <strong><%=h status.source || "the web" %>
+						<% if status.project? -%>to <%= link_to_filtered_statuses h(status.project.name), :filter => params[:filter], :date => params[:date], :project => status.project %><% end -%>
+					</strong></p>
           <% if status.processed? -%>
           <span class="others">
             <span class="num"><%= status.hours.to_f %></span>
@@ -65,3 +69,32 @@
 		<%= will_paginate @statuses %>
   </div>
 </div>
+
+<% box(:sidebar, 'projects') do |sbox| %>
+  <% sbox.title = "Projects" %>
+  <% sbox.content_classes = "nopad" %>
+  
+  <% sbox.content = capture do %>
+  <div id="projectlist">
+    <ul class="text-list" id="project-lists">
+    <% unless @projects.empty? %>
+  	<% @projects.each_with_index do |project, index| -%>
+      <li<%= %( class="last") if first_in_collection?(@projects, index) %> id="project-<%= project.id %>">
+        <a href="<%= url_for_filtered_statuses :filter => params[:filter], :date => params[:date], :project => project %>">
+          <span class="ttl"><%=h project.name %></span>
+          <span class="desc">Send messages using <em>@<%=h project.code %></em></span>
+        </a>
+        <div id="showcase-project-<%= project.id %>" style="display:none">
+          <h3>Edit <%= h(project.name) %></h3>
+          <%= error_messages_for :project %>
+            <% form_for project, :html => {:class => "form" } do |f| -%>
+            <%= render :partial => "projects/form", :object => f %>
+          <% end %>
+        </div>
+      </li>
+  	<% end -%>
+  	<% end -%>
+    </ul>
+  </div>
+  <% end %>
+<% end %>

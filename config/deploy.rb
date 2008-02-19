@@ -1,20 +1,23 @@
-set :application, "micromanage"
-set :repository,  "git@activereload.net:lh-time.git"
-set :deploy_to, "/var/rails/#{application}"
+set :application, "xtt"
+set :repository,  "git@entp:tt.git"
+set :deploy_to, "/var/www/#{application}"
 set :scm, :git
+set :rails_version, 8872
 
 set :deploy_via, "copy"
 
-role :app, "two"
-role :web, "two"
-role :db,  "two", :primary => true
+role :app, "entp.com:30187"
+role :web, "entp.com:30187"
+role :db,  "entp.com:30187", :primary => true
 
 task :after_update_code, :roles => :app do
-  put(File.read('config/database.yml'), "#{release_path}/config/database.yml", :mode => 0444) 
   run <<-CMD
-    cd #{release_path} && rake tmp:create
+    cd #{release_path} &&
+    ln -s #{shared_path}/config/mongrel_cluster.yml #{release_path}/config/ && 
+    ln -s #{shared_path}/config/database.yml        #{release_path}/config/ && 
+    rake tmp:create &&
+    sudo rake edge REVISION=#{rails_version} RAILS_PATH=/var/www/#{application}/shared/rails
   CMD
-  run "ln -s #{shared_path}/mongrel_cluster.yml #{release_path}/config/"
 end
 
 namespace :deploy do
@@ -48,8 +51,8 @@ task :backup, :roles => :db, :only => { :primary => true } do
   end
 
   `mkdir -p #{File.dirname(__FILE__)}/../backups`
-  `rsync #{roles[:db][0].host}:#{filename} #{File.dirname(__FILE__)}/../backups/`
+  `rsync #{roles[:db][0].host}:#{filename} -e 'ssh -p 30187' #{File.dirname(__FILE__)}/../backups/`
   run "rm -f #{filename}"
   
-  backup_public_dir
+#  backup_public_dir
 end

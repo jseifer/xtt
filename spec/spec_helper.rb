@@ -40,3 +40,13 @@ Spec::Runner.configure do |config|
     actual.size.should == expected.size
   end
 end
+
+module RspecOnRailsOnCrack
+  class ControllerAccessGroup
+    def it_restricts(method, actions, params = {}, &block_params)
+      it_performs :restricts, method, actions, block_params || params do
+        response.should redirect_to(denied_path(:to => request.request_uri))
+      end
+    end
+  end
+end

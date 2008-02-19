@@ -10,10 +10,13 @@ class UsersController < ApplicationController
   # user status page
   def show
     status_query = lambda do
-      @statuses, @date_range = @user.statuses.filter(params[:filter] ||= 'weekly', :date => params[:date], :page => params[:page])
-      @hours = @user.statuses.filtered_hours(params[:filter], :date => params[:date])
+      @statuses, @date_range = @user.statuses.filter(params[:filter] ||= :weekly, :date => params[:date], :page => params[:page])
+      @hours       = @user.statuses.filtered_hours(params[:filter], :date => params[:date])
+      @daily_hours = @user.statuses.filtered_hours(:daily, :date => params[:date])
     end
     @user == current_user ? status_query.call : Status.in_projects(current_user, &status_query)
+    project_ids = returning(@statuses.collect { |s| s.project_id }) { |ids| ids.uniq! ; ids.compact! }
+    @projects = project_ids.empty? ? [] : Project.find_all_by_id(project_ids)
   end
 
   # user signup
@@ -43,8 +46,8 @@ class UsersController < ApplicationController
         @invitation.destroy
       end
       self.current_user = @user
-      flash[:notice] = "Thanks for signing up!"
-      redirect_back_or_default
+      flash[:notice] = "Thanks for signing up!  Watch your email address for an activation link before you can log in."
+      redirect_back_or_default(login_path)
     else
       render :action => 'new'
     end
@@ -55,9 +58,23 @@ class UsersController < ApplicationController
     self.current_user = params[:activation_code].blank? ? :false : User.find_by_activation_code(params[:activation_code])
     if current_user != :false && !current_user.active?
       current_user.activate!
-      flash[:notice] = "Signup complete!"
+      flash[:notice] = "Signup complete!  You might like to check out the Help section for how to get started."
     end
     redirect_back_or_default
+  end
+  
+  def reset_password
+    @user = User.find_by_email(params[:email]) unless params[:email].blank?
+    if @user
+      @user.reset_activation_code
+      @user.save
+      User::Mailer.deliver_forgot_password(@user)
+      flash[:notice] = "Check #{@user.email.inspect} for an activation email."
+      redirect_to login_path
+    else
+      flash[:notice] = "No user found for this email address."
+      redirect_to login_path(:anchor => 'reset')
+    end
   end
   
   # private user editing

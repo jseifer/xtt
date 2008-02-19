@@ -3,6 +3,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.root :controller => 'users', :action => 'index'
 
+  map.resources :helps, :controller => "help"
   map.resources :statuses
   map.resources :projects, :member => {:invite => :post}
   
@@ -22,12 +23,13 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :memberships  
   map.resources :users, :member => { :suspend   => :put,
                                      :unsuspend => :put,
-                                     :purge     => :delete }
+                                     :purge     => :delete }, :collection => { :reset_password => :post }
 
   map.filtered_user 'users/:id/:filter', :filter => status_filters, :controller => 'users', :action => 'show'
 
   map.resource :session, :settings
 
+  map.denied   '/access_denied',             :controller => 'users',    :action => 'access_denied'
   map.activate '/activate/:activation_code', :controller => 'users',    :action => 'activate', :activation_code => nil
   map.signup   '/signup',                    :controller => 'users',    :action => 'new'
   map.invite   '/invitations/:code',         :controller => 'users',    :action => 'invite'
