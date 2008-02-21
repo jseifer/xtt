@@ -5,6 +5,7 @@ class Status
         user_id, date = grouped.split("::")
         [user_id.to_i, Time.parse(date), hour]
       end
+      hours.sort! { |x, y| x.last <=> y.last }
     end
 
     def total(user_id = 0)

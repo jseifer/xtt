@@ -54,30 +54,28 @@ module StatusesHelper
     filter = filter.to_sym if filter
     case filter
       when :weekly then %w(Mon Tue Wed Thu Fri Sat Sun)
-      when :monthly, :'bi-weekly' then (date_range.first.day..date_range.last.day).to_a
+      when :monthly, :'bi-weekly' then 
+        first, last = date_range.first.day, date_range.last.day
+        if last > first # end date in same month
+          (first..last).to_a
+        else # end date is next month, standard range won't work here, sonny
+          days = ((date_range.last.midnight - date_range.first.midnight) / 1.day).round - last
+          (first..first + days).to_a.push *(1..last).to_a
+        end
       else raise "Invalid filter: #{filter.inspect}"
     end
   end
   
   def chart_data_for(labels, filter, hours)
-    reversed = labels.reverse
-    hours    = hours.dup
-    data     = []
     filter   = filter.to_sym if filter
     case filter
       when :weekly
-        reversed.each do |label|
-          hours.pop unless hours.empty? || hours.last[1].strftime("%A")[label]
-          data.unshift(hours.empty? ? 0.0 : hours.last.last.to_f)
-        end
+        hour_cache = hours.inject({}) { |memo, (user_id, date, hours)| memo.update(date.strftime("%A")[0..2] => hours) }
+        labels.inject([]) { |memo, label| memo << hour_cache[label].to_f }
       when :monthly, :'bi-weekly'
-        reversed.each do |label|
-          hours.pop unless hours.empty? || hours.last[1].day <= label
-          data.unshift(hours.empty? || hours.last[1].day != label ? 0.0 : hours.last.last.to_f)
-        end
+        hour_cache = hours.inject({}) { |memo, (user_id, date, hours)| memo.update(date.day => hours) }
+        labels.inject([]) { |memo, day| memo << hour_cache[day].to_f }
     end
-    
-    data.sum > 0 ? data : []
   end
 
   def paging_for_period(date_range)
