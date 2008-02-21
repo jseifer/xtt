@@ -25,7 +25,8 @@ module ProjectsHelper
     divmod = case max
       when 0..5    then 1
       when 5..20   then 5
-      when 20..100 then 10
+      when 20..50  then 10
+      when 50..100 then 20
       else 25
     end
     (0..max).to_a.select { |n| n % divmod == 0 }
