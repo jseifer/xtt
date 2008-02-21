@@ -678,6 +678,15 @@ p.btns a {
   line-height: 100%;
 }
 
+.special-num .quiet {
+  font-weight: bold;
+  color: #555;
+}
+
+.daterange {
+  font-weight: bold;
+}
+
 .paging {
   display: block;
   font-weight: bold;

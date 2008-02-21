@@ -29,7 +29,9 @@
   <% end -%>
   <p class="special-num">
     <span class="main-num"><%= number_with_precision hours.total, '2' %></span>
-    <span class="quiet">hour(s) this <%=h params[:filter] %> period.</span>
+    <span class="quiet">
+      <%= period_to_sentence(params[:filter], date_range, hours.total) %>
+    </span>
     <%= paging_for_period(date_range) %>
   </p>
 <% else -%>
