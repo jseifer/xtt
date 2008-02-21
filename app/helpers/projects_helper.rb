@@ -15,4 +15,8 @@ module ProjectsHelper
     end
     %(#{plural} <span class="daterange">#{final}</span>)
   end
+  
+  def normalized_max(data)
+    ((data.collect{|d| d.last.to_i}.max * 10**-1).ceil.to_f / 10**-1)
+  end
 end
