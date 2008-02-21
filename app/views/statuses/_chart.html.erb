@@ -3,18 +3,32 @@
 	<% unless params[:filter] == :daily -%>
 	<% chart_labels = chart_labels_for(params[:filter], date_range) -%>
   
-	  <% if [:monthly, :'bi-weekly'].include?(params[:filter]) && !hours.empty? %>
-	  <% chart_data = chart_data_for(chart_labels, params[:filter], hours) %>
+  <% unless hours.empty? %>
+  <% chart_data = chart_data_for(chart_labels, params[:filter], hours) %>
+  
+	  <% if params[:filter] == :monthly %>
+	  
 	    <%= image_tag(Gchart.line(
          :bg => 'CACACA', 
          :data => chart_data,
-         :max_value => (chart_data.collect{|d| d.to_i}.max * 10**-1).ceil.to_f / 10**-1,
+         :max_value => ((chart_data.collect{|d| d.to_i}.max * 10**-1).ceil.to_f / 10**-1),
          :line_colors => ['224499'],
          :size => '380x120',
          :custom => "&amp;chm=B,4E77DD,0,0,0&amp;chg=0,25,1,0&amp;chbh=40&amp;chxr=0,1,#{date_range.last.day}|1,0,#{chart_data.collect{|d| d.to_i}.max}",            
          :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => "#{params[:filter]}-chart", :class => 'special-chart') %>
 	
-	  <% elsif !hours.empty? %>
+	  <% elsif [:weekly, :'bi-weekly'].include?(params[:filter]) %>
+	  
+	  <%= image_tag(Gchart.line(
+       :bg => 'CACACA', 
+       :data => chart_data,
+       :line_colors => ['224499'],
+       :size => '380x120',
+       :custom => "&amp;chm=B,4E77DD,0,0,0&amp;chg=0,25,1,0&amp;chbh=40&amp;chxr=0,#{date_range.first.day},#{date_range.last.day}|1,0,#{normalized_max(hours)}",            
+       :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => "#{params[:filter]}-chart", :class => 'special-chart') %>
+    
+    <% else %>
+    
       <%= image_tag(Gchart.bar(
          :bg => 'CACACA', 
          :data => chart_data_for(chart_labels, params[:filter], hours),
@@ -27,9 +41,12 @@
          :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => "#{params[:filter]}-chart", :class => 'special-chart') %>
     <% end %>
   <% end -%>
+  <% end %>
   <p class="special-num">
     <span class="main-num"><%= number_with_precision hours.total, '2' %></span>
-    <span class="quiet">hour(s) this <%=h params[:filter] %> period.</span>
+    <span class="quiet">
+      <%= period_to_sentence(params[:filter], date_range, hours.total) %>
+    </span>
     <%= paging_for_period(date_range) %>
   </p>
 <% else -%>

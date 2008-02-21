@@ -67,15 +67,15 @@ module StatusesHelper
   end
   
   def chart_data_for(labels, filter, hours)
-    filter   = filter.to_sym if filter
-    case filter
+    filter     = filter.to_sym if filter
+    hour_block = case filter
       when :weekly
-        hour_cache = hours.inject({}) { |memo, (user_id, date, hours)| memo.update(date.strftime("%A")[0..2] => hours) }
-        labels.inject([]) { |memo, label| memo << hour_cache[label].to_f }
+        lambda { |memo, (user_id, date, hours)| memo.update(date.strftime("%A")[0..2] => hours) }
       when :monthly, :'bi-weekly'
-        hour_cache = hours.inject({}) { |memo, (user_id, date, hours)| memo.update(date.day => hours) }
-        labels.inject([]) { |memo, day| memo << hour_cache[day].to_f }
+        lambda { |memo, (user_id, date, hours)| memo.update(date.day => hours) }
     end
+    hour_cache = hours.inject({}, &hour_block)
+    labels.inject([]) { |memo, day| memo << hour_cache[day].to_f }
   end
 
   def paging_for_period(date_range)
