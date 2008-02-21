@@ -45,6 +45,8 @@ describe User::Mailer do
   end
   
   def read_fixture(action)
-    IO.readlines("#{File.dirname(__FILE__)}/../fixtures/mailers/user_mailer/#{action}")
+    returning IO.readlines("#{File.dirname(__FILE__)}/../fixtures/mailers/user_mailer/#{action}").join do |data|
+      data.gsub! /:host/, TT_HOST
+    end
   end
 end

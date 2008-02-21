@@ -5,4 +5,4 @@ Your account has been created.
 
 Visit this url to activate your account:
 
-  http://localhost/activate/abc
+  http://:host/activate/abc
