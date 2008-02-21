@@ -5,7 +5,8 @@ module ProjectsHelper
   
   def period_to_sentence(filter, date_range, hours)
     plural = hours == 1 ? 'hour' : 'hours'
-    final = case params[:filter]
+    filter = filter.to_sym if filter
+    final = case filter
       when :daily
         date_range.first.strftime("%A, %b %d")
       when :monthly
@@ -18,5 +19,15 @@ module ProjectsHelper
   
   def normalized_max(data)
     ((data.collect{|d| d.to_f}.max * 10**-1).ceil.to_f / 10**-1)
+  end
+  
+  def normalized_range(max)
+    divmod = case max
+      when 0..5    then 1
+      when 5..20   then 5
+      when 20..100 then 10
+      else 25
+    end
+    (0..max).to_a.select { |n| n % divmod == 0 }
   end
 end

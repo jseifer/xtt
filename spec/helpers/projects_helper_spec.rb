@@ -6,4 +6,10 @@ describe ProjectsHelper do
       normalized_max([max]).should == normalized
     end
   end
+  
+  {4 => [0,1,2,3,4], 19 => [0, 5, 10, 15], 50 => [0, 10, 20, 30, 40, 50], 105 => [0, 25, 50, 75, 100]}.each do |max, range|
+    it "#normalized_range(#{max}).should == #{range.inspect}" do
+      normalized_range(max).should == range
+    end
+  end
 end
