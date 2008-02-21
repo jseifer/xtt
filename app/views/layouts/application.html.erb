@@ -36,7 +36,7 @@
       <% if logged_in? %>
       Signed in as <%= link_to h(current_user.login), edit_user_path(current_user) %>
       <%= link_to 'Help', helps_path %>
-      <%= link_to 'Log Out', logout_path %>
+      <%= link_to 'Sign Out', logout_path %>
       <% end %>
     </div>
   </div>
