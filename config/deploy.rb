@@ -22,15 +22,15 @@ end
 
 namespace :deploy do
   task :restart do
-    run "cd #{release_path} && sudo mongrel_rails cluster::restart"
+    run "cd #{current_path} && sudo mongrel_rails cluster::restart"
   end
 
   task :start do
-    run "cd #{release_path} && sudo mongrel_rails cluster::start"
+    run "cd #{current_path} && sudo mongrel_rails cluster::start"
   end
 
   task :stop do
-    run "cd #{release_path} && sudo mongrel_rails cluster::stop"
+    run "cd #{current_path} && sudo mongrel_rails cluster::stop"
   end
 end
 
