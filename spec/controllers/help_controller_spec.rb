@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe HelpController, "GET #index" do
-  # fixture definition
+  define_models :helps
 
   act! { get :index }
 
@@ -14,7 +14,7 @@ describe HelpController, "GET #index" do
   it_renders :template, :index
 
   describe HelpController, "(xml)" do
-    # fixture definition
+    define_models :helps
     
     act! { get :index, :format => 'xml' }
 
@@ -23,7 +23,7 @@ describe HelpController, "GET #index" do
   end
 
   describe HelpController, "(json)" do
-    # fixture definition
+    define_models :helps
     
     act! { get :index, :format => 'json' }
 
@@ -35,7 +35,7 @@ describe HelpController, "GET #index" do
 end
 
 describe HelpController, "GET #show" do
-  # fixture definition
+  define_models :helps
 
   act! { get :show, :id => 1 }
 
@@ -48,7 +48,7 @@ describe HelpController, "GET #show" do
   it_renders :template, :show
   
   describe HelpController, "(xml)" do
-    # fixture definition
+    define_models :helps
     
     act! { get :show, :id => 1, :format => 'xml' }
 
@@ -56,7 +56,7 @@ describe HelpController, "GET #show" do
   end
 
   describe HelpController, "(json)" do
-    # fixture definition
+    define_models :helps
     
     act! { get :show, :id => 1, :format => 'json' }
 
@@ -67,7 +67,7 @@ describe HelpController, "GET #show" do
 end
 
 describe HelpController, "GET #new" do
-  # fixture definition
+  define_models :helps
   act! { get :new }
   before do
     @help  = Help.new
@@ -81,14 +81,14 @@ describe HelpController, "GET #new" do
   it_renders :template, :new
   
   describe HelpController, "(xml)" do
-    # fixture definition
+    define_models :helps
     act! { get :new, :format => 'xml' }
 
     it_renders :xml, :help
   end
 
   describe HelpController, "(json)" do
-    # fixture definition
+    define_models :helps
     act! { get :new, :format => 'json' }
 
     it_renders :json, :help
@@ -105,7 +105,7 @@ describe HelpController, "POST #create" do
   end
   
   describe HelpController, "(successful creation)" do
-    # fixture definition
+    define_models :helps
     act! { post :create, :help => @attributes }
 
     before do
@@ -117,7 +117,7 @@ describe HelpController, "POST #create" do
   end
 
   describe HelpController, "(unsuccessful creation)" do
-    # fixture definition
+    define_models :helps
     act! { post :create, :help => @attributes }
 
     before do
@@ -129,7 +129,7 @@ describe HelpController, "POST #create" do
   end
   
   describe HelpController, "(successful creation, xml)" do
-    # fixture definition
+    define_models :helps
     act! { post :create, :help => @attributes, :format => 'xml' }
 
     before do
@@ -142,7 +142,7 @@ describe HelpController, "POST #create" do
   end
   
   describe HelpController, "(unsuccessful creation, xml)" do
-    # fixture definition
+    define_models :helps
     act! { post :create, :help => @attributes, :format => 'xml' }
 
     before do
@@ -154,7 +154,7 @@ describe HelpController, "POST #create" do
   end
 
   describe HelpController, "(successful creation, json)" do
-    # fixture definition
+    define_models :helps
     act! { post :create, :help => @attributes, :format => 'json' }
 
     before do
@@ -167,7 +167,7 @@ describe HelpController, "POST #create" do
   end
   
   describe HelpController, "(unsuccessful creation, json)" do
-    # fixture definition
+    define_models :helps
     act! { post :create, :help => @attributes, :format => 'json' }
 
     before do
@@ -181,7 +181,7 @@ describe HelpController, "POST #create" do
 end
 
 describe HelpController, "GET #edit" do
-  # fixture definition
+  define_models :helps
   act! { get :edit, :id => 1 }
   
   before do
@@ -201,7 +201,7 @@ describe HelpController, "PUT #update" do
   end
   
   describe HelpController, "(successful save)" do
-    # fixture definition
+    define_models :helps
     act! { put :update, :id => 1, :help => @attributes }
 
     before do
@@ -213,7 +213,7 @@ describe HelpController, "PUT #update" do
   end
 
   describe HelpController, "(unsuccessful save)" do
-    # fixture definition
+    define_models :helps
     act! { put :update, :id => 1, :help => @attributes }
 
     before do
@@ -225,7 +225,7 @@ describe HelpController, "PUT #update" do
   end
   
   describe HelpController, "(successful save, xml)" do
-    # fixture definition
+    define_models :helps
     act! { put :update, :id => 1, :help => @attributes, :format => 'xml' }
 
     before do
@@ -237,7 +237,7 @@ describe HelpController, "PUT #update" do
   end
   
   describe HelpController, "(unsuccessful save, xml)" do
-    # fixture definition
+    define_models :helps
     act! { put :update, :id => 1, :help => @attributes, :format => 'xml' }
 
     before do
@@ -249,7 +249,7 @@ describe HelpController, "PUT #update" do
   end
 
   describe HelpController, "(successful save, json)" do
-    # fixture definition
+    define_models :helps
     act! { put :update, :id => 1, :help => @attributes, :format => 'json' }
 
     before do
@@ -261,7 +261,7 @@ describe HelpController, "PUT #update" do
   end
   
   describe HelpController, "(unsuccessful save, json)" do
-    # fixture definition
+    define_models :helps
     act! { put :update, :id => 1, :help => @attributes, :format => 'json' }
 
     before do
@@ -275,7 +275,7 @@ describe HelpController, "PUT #update" do
 end
 
 describe HelpController, "DELETE #destroy" do
-  # fixture definition
+  define_models :help
   act! { delete :destroy, :id => 1 }
   
   before do
@@ -288,7 +288,7 @@ describe HelpController, "DELETE #destroy" do
   it_redirects_to { help_path }
   
   describe HelpController, "(xml)" do
-    # fixture definition
+    define_models :helps
     act! { delete :destroy, :id => 1, :format => 'xml' }
 
     it_assigns :help
@@ -296,7 +296,7 @@ describe HelpController, "DELETE #destroy" do
   end
 
   describe HelpController, "(json)" do
-    # fixture definition
+    define_models :helps
     act! { delete :destroy, :id => 1, :format => 'json' }
 
     it_assigns :help

@@ -39,7 +39,7 @@ describe IM::Response do
     @project = mock_model(Project, :name => "Fools!", :code => "fools")
     @status  = mock_model(Status, :project => @project, :message => "thanks!")
     @user.stub!(:statuses).and_return mock('proxy', :latest => @status)
-    @aim.should_receive(:send_im).with("Your current status is: <b>Fools! (@fools)</b> <code>thanks!</code>")
+    @aim.should_receive(:send_im).with("<HTML>Your current status is: <b>Fools! (@fools)</b> <code>thanks!</code></HTML>")
     im = IM::Response.new "status", @aim
     
   end

@@ -23,6 +23,11 @@ ModelStubbing.define_models do
   end
   
   model Membership
+  
+  model Help do
+    stub :name => "foo"
+    stub :foo, :name => "bar"
+  end
 end
 
 ModelStubbing.define_models :feeds do 
