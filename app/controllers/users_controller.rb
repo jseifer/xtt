@@ -128,6 +128,6 @@ protected
   def authorized?
     return false unless logged_in?
     return true if admin?
-    @user.nil? || @user == current_user
+    @user.nil? || @user == current_user || (action_name == 'show' && current_user.related_to?(@user))
   end
 end

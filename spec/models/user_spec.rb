@@ -64,6 +64,20 @@ describe User do
     it "sorts #last_status_at" do
       users(:default).related_users.should == [users(:thing_2), users(:thing_1)]
     end
+    
+    all = [:default, :thing_1, :thing_2, :the_cat]
+    {:default => [:thing_1, :thing_2], :thing_1 => [:default, :thing_2], :thing_2 => [:default, :thing_1], :the_cat => []}.each do |user, related|
+      related.each do |rel|
+        it "knows #{user} is related to #{rel}" do
+          users(user).should be_related_to(users(rel))
+        end
+      end
+      (all - related).each do |non|
+        it "knows #{user} is not related to #{non}" do
+          users(user).should_not be_related_to(users(non))
+        end
+      end
+    end
   end
 
   describe "#extract_code_and_message" do

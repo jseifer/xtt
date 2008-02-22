@@ -19,8 +19,7 @@ describe_access_for UsersController do
   as :default do
     it_allows :get, :index
     it_allows(:get, [:show, :edit]) { { :id => users(:default) } }
-    # PENDING
-    #it_allows(:get, :show)          { { :id => users(:admin)   } }
+    it_allows(:get, :show)          { { :id => users(:admin)   } }
     it_restricts(:get, :edit)       { { :id => users(:admin)   } }
     it_restricts(:put, :update)     { { :id => users(:admin)   } }
     it_restricts(:get, :show)       { { :id => users(:pending) } }

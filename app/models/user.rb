@@ -42,8 +42,11 @@ class User < ActiveRecord::Base
   end
   
   def related_users
-    @related_users ||= User.find :all, :conditions => ['users.id != ? and memberships.project_id IN (?)', id, memberships.collect(&:project_id).uniq],
-      :order => 'last_status_at desc', :joins => "INNER JOIN memberships ON users.id = memberships.user_id", :select => "DISTINCT users.*"
+    @related_users ||= with_memberships { User.find :all, :order => 'last_status_at desc', :select => "DISTINCT users.*" }
+  end
+  
+  def related_to?(user)
+    @related_users ? @related_users.include?(user) : with_memberships { User.exists?(user.id) }
   end
   
   def can_access?(user_or_status_or_project)
@@ -56,6 +59,14 @@ class User < ActiveRecord::Base
   end
 
 protected
+  def with_memberships
+    project_ids = memberships.collect { |m| m.project_id }
+    project_ids.uniq!
+    self.class.send(:with_scope, :find => {:conditions => ['users.id != ? and memberships.project_id IN (?)', id, project_ids], :joins => "INNER JOIN memberships ON users.id = memberships.user_id"}) do
+      yield
+    end
+  end
+  
   def extract_code_and_message(message)
     code = nil
     message.sub! /\@\w*/ do |c|
