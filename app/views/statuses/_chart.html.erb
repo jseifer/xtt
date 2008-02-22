@@ -5,29 +5,43 @@
   
   <% unless hours.empty? %>
   <% chart_data = chart_data_for(chart_labels, params[:filter], hours) %>
-  
+  <% max = normalized_max(chart_data) %>
 	  <% if params[:filter] == :monthly %>
 	  
 	    <%= image_tag(Gchart.line(
 	       :encoding => 'text',
          :bg => 'CACACA', 
          :data => chart_data,
-         :max_value => normalized_max(chart_data),
+         :max_value => max,
          :line_colors => ['224499'],
          :size => '380x140',
          :custom => "&amp;chm=B,4E77DD,0,0,0&amp;chg=0,25,1,0&amp;chbh=40&amp;chxr=0,1,#{date_range.last.day}",            
          :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => "#{params[:filter]}-chart", :class => 'special-chart') %>
 	
-	  <% elsif [:weekly, :'bi-weekly'].include?(params[:filter]) %>
+	  <% elsif [:'bi-weekly'].include?(params[:filter]) %>
 	  <%= image_tag(Gchart.line(
 	     :encoding => 'simple',
        :bg => 'CACACA', 
-       :max_value => normalized_max(chart_data),
+       :max_value => max,
        :data => chart_data,
        :line_colors => ['224499'],
        :size => '380x140',
        :custom => "&amp;chm=B,4E77DD,0,0,0&amp;chg=0,25,1,0&amp;chbh=40&amp;chxr=0,#{date_range.first.day},#{date_range.last.day}|1,0,#{normalized_max(chart_data).to_i}",            
        :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => "#{params[:filter]}-chart", :class => 'special-chart') %>
+   
+    <% elsif params[:filter] == :weekly %>
+    
+    <%= image_tag(Gchart.line(
+	     :encoding => 'simple',
+       :bg => 'CACACA', 
+       :max_value => max,
+       :data => chart_data,
+       :line_colors => ['224499'],
+       :axis_labels => [chart_labels_for(params[:filter], date_range), "0|#{(max / 2)}|#{max}"],
+       :size => '380x140',
+       :custom => "&amp;chm=B,4E77DD,0,0,0&amp;chg=0,25,1,0&amp;chbh=40&amp;chxr=0,#{date_range.first.day},#{date_range.last.day}|1,0,#{normalized_max(chart_data).to_i}",            
+       :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => "#{params[:filter]}-chart", :class => 'special-chart') %>
+    
     
     <% else %>
     
@@ -41,6 +55,7 @@
          :custom => "chxr=1,0,24&amp;chg=0,25,1,0&amp;chbh=40",            
          :axis_labels => [chart_labels * "|"],
          :axis_with_labels => %w(x y)), :style => 'margin-top:27px', :id => "#{params[:filter]}-chart", :class => 'special-chart') %>
+    
     <% end %>
   <% end -%>
   <% end %>

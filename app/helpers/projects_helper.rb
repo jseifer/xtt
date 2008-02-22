@@ -18,6 +18,6 @@ module ProjectsHelper
   end
   
   def normalized_max(data)
-    ((data.collect{|d| d.to_f}.max * 10**-1).ceil.to_f / 10**-1)
+    ((data.collect{|d| d.to_f}.max * 10**-1).ceil.to_f / 10**-1).to_i
   end
 end
