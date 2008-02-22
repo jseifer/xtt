@@ -70,11 +70,12 @@ module AuthenticatedSystem
     # simply close itself.
     def access_denied
       respond_to do |format|
+        route = logged_in? ? :denied_path : :login_path
         format.html do
-          redirect_to denied_path(:to => request.request_uri)
+          redirect_to send(route, :to => request.request_uri)
         end
         format.iphone do
-          redirect_to denied_path(:to => request.request_uri)
+          redirect_to send(route, :to => request.request_uri)
         end
         format.any do
           request_http_basic_authentication 'Web Password'

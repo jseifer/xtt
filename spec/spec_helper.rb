@@ -45,7 +45,8 @@ module RspecOnRailsOnCrack
   class ControllerAccessGroup
     def it_restricts(method, actions, params = {}, &block_params)
       it_performs :restricts, method, actions, block_params || params do
-        response.should redirect_to(denied_path(:to => request.request_uri))
+        route = controller.send(:logged_in?) ? :denied_path : :login_path
+        response.should redirect_to(send(route, :to => request.request_uri))
       end
     end
   end
