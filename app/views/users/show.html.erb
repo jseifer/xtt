@@ -5,7 +5,11 @@
       <ul class="media-list">
         <li class="media-item status-form last">
     			<%= f.text_area :message, :rows => 2, :cols => 55, :class => 'status-entry' %>
-    			<p class="btns"><%= update_button %></p>
+    			<p class="btns">
+						<%= update_button %>
+						<%= out_button %>
+						<input type="submit" name="submit" value="Out" /> (replace with button, please)
+					</p>
         </li>
         <li id="project-head">
           <h2><%=h @user.login %></h2>
