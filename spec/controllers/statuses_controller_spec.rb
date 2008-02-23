@@ -42,10 +42,10 @@ end
 
 describe StatusesController, "POST #create" do
   before do
-    @attributes = {'message' => 'foo'}
+    @attributes = {:code_and_message => 'foo'}
     @status = Status.new(@attributes)
     login_as :default
-    @user.stub!(:post).with('foo', nil).and_return(@status)
+    @user.stub!(:post).with('foo').and_return(@status)
     @user.statuses.stub!(:before).and_return(nil)
     @status.user = @user
   end
@@ -60,35 +60,29 @@ describe StatusesController, "POST #create" do
     it_redirects_to { root_path }
   end
   
-  describe StatusesController, "(successful creation with forced project" do
+  describe StatusesController, "(successful creation with OUT button)" do
     define_models
-    act! { post :create, :status => @attributes }
+    act! { post :create, :status => @attributes, :submit => "Out" }
     
-    before do
-      @user.stub!(:projects).and_return([])
-      @user.projects.stub!(:find_by_id).with(projects(:default).id.to_s).and_return(projects(:default))
-      @attributes['project_id'] = projects(:default).id.to_s
-      @user.should_receive(:post).with('foo', projects(:default)).and_return(@status)
-      @status.stub!(:new_record?).and_return(false)
+    before { @status.stub!(:new_record?).and_return(false) }
+    
+    it "defaults message to 'Out'" do
+      @attributes[:code_and_message] = nil
+      @user.should_receive(:post).with('Out').and_return(@status)
+      act!
     end
     
-    it_assigns :status
-    it_redirects_to { project_path(projects(:default)) }
-  end
-
-  describe StatusesController, "(invalid code)" do
-    define_models
-    act! { post :create, :status => @attributes }
-
-    before do
-      @status.message = nil
-      Status.should_receive(:new).and_return(@status)
-      @user.should_receive(:post).with('foo', nil).and_raise(Project::InvalidCodeError)
-      controller.stub!(:login_required)
+    it "uses given message" do
+      @attributes[:code_and_message] = "Blah"
+      @user.should_receive(:post).with('Blah').and_return(@status)
+      act!
     end
     
-    it_assigns :status, :invalid_code => true
-    it_renders :template, :new
+    it "strips project code and uses given message" do
+      @attributes[:code_and_message] = "@foo Blah"
+      @user.should_receive(:post).with('Blah').and_return(@status)
+      act!
+    end
   end
 
   describe StatusesController, "(unsuccessful creation)" do
@@ -124,21 +118,6 @@ describe StatusesController, "POST #create" do
     end
     
     it_assigns :status
-    it_renders :xml, "status.errors", :status => :unprocessable_entity
-  end
-
-  describe StatusesController, "(invalid code, xml)" do
-    define_models
-    act! { post :create, :status => @attributes, :format => 'xml' }
-
-    before do
-      @status.message = nil
-      Status.should_receive(:new).and_return(@status)
-      @user.should_receive(:post).with('foo', nil).and_raise(Project::InvalidCodeError)
-      controller.stub!(:login_required)
-    end
-    
-    it_assigns :status, :invalid_code => true
     it_renders :xml, "status.errors", :status => :unprocessable_entity
   end
 end
@@ -200,19 +179,6 @@ describe StatusesController, "PUT #update" do
     it_renders :template, :show
   end
 
-  describe StatusesController, "(invalid code)" do
-    define_models
-    act! { put :update, :id => 1, :status => @attributes }
-
-    before do
-      @status.message = nil
-      @status.should_receive(:update_attributes).and_raise(Project::InvalidCodeError)
-    end
-    
-    it_assigns :status, :invalid_code => true
-    it_renders :template, :show
-  end
-
   describe StatusesController, "(successful save, xml)" do
     define_models
     act! { put :update, :id => 1, :status => @attributes, :format => 'xml' }
@@ -234,19 +200,6 @@ describe StatusesController, "PUT #update" do
     end
     
     it_assigns :status
-    it_renders :xml, "status.errors", :status => :unprocessable_entity
-  end
-
-  describe StatusesController, "(invalid code, xml)" do
-    define_models
-    act! { put :update, :id => 1, :status => @attributes, :format => 'xml' }
-
-    before do
-      @status.message = nil
-      @status.should_receive(:update_attributes).and_raise(Project::InvalidCodeError)
-    end
-    
-    it_assigns :status, :invalid_code => true
     it_renders :xml, "status.errors", :status => :unprocessable_entity
   end
 end

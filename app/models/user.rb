@@ -35,8 +35,8 @@ class User < ActiveRecord::Base
 
   has_finder :all, :order => 'login'
   
-  def post(message, forced_project = nil, source = 'the web')
-    statuses.create :project => forced_project, :code_and_message => message, :source => source
+  def post(message, source = 'the web')
+    statuses.create :code_and_message => message, :source => source
   end
   
   def related_users

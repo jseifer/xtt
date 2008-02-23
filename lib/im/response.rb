@@ -38,7 +38,7 @@ module IM
     end
     
     def create_status(message)
-      status = @user.post(message, nil, 'AIM')
+      status = @user.post(message, 'AIM')
       if status and status.project 
         reply = "Created status for <b>#{status.project.name}</b>: '<code>#{status.message}</code>'"
       else

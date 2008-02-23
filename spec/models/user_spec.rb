@@ -170,11 +170,6 @@ describe User do
       @status.project.should == projects(:default)
     end
     
-    it "uses forced project" do
-      @status = @user.post "@asdf Foo", projects(:default)
-      @status.project.should == projects(:default)
-    end
-    
     it "changes user status to 'out' without code" do
       @user.last_status_project_id = projects(:default).id
       @status = @user.post "Foo"
