@@ -6,12 +6,14 @@ class Status < ActiveRecord::Base
   
   concerned_with :hacky_date_methods, :filtering
   
+  attr_writer :code_and_message
   attr_writer :followup
   attr_reader :active
   
   belongs_to :user
   belongs_to :project
   
+  before_validation_on_create :set_project_from_code
   after_create :cache_user_status
   after_create :process_previous
   
@@ -21,6 +23,10 @@ class Status < ActiveRecord::Base
   
   event :process do
     transitions :from => :pending, :to => :processed, :guard => :calculate_hours
+  end
+  
+  def code_and_message
+    project? ? "@#{project.code} #{message}" : message
   end
 
   def followup(reload = false)
@@ -55,6 +61,21 @@ class Status < ActiveRecord::Base
   end
 
 protected
+  def set_project_from_code
+    return true if @code_and_message.nil?
+    code, message = extract_code_and_message(@code_and_message)
+    self.project  = user.projects.find_by_code(code) unless project? || code.blank?
+    self.message  = message
+  end
+
+  def extract_code_and_message(message)
+    code = nil
+    message.sub! /\@\w*/ do |c|
+      code = c[1..-1]; ''
+    end
+    [code, message.strip]
+  end
+
   def calculate_hours
     return false if followup.nil?
     self.finished_at = followup.created_at

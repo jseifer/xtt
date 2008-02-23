@@ -5,7 +5,10 @@
     <ul class="media-list">
       <li class="media-item status-form">
   			<%= f.text_area :message, :rows => 2, :cols => 55, :class => 'status-entry' %>
-  			<p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
+  			<p class="btns">
+					<%= update_button %>
+					<!--input type="submit" name="submit" value="Out" /> (replace with button, please)-->
+				</p>
       </li>
       <li class="media-item clearfix last">
         <div class="media">

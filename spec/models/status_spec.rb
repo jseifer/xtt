@@ -27,6 +27,32 @@ describe Status do
   it "#next retrieves previous status" do
     statuses(:pending).previous.should == statuses(:in_project)
   end
+
+  describe "#extract_code_and_message" do
+    before do
+      @status = Status.new
+    end
+    
+    ['', ' '].each do |code|
+      it "extracts nil code from #{code.inspect}" do
+        @status.send(:extract_code_and_message, code + 'foo').should == [nil, "foo"]
+      end
+    end
+    
+    it "extracts nil code from '@'" do
+      @status.send(:extract_code_and_message, ' @ foo').should == ['', "foo"]
+    end
+    
+    it "strips whitespace from message" do
+      @status.send(:extract_code_and_message, " foo ").should == [nil, "foo"]
+    end
+    
+    ["@foo ", " @foo "].each do |code|
+      it "extracts 'foo' code from #{code.inspect}" do
+        @status.send(:extract_code_and_message, code + " bar ").should == %w(foo bar)
+      end
+    end
+  end
 end
 
 describe Status, "being created" do

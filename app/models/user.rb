@@ -36,9 +36,7 @@ class User < ActiveRecord::Base
   has_finder :all, :order => 'login'
   
   def post(message, forced_project = nil, source = 'the web')
-    code, message = extract_code_and_message(message)
-    project       = forced_project || (code.nil? ? last_status_project : projects.find_by_code(code))
-    statuses.create :project => project, :message => message, :source => source
+    statuses.create :project => forced_project, :code_and_message => message, :source => source
   end
   
   def related_users
@@ -65,14 +63,6 @@ protected
     self.class.send(:with_scope, :find => {:conditions => ['users.id != ? and memberships.project_id IN (?)', id, project_ids], :joins => "INNER JOIN memberships ON users.id = memberships.user_id"}) do
       yield
     end
-  end
-  
-  def extract_code_and_message(message)
-    code = nil
-    message.sub! /\@\w*/ do |c|
-      code = c[1..-1]; ''
-    end
-    [code, message.strip]
   end
   
   def can_access_status?(status)

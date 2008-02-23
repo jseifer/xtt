@@ -19,15 +19,15 @@ module ApplicationHelper
   end
   
   def update_button
-    tag(:input, {:type => 'image', :src => '/images/btns/ghost.gif', :class => 'btn'})
+    tag(:input, {:type => 'image', :src => '/images/btns/ghost.gif', :class => 'btn', :name => 'submit', :value => 'Update'})
   end
   
   def save_button
-    tag(:input, {:type => 'image', :src => '/images/btns/ghost.gif', :class => 'btn save'})
+    img_button :save
   end
   
   def img_button(name)
-    tag(:input, {:type => 'image', :src => '/images/btns/ghost.gif', :class => "btn #{name}"})
+    tag(:input, {:type => 'image', :src => '/images/btns/ghost.gif', :class => "btn #{name}", :name => 'submit', :value => name.to_s.capitalize})
   end
   
   def link_to_status(status)

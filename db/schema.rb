@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 25) do
+ActiveRecord::Schema.define(:version => 26) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -99,6 +99,7 @@ ActiveRecord::Schema.define(:version => 25) do
   end
 
   add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
+  add_index "projects", ["code"], :name => "index_projects_on_code"
 
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"

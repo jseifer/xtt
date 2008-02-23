@@ -76,6 +76,21 @@ describe StatusesController, "POST #create" do
     it_redirects_to { project_path(projects(:default)) }
   end
 
+  describe StatusesController, "(invalid code)" do
+    define_models
+    act! { post :create, :status => @attributes }
+
+    before do
+      @status.message = nil
+      Status.should_receive(:new).and_return(@status)
+      @user.should_receive(:post).with('foo', nil).and_raise(Project::InvalidCodeError)
+      controller.stub!(:login_required)
+    end
+    
+    it_assigns :status, :invalid_code => true
+    it_renders :template, :new
+  end
+
   describe StatusesController, "(unsuccessful creation)" do
     define_models
     act! { post :create, :status => @attributes }
@@ -109,6 +124,21 @@ describe StatusesController, "POST #create" do
     end
     
     it_assigns :status
+    it_renders :xml, "status.errors", :status => :unprocessable_entity
+  end
+
+  describe StatusesController, "(invalid code, xml)" do
+    define_models
+    act! { post :create, :status => @attributes, :format => 'xml' }
+
+    before do
+      @status.message = nil
+      Status.should_receive(:new).and_return(@status)
+      @user.should_receive(:post).with('foo', nil).and_raise(Project::InvalidCodeError)
+      controller.stub!(:login_required)
+    end
+    
+    it_assigns :status, :invalid_code => true
     it_renders :xml, "status.errors", :status => :unprocessable_entity
   end
 end
@@ -152,7 +182,6 @@ describe StatusesController, "PUT #update" do
 
     before do
       @status.stub!(:save).and_return(true)
-      controller.stub!(:login_required)
     end
     
     it_assigns :status, :flash => { :notice => :not_nil }
@@ -165,20 +194,31 @@ describe StatusesController, "PUT #update" do
 
     before do
       @status.stub!(:save).and_return(false)
-      controller.stub!(:login_required)
     end
     
     it_assigns :status
     it_renders :template, :show
   end
-  
+
+  describe StatusesController, "(invalid code)" do
+    define_models
+    act! { put :update, :id => 1, :status => @attributes }
+
+    before do
+      @status.message = nil
+      @status.should_receive(:update_attributes).and_raise(Project::InvalidCodeError)
+    end
+    
+    it_assigns :status, :invalid_code => true
+    it_renders :template, :show
+  end
+
   describe StatusesController, "(successful save, xml)" do
     define_models
     act! { put :update, :id => 1, :status => @attributes, :format => 'xml' }
 
     before do
       @status.stub!(:save).and_return(true)
-      controller.stub!(:login_required)
     end
     
     it_assigns :status
@@ -191,10 +231,22 @@ describe StatusesController, "PUT #update" do
 
     before do
       @status.stub!(:save).and_return(false)
-      controller.stub!(:login_required)
     end
     
     it_assigns :status
+    it_renders :xml, "status.errors", :status => :unprocessable_entity
+  end
+
+  describe StatusesController, "(invalid code, xml)" do
+    define_models
+    act! { put :update, :id => 1, :status => @attributes, :format => 'xml' }
+
+    before do
+      @status.message = nil
+      @status.should_receive(:update_attributes).and_raise(Project::InvalidCodeError)
+    end
+    
+    it_assigns :status, :invalid_code => true
     it_renders :xml, "status.errors", :status => :unprocessable_entity
   end
 end

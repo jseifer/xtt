@@ -79,32 +79,6 @@ describe User do
       end
     end
   end
-
-  describe "#extract_code_and_message" do
-    before do
-      @user = User.new
-    end
-    
-    ['', ' '].each do |code|
-      it "extracts nil code from #{code.inspect}" do
-        @user.send(:extract_code_and_message, code + 'foo').should == [nil, "foo"]
-      end
-    end
-    
-    it "extracts nil code from '@'" do
-      @user.send(:extract_code_and_message, ' @ foo').should == ['', "foo"]
-    end
-    
-    it "strips whitespace from message" do
-      @user.send(:extract_code_and_message, " foo ").should == [nil, "foo"]
-    end
-    
-    ["@foo ", " @foo "].each do |code|
-      it "extracts 'foo' code from #{code.inspect}" do
-        @user.send(:extract_code_and_message, code + " bar ").should == %w(foo bar)
-      end
-    end
-  end
   
   describe "#can_access?(status)" do
     define_models :copy => false do
@@ -191,25 +165,24 @@ describe User do
       @status.project.should be_nil
     end
     
-    it "creates and maintains current project" do
-      @user.last_status_project_id = projects(:default).id
-      @status = @user.post "Foo"
-      @status.project.should == projects(:default)
-    end
-    
     it "changes project" do
       @status = @user.post "@#{projects(:default).code} Foo"
       @status.project.should == projects(:default)
     end
     
     it "ignores bad project" do
-      @status = @user.post "@asdf Foo"
-      @status.project.should be_nil
+      lambda { @user.post "@asdf Foo" }.should raise_error(Project::InvalidCodeError)
     end
     
     it "uses forced project" do
       @status = @user.post "@asdf Foo", projects(:default)
       @status.project.should == projects(:default)
+    end
+    
+    it "changes user status to 'out' without code" do
+      @user.last_status_project_id = projects(:default).id
+      @status = @user.post "Foo"
+      @status.project.should be_nil
     end
     
     it "changes user status to 'out'" do

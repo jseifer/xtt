@@ -24,7 +24,7 @@ class StatusesController < ApplicationController
 
   def create
     @project = current_user.projects.find_by_id params[:status][:project_id] if params[:status][:project_id]
-    @status  = current_user.post params[:status][:message], @project
+    @status  = current_user.post params[:status][:message], @project 
 
     respond_to do |format|
       if @status.new_record?
@@ -34,6 +34,14 @@ class StatusesController < ApplicationController
         format.html { redirect_to @project || root_path }
         format.xml  { render :xml  => @status, :status => :created, :location => @status }
       end
+    end
+  rescue Project::InvalidCodeError
+    @invalid_code = true
+    @status = Status.new(:message => params[:status][:message], :project => @project)
+    @status.errors.add_to_base("Project code is invalid")
+    respond_to do |format|
+      format.html { render :action => "new" }
+      format.xml  { render :xml  => @status.errors, :status => :unprocessable_entity }
     end
   end
 
@@ -58,6 +66,13 @@ class StatusesController < ApplicationController
         format.html { render :action => "show" }
         format.xml  { render :xml  => @status.errors, :status => :unprocessable_entity }
       end
+    end
+  rescue Project::InvalidCodeError
+    @invalid_code = true
+    @status.errors.add_to_base("Project code is invalid")
+    respond_to do |format|
+      format.html { render :action => "show" }
+      format.xml  { render :xml  => @status.errors, :status => :unprocessable_entity }
     end
   end
 
