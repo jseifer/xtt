@@ -22,6 +22,11 @@ module ApplicationHelper
     tag(:input, {:type => 'image', :src => '/images/btns/ghost.gif', :class => 'btn', :name => 'submit', :value => 'Update'})
   end
   
+  def out_button
+    # img_button :out
+    %(<input type="submit" name="submit" value="Out" /> (replace with button, please))
+  end
+  
   def save_button
     img_button :save
   end
