@@ -170,10 +170,6 @@ describe User do
       @status.project.should == projects(:default)
     end
     
-    it "ignores bad project" do
-      lambda { @user.post "@asdf Foo" }.should raise_error(Project::InvalidCodeError)
-    end
-    
     it "uses forced project" do
       @status = @user.post "@asdf Foo", projects(:default)
       @status.project.should == projects(:default)

@@ -109,6 +109,30 @@ describe Status, "being created" do
   end
 end
 
+describe Status, "being updated" do
+  define_models :statuses
+  before do
+    @status = statuses(:pending)
+  end
+  
+  it "allows changed project" do
+    @status.update_attributes(:code_and_message => "@def booya").should be_true
+    @status.message.should == 'booya'
+    @status.project.code.should == 'def'
+  end
+  
+  it "allows changed message" do
+    @status.update_attributes(:code_and_message => "@abc booya").should be_true
+    @status.message.should == 'booya'
+    @status.project.code.should == 'abc'
+  end
+  
+  it "requires valid code, yet still updates message" do
+    @status.update_attributes(:code_and_message => '@booya peeps').should be_false
+    @status.message.should == 'peeps'
+  end
+end
+
 describe Status, "in pending state" do
   define_models :copy => :statuses do
     model Status do

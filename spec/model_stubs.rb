@@ -69,6 +69,11 @@ ModelStubbing.define_models :statuses do
   model Status do
     stub :pending, :state => 'pending', :hours => 0, :created_at => current_time - 5.hours, :project => all_stubs(:project)
   end
+
+  model Membership do
+    stub :user => all_stubs(:user), :project => all_stubs(:project)
+    stub :another, :user => all_stubs(:user), :project => all_stubs(:another_project)
+  end
 end
 
 ModelStubbing.define_models :stubbed, :insert => false

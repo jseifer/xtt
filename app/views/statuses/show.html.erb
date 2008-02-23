@@ -46,7 +46,8 @@
   <% box.title = "Modify this status" %>
   <% box.content = capture do %>
     <% unless @status.active? -%>
-      <% form_for @status, :html => { :id => 'edit-status-hours', :class => 'form', :style => @status.valid? ? "" : "display:none" } do |f| %>
+      <% form_for @status, :html => { :id => 'edit-status-hours', :class => 'form', :style => @status.valid? ? "" : "display:none" } do |f| -%>
+			<%= f.error_messages %>
       <table cellspacing="0" cellpadding="0" class="tblform">
 				<tr>
 					<th>
@@ -75,7 +76,7 @@
     <% end # active -%>
       <% form_for @status, :html => { :id => 'edit-status-times', 
           :class => 'form', 
-          :style => (!@status.valid? or @status.active?) ? '' : 'display:none' } do |f| %>
+          :style => (!@status.valid? or @status.active?) ? '' : 'display:none' } do |f| -%>
         <%= f.error_messages %>
         <table cellspacing="0" cellpadding="0" class="tblform">
 					<tr>
@@ -83,7 +84,7 @@
 							<%= f.label :message %>
 						</th>
 						<td>
-							<%= f.text_field :message %>
+							<%= f.text_field :code_and_message %>
 						</td>
 					</tr>
     			<tr>

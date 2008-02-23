@@ -1,4 +1,5 @@
 class Status < ActiveRecord::Base
+  validate :set_project_from_code
   validates_presence_of :user_id, :message
   validate :followup_is_valid
   validate :previous_is_valid
@@ -13,7 +14,6 @@ class Status < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
   
-  before_validation_on_create :set_project_from_code
   after_create :cache_user_status
   after_create :process_previous
   
@@ -26,7 +26,7 @@ class Status < ActiveRecord::Base
   end
   
   def code_and_message
-    project? ? "@#{project.code} #{message}" : message
+    @code_and_message || (project? ? "@#{project.code} #{message}" : message)
   end
 
   def followup(reload = false)
@@ -62,10 +62,13 @@ class Status < ActiveRecord::Base
 
 protected
   def set_project_from_code
-    return true if @code_and_message.nil?
-    code, message = extract_code_and_message(@code_and_message)
-    self.project  = user.projects.find_by_code(code) unless project? || code.blank?
-    self.message  = message
+    return if @code_and_message.nil?
+    code, message     = extract_code_and_message(@code_and_message)
+    @code_and_message = "@#{code}#{code_and_message}"
+    self.message      = message
+    self.project      = user.projects.find_by_code(code) unless (new_record? && project?) || code.blank?
+  rescue
+    self.errors.add_to_base("Invalid project code: @#{code}")
   end
 
   def extract_code_and_message(message)
