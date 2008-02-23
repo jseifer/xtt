@@ -26,7 +26,9 @@ class Status < ActiveRecord::Base
   end
   
   def code_and_message
-    @code_and_message || (project? ? "@#{project.code} #{message}" : message)
+    @code ?
+      ("@#{@code} #{message}") :
+      (project? ? "@#{project.code} #{message}" : message)
   end
 
   def followup(reload = false)
@@ -59,16 +61,18 @@ class Status < ActiveRecord::Base
       (user_id == user.id) || # status owner
       (project? && project.owned_by?(user))) # project owner
   end
+  
+  def code_and_message=(value)
+    @code, msg = extract_code_and_message(value)
+    self.message = msg
+  end
 
 protected
   def set_project_from_code
-    return if @code_and_message.nil?
-    code, message     = extract_code_and_message(@code_and_message)
-    @code_and_message = "@#{code}#{code_and_message}"
-    self.message      = message
-    self.project      = user.projects.find_by_code(code) unless (new_record? && project?) || code.blank?
+    return if @code.nil?
+    self.project = user.projects.find_by_code(@code) unless (new_record? && project?) || @code.blank?
   rescue
-    self.errors.add_to_base("Invalid project code: @#{code}")
+    self.errors.add_to_base("Invalid project code: @#{@code}")
   end
 
   def extract_code_and_message(message)

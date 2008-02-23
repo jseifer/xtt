@@ -80,7 +80,7 @@
     <% unless @projects.empty? %>
   	<% @projects.each_with_index do |project, index| -%>
       <li<%= %( class="last") if first_in_collection?(@projects, index) %> id="project-<%= project.id %>">
-        <a href="<%= url_for_filtered_statuses :filter => params[:filter], :date => params[:date], :project => project %>">
+        <a href="<%= url_for_filtered_statuses :user_id => @user, :filter => params[:filter], :date => params[:date], :project => project %>">
           <span class="ttl"><%=h project.name %></span>
           <span class="desc">Send messages using <em>@<%=h project.code %></em></span>
         </a>

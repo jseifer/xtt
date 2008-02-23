@@ -39,7 +39,7 @@ module StatusesHelper
     args[:id] = options.key?(:project) ? options[:project] : params[:id]
     prefix, args  = filter.blank? ? [nil, args] : ["filtered_", args.update(:filter => filter)]
     url = 
-      if controller.controller_name == 'projects'
+      if options.key?(:project) || controller.controller_name == 'projects'
         case user_id
           when nil, :all then send("#{prefix}project_for_all_path",  args)
           when :me       then send("#{prefix}project_for_me_path",   args.update(:user_id => :me))
