@@ -6,9 +6,8 @@
         <li class="media-item status-form last">
     			<%= f.text_area :message, :rows => 2, :cols => 55, :class => 'status-entry' %>
     			<p class="btns">
+    			  <%= img_button 'out' %>
 						<%= update_button %>
-						<%= out_button %>
-						<input type="submit" name="submit" value="Out" /> (replace with button, please)
 					</p>
         </li>
         <li id="project-head">
