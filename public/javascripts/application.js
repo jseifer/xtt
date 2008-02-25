@@ -2,7 +2,7 @@ document.observe('dom:loaded', function() {
   // Make inputs with the class name hintable use their title attribute
   // for a hint.
   $$('input.hintable').invoke('hintable');
-  var statusMessage = $('status_message');
+  var statusMessage = $('status_code_and_message');
   
   if(statusMessage)
     statusMessage.observe('keypress', function(event) {
