@@ -42,11 +42,19 @@
   <%= yield :valid_box %>
 <% end -%>
 
+
 <% box :normal, 'form' do |box| %>
   <% box.title = "Modify this status" %>
+  <% box.header_utils = capture do %>
+    <div id="tool-tabs">  
+      <% unless @status.active? %><a href="#status-hours">Details</a><% end %>
+      <a href="#status-time">Advanced Details</a>
+    </div>
+  <% end %>
   <% box.content = capture do %>
     <% unless @status.active? -%>
-      <% form_for @status, :html => { :id => 'edit-status-hours', :class => 'form', :style => @status.valid? ? "" : "display:none" } do |f| -%>
+    <div id="status-hours">
+      <% form_for @status, :html => { :id => 'edit-status-hours', :class => 'form' } do |f| -%>
 			<%= f.error_messages %>
       <table cellspacing="0" cellpadding="0" class="tblform">
 				<tr>
@@ -68,15 +76,15 @@
         </tr>
         <tr>
           <td colspan="2">
-            <p class="btns"><%= save_button %> or <%= link_to 'edit times', '#', :class => 'edit-status-link' %></p>
+            <p class="btns"><%= save_button %></p>
           </td>
         </tr>
       </table>
       <% end # form -%>
+    </div>
     <% end # active -%>
-      <% form_for @status, :html => { :id => 'edit-status-times', 
-          :class => 'form', 
-          :style => (!@status.valid? or @status.active?) ? '' : 'display:none' } do |f| -%>
+    <div id="status-time">
+      <% form_for @status, :html => { :id => 'edit-status-times', :class => 'form' } do |f| -%>
         <%= f.error_messages %>
         <table cellspacing="0" cellpadding="0" class="tblform">
 					<tr>
@@ -109,13 +117,20 @@
     			<% end -%>
           <tr>
             <td colspan="2">
-              <p class="btns"><%= save_button %> 
-              <% unless @status.active? %> or <%= link_to 'edit hours', '#', :class => 'edit-status-link' %><% end %></p>
+              <p class="btns"><%= save_button %></p>
             </td>
           </tr>
         </table>
       <% end %>
+      </div>
     <% end %>
+<% end %>
+
+
+<% content_for :dom_loaded do %>
+  new Control.Tabs("tool-tabs", {
+    linkSelector: 'a'
+    });
 <% end %>
 
 <%= yield :normal_box %>

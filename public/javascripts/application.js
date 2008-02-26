@@ -2,8 +2,9 @@ document.observe('dom:loaded', function() {
   // Make inputs with the class name hintable use their title attribute
   // for a hint.
   $$('input.hintable').invoke('hintable');
-  var statusMessage = $('status_code_and_message');
   
+  // When pressing the return key, post the form.
+  var statusMessage = $('status_code_and_message');
   if(statusMessage)
     statusMessage.observe('keypress', function(event) {
       if(event.keyCode === Event.KEY_RETURN) {
@@ -22,7 +23,7 @@ document.observe('dom:loaded', function() {
   /**
    * Grab all the day and time badges and if the user has their browser 
    * wide enough, show them on page load.  Also, when the user resizes 
-   * their browser window run this check again.
+   * their browser window, run this check again.
    */
   var dayBadges = $$('p.day-break');
   var timeBadges = $$('span.time-span');
@@ -51,13 +52,6 @@ document.observe('dom:loaded', function() {
 		var rel = span.readAttribute('rel');
 		span.update(rel == 'words' ? utc.timeAgoInWords() : utc.strftime(Date.strftimeFormats[rel]))
   });
-
-	$$('.edit-status-link').each(function(link) {
-		link.observe('click', function() {
-			$('edit-status-times').toggle()
-			$('edit-status-hours').toggle()
-		})
-	});
 
 });
 

@@ -35,7 +35,7 @@
       <li<%= %( class="last") if first_in_collection?(current_user.projects, index) %> id="project-<%= project.id %>">
         <a href="<%= url_for project %>">
           <span class="ttl"><%=h project.name %></span>
-          <span class="desc">message using <em>@<%=h project.code %></em></span>
+          <span class="desc">message using <em class="project-code">@<%=h project.code %></em></span>
           <span class="you">
             <span class="num"><%= number_with_precision user_hours, 2 %></span>
             <span class="meta">you</span>
