@@ -10,13 +10,13 @@ describe IM::Response do
   end
   
   it "knows 'help'" do
-    @aim.should_receive(:send_im).with("<HTML>I'm a time-tracker bot. Send me a status message like <b>@project hacking on \#54</b></HTML> or 'commands' for a list of commands")
+    @aim.should_receive(:send_im).with("<HTML>I'm a time-tracker bot. Send me a status message like <b>@project hacking on \#54</b> or 'commands' for a list of commands</HTML>")
     im = IM::Response.new "help", @aim
   end
   
   it "knows 'projects'" do
     @user.should_receive(:projects).and_return [mock_model(Project, :code => "tt")]
-    @aim.should_receive(:send_im).with("Your projects are: tt")
+    @aim.should_receive(:send_im).with("<HTML>Your projects are: tt</HTML>")
     im = IM::Response.new "projects", @aim
   end
   
