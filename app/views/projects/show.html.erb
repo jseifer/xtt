@@ -83,11 +83,12 @@
     	<p class="btns"><%= save_button %></p>
 		<% end -%>
   	</div>
-		<% if @project.owned_by? current_user -%>
+		<% if @project.owned_by? current_user or current_user.admin? -%>
   		<% sbox.header_utils = %(
   		  <div id="tool-tabs">
   		    <a href="#invite">Invite</a>
-  		    <a href="#tracking">Auto update</a>
+  		    <a href="#tracking">Track</a>
+  		    <a href="#export">CSV</a>
   		    <a href="#edit">Edit</a>
   		  </div>) %>
   		<% content_for :dom_loaded do %>
@@ -99,6 +100,8 @@
   		        $('sbox-tools').down('h3').update("Edit this project");
   		      } else if(item == "invite") {
   		        $('sbox-tools').down('h3').update("Invite someone to this project");
+  		      } else if(item == "export") {
+  		        $('sbox-tools').down('h3').update("Export this project's data");
   		      } else {
   		        $('sbox-tools').down('h3').update("Auto track updates");
   		      }
@@ -111,6 +114,15 @@
       <%= render :partial => "form", :object => f %>
       	<p class="btns"><%= update_button %></p>
       <% end -%>
+  	</div>
+  	
+  	<div id="export" style="display:none">
+  	  Navigate using the date, next/previous buttons below the graph and select your preferred output format to view.
+  	  <ul class="text-list">
+  	    <li><%= link_to "CSV", params.update(:format => 'csv') %></li>
+  	    <li><%= link_to "XML", params.update(:format => 'xml') %></li>
+  	  </ul>
+  	  <!-- todo: icon -->
   	</div>
 
   	<div id="tracking" style="display:none">

@@ -89,4 +89,5 @@ module ApplicationHelper
     seconds = seconds % 1.minute
     (is_negative ? '-' : '') + (hours > 0 ? "#{hours}:" : '') + ('%02d:%02d' % [minutes, seconds])
   end  
+
 end

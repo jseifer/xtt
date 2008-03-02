@@ -77,7 +77,7 @@ class Status
   # user_id can be an integer or nil
   def self.filter(user_id, filter, options = {})
     with_user user_id do
-      with_date_filter(filter, options[:date]) { paginate :order => 'statuses.created_at desc', :page => options[:page] }
+      with_date_filter(filter, options[:date]) { paginate :order => 'statuses.created_at desc', :page => options[:page], :per_page => options[:per_page] }
     end
   end
   
