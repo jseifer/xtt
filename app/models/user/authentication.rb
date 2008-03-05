@@ -20,12 +20,12 @@ class User
   validates_length_of       :email, :within => 2..200,     :if => :not_openid?
   validates_format_of       :login, :with => login_format, :if => :not_openid?
   validates_format_of       :email, :with => email_format, :if => :not_openid?
-  validates_uniqueness_of   :login, :email, :allow_nil => true
-  before_save :encrypt_password
+  validates_uniqueness_of   :login, :email
+  before_save :encrypt_password, :if => :not_openid?
   
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
-  attr_accessible :login, :email, :password, :password_confirmation, :aim_login
+  attr_accessible :login, :email, :password, :password_confirmation, :aim_login, :identity_url
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
@@ -102,6 +102,7 @@ protected
   end
     
   def password_required?
-    not_openid? && (crypted_password.blank? || !password.blank?)
+    return false unless not_openid? # ugh
+    crypted_password.blank? || !password.blank?
   end
 end
