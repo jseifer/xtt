@@ -96,11 +96,11 @@ protected
     self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
     self.crypted_password = encrypt(password)
   end
- 
+
   def not_openid?
     identity_url.blank?
   end
-     
+
   def password_required?
     return false unless not_openid? # ugh
     crypted_password.blank? || !password.blank?
