@@ -27,6 +27,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.filtered_user 'users/:id/:filter', :filter => status_filters, :controller => 'users', :action => 'show'
 
+  map.open_id_complete 'session', :controller => "sessions", :action => "create", :requirements => { :method => :get }
   map.resource :session, :settings
 
   map.activate '/activate/:activation_code', :controller => 'users',    :action => 'activate', :activation_code => nil
