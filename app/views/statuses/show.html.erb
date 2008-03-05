@@ -9,7 +9,7 @@
   <ul class="media-list">
     <li class="media-item clearfix last">
       <div class="media">
-        <%= link_to gravatar_for(@status.user), @status.user %>
+        <%= link_to gravatar_for(current_user), current_user %>
       </div>
       <div class="media-content">
         <h4 class="media-title"><%= link_to_status @status %></h4>

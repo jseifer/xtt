@@ -18,13 +18,6 @@
       <p><label for="remember_me">Remember me:</label>
       <%= check_box_tag 'remember_me' %></p>
 
-      <hr />
-      <p><i>or, sign in with openID</i></p>
-      <p>
-        <label for="openid_url">OpenID:</label>
-        <%= text_field_tag "openid_url" %>
-      </p>
-
       <p class="btns">
 				<%= img_button('signin') %>
 				<%= hidden_field_tag :to, params[:to] unless params[:to].blank? %>
