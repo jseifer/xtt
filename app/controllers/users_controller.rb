@@ -47,7 +47,7 @@ class UsersController < ApplicationController
         @invitation.destroy
       end
       self.current_user = @user
-      flash[:notice] = "Thanks for signing up!  Watch your email address for an activation link before you can log in."
+      flash[:notice] = "Thanks for signing up!#{"  Watch your email address for an activation link before you can log in." if @user.active?}"
       redirect_back_or_default(login_path)
     else
       render :action => 'new'
