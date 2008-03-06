@@ -117,6 +117,7 @@ ActiveRecord::Schema.define(:version => 28) do
     t.string   "code"
   end
 
+  add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
   add_index "projects", ["code"], :name => "index_projects_on_code"
 
   create_table "statuses", :force => true do |t|

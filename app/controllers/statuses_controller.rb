@@ -37,7 +37,7 @@ class StatusesController < ApplicationController
         format.html { render :action => "new" }
         format.xml  { render :xml  => @status.errors, :status => :unprocessable_entity }
       else
-        format.html { redirect_to @status.project || root_path }
+        format.html { redirect_after_status }
         format.xml  { render :xml  => @status, :status => :created, :location => @status }
       end
     end
@@ -82,5 +82,13 @@ protected
 
   def find_status
     @status = Status.find(params[:id])
+  end
+  
+  def redirect_after_status
+    if params[:destination] && params[:destination].first == '/'
+      redirect_to params[:destination]
+    else
+      redirect_to @status.project || root_path
+    end
   end
 end

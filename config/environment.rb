@@ -26,7 +26,7 @@ Rails::Initializer.run do |config|
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
   # Add additional load paths for your own custom dirs
-  config.load_paths += %W( #{RAILS_ROOT}/app/concerns #{RAILS_ROOT}/vendor/googlecharts-0.2.0/lib )
+  config.load_paths += %W( #{RAILS_ROOT}/app/concerns #{RAILS_ROOT}/vendor/googlecharts-0.2.0/lib #{RAILS_ROOT}/vendor/ruby-openid-1.1.4/lib #{RAILS_ROOT}/vendor/ruby-yadis-0.3.4/lib #{RAILS_ROOT}/vendor/fastercsv-1.2.3/lib)
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
