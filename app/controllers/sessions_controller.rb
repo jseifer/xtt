@@ -44,10 +44,10 @@ protected
           else
             failed_login "You already have an account for the email address listed with openID, but your saved identity URL doesn't match.  Login and fix your identity URL."
           end
-        elsif self.current_user = User.create(:identity_url => identity_url)
-          assign_registration_attributes!(registration)
-          current_user.save!
-          successful_login "Created your account, and welcome!"
+        #elsif self.current_user = User.create(:identity_url => identity_url)
+        #  assign_registration_attributes!(registration)
+        #  current_user.save!
+        #  successful_login "Created your account, and welcome!"
         else
           failed_login "Sorry, no user by that identity URL exists"
         end
