@@ -121,6 +121,13 @@ describe Status, "being updated" do
     @status.project.code.should == 'def'
   end
   
+  it "allows changing to OUT" do
+    @status.should_not be_out
+    @status.update_attributes(:code_and_message => "booya").should be_true
+    @status.message.should == 'booya'
+    @status.should be_out
+  end
+  
   it "allows changed message" do
     @status.update_attributes(:code_and_message => "@abc booya").should be_true
     @status.message.should == 'booya'

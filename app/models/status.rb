@@ -69,8 +69,7 @@ class Status < ActiveRecord::Base
 
 protected
   def set_project_from_code
-    return if @code.nil?
-    self.project = user.projects.find_by_code(@code) unless (new_record? && project?) || @code.blank?
+    self.project = @code.blank? ? nil : user.projects.find_by_code(@code) unless new_record? && project?
   rescue
     self.errors.add_to_base("Invalid project code: @#{@code}")
   end
