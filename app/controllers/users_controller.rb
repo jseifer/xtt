@@ -38,6 +38,7 @@ class UsersController < ApplicationController
     @user       = User.new(params[:user])
     @invitation = Invitation.find_by_code(params[:code]) unless params[:code].blank?
     @user.register! if @user.valid?
+    @user.activate! if @invitation && @user.email == @invitation.email
     if @user.errors.empty?
       if @invitation
         @invitation.project_ids.each do |project|
