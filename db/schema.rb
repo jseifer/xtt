@@ -59,6 +59,11 @@ ActiveRecord::Schema.define(:version => 28) do
     t.integer  "exit_status"
   end
 
+  create_table "can_search_record", :force => true do |t|
+    t.integer  "parent_id"
+    t.datetime "created_at"
+  end
+
   create_table "feeds", :force => true do |t|
     t.string   "name"
     t.string   "url"

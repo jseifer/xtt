@@ -1,6 +1,8 @@
 class Status
   can_search do
-    # test
+    scoped_by :user
+    scoped_by :project
+    scoped_by :created, :scope => :date_range
   end
 
   module FilteredHourMethods
@@ -27,45 +29,28 @@ class Status
       @total[user_id].to_f
     end
   end
-
-  has_finder :for_project, lambda { |project| { :conditions => {:project_id => project.id}, :extend => LatestExtension } }
-  has_finder :without_project, :conditions => {:project_id => nil}, :extend => LatestExtension
   
   class << self
     attr_accessor :filter_types
   end
   
-  self.filter_types = Set.new [:daily, :weekly, :'bi-weekly', :monthly]
-
-  def self.with_user(user, &block)
-    return block.call if user.nil?
-    user_id = user.is_a?(User) ? user.id : user
-    with_scope :find => { :conditions => ['statuses.user_id = ?', user_id] }, &block
-  end
-  
-  def self.in_projects(user_or_projects, &block)
-    projects = user_or_projects.is_a?(User) ? user_or_projects.projects : user_or_projects
-    with_scope :find => { :conditions => ['statuses.project_id is null or statuses.project_id IN (?)', projects] }, &block
-  end
+  self.filter_types = Set.new CanSearchInScopes::DateRangeScope.periods.keys
   
   # user_id can be an integer or nil
   def self.filter(user_id, filter, options = {})
-    with_user user_id do
-      with_date_filter(:created_at, filter, options[:date]) { paginate :order => 'statuses.created_at desc', :page => options[:page], :per_page => options[:per_page] }
-    end
+    range   = filter ? date_range_from_period(filter, options[:date]) : nil
+    records = search :user => user_id, :created => range,
+      :order => 'statuses.created_at desc', :page => options[:page], :per_page => options[:per_page]
+    [records, range]
   end
   
   def self.hours(user_id, filter, options = {})
-    with_user user_id do
-      with_date_filter(:created_at, filter, options[:date]) { calculate :sum, :hours }.first
-    end
+    scoped_sum :hours, :user => user_id, :created => {:period => filter, :start => options[:date]}
   end
   
   def self.filtered_hours(user_id, filter, options = {})
-    with_user user_id do
-      hours = with_date_filter(:created_at, filter, options[:date]) do
-        calculate :sum, :hours, :group => "CONCAT(user_id, '::', DATE(CONVERT_TZ(created_at, '+00:00', '#{Time.zone.utc_offset_string}')))"
-      end.first.extend(FilteredHourMethods)
-    end
+    hours = scoped_sum :hours, :user => user_id, :created => {:period => filter, :start => options[:date]},
+      :group => "CONCAT(user_id, '::', DATE(CONVERT_TZ(created_at, '+00:00', '#{Time.zone.utc_offset_string}')))"
+    hours.extend(FilteredHourMethods)
   end
 end

@@ -42,16 +42,15 @@ module CanSearchInScopes
     attr_reader :singular_name
     def initialize(name, options = {})
       super
-      single           = name.to_s.singularize
-      @singular_name ||= single.to_sym
-      @attribute     ||= single.foreign_key.to_sym
+      single         = name.to_s.singularize
+      @singular_name = single.to_sym
+      @attribute     = options[:attribute] || single.foreign_key.to_sym
     end
     
     def self.scope_options_for(search_scopes, options = {})
       conditions = search_scopes.scopes_by_type[self].inject({}) do |cond, scope|
         value, values = options.delete(scope.singular_name), options.delete(scope.name) || []
         values << value if value
-        #values.collect! { |v| }
         if values.size == 1
           cond[scope.attribute] = values.first
         elsif values.size > 1

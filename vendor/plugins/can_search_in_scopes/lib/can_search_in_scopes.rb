@@ -6,17 +6,43 @@ module CanSearchInScopes
   end
   
   def search(options = {})
-    scope_search(options) do |options|
-      if options[:page]
+    in_scope(options) do |options|
+      if options.key?(:page)
         paginate(options)
       else
         find :all, options
       end
     end
   end
+  
+  def scoped_calculate(operation, column_name, options = {})
+    in_scope(options) do |options|
+      calculate operation, column_name, options
+    end
+  end
+
+  def scoped_count(column_name, options = {})
+    scoped_calculate :count, column_name, options
+  end
+
+  def scoped_average(column_name, options = {})
+    scoped_calculate :avg, column_name, options
+  end
+
+  def scoped_minimum(column_name, options = {})
+    scoped_calculate :min, column_name, options
+  end
+
+  def scoped_maximum(column_name, options = {})
+    scoped_calculate :max, column_name, options
+  end
+
+  def scoped_sum(column_name, options = {})
+    scoped_calculate :sum, column_name, options
+  end
 
 private
-  def scope_search(options = {}, &search_block)
+  def in_scope(options = {}, &search_block)
     options = options.dup # don't trash the original
     scopes  = []
     CanSearchInScopes::SearchScopes.scope_types.each do |key, scope_class|
@@ -26,17 +52,13 @@ private
     scopes.uniq!
     scopes.compact!
 
-    if scopes.empty?
-      yield options
-    else
-      recursive_with_scope(scopes) { yield options }
-    end
+    with_recursive_scope(scopes) { yield options }
   end
   
-  def recursive_with_scope(scopes, &default)
+  def with_recursive_scope(scopes, &default)
     return default.call if scopes.empty?
     with_scope(:find => scopes.shift) do
-      recursive_with_scope(scopes, &default)
+      with_recursive_scope(scopes, &default)
     end
   end
 end

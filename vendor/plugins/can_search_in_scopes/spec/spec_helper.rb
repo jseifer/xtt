@@ -34,7 +34,7 @@ module CanSearchInScopes
     
     can_search do
       scoped_by :parents
-      #scoped_by :masters, :attribute => :parent_id
+      scoped_by :masters, :attribute => :parent_id
       scoped_by :created, :scope => :date_range
       scoped_by :range, :attribute => :created_at, :scope => :date_range
     end

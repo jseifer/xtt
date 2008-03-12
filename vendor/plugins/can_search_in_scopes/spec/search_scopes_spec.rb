@@ -6,6 +6,11 @@ module CanSearchInScopes
       Record.search_scopes[:parents].should == \
         ReferenceScope.new(:parents, :attribute => :parent_id, :singular => :parent, :scope => :reference)
     end
+
+    it "creates default reference scope with custom attribute" do
+      Record.search_scopes[:masters].should == \
+        ReferenceScope.new(:masters, :attribute => :parent_id, :singular => :master, :scope => :reference)
+    end
     
     it "creates default date range scope" do
       Record.search_scopes[:created].should == \
@@ -17,38 +22,66 @@ module CanSearchInScopes
         DateRangeScope.new(:range, :attribute => :created_at, :scope => :date_range)
     end
     
-    describe "filtering records" do
-      it "shows recent records with no filter" do
-        compare_records Record.search(:order => 'created_at desc'), [:default, :day, :week_1, :week_2, :biweek_1, :biweek_2, :month_1, :month_2, :archive]
+    describe "filters" do
+      it "recent records with no filter" do
+        compare_records Record.search, [:default, :day, :week_1, :week_2, :biweek_1, :biweek_2, :month_1, :month_2, :archive]
+      end
+
+      it "recent records with nil date range period" do
+        compare_records Record.search(:created => {:period => nil}), [:default, :day, :week_1, :week_2, :biweek_1, :biweek_2, :month_1, :month_2, :archive]
       end
       
-      it "paginates if :page is given" do
+      it "if :page is given" do
         pending "no will_paginate?" unless Record.respond_to?(:paginate)
         compare_records Record.search(:page => 2, :order => 'created_at desc'), [:week_2, :biweek_1, :biweek_2]
       end
       
-      it "filters by :parents singular option" do
-        compare_records Record.search(:order => 'created_at desc', :parent => 2), [:day, :week_2, :biweek_1, :month_1]
+      it "by :parents singular option" do
+        compare_records Record.search(:parent => 2), [:day, :week_2, :biweek_1, :month_1]
       end
       
-      it "filters by :parents singular option and actual record" do
-        compare_records Record.search(:order => 'created_at desc', :parent => records(:day)), [:day, :week_2, :biweek_1, :month_1]
+      it "by :parents singular option and actual record" do
+        compare_records Record.search(:parent => records(:day)), [:day, :week_2, :biweek_1, :month_1]
       end
       
-      it "filters by :parents plural option" do
-        compare_records Record.search(:order => 'created_at desc', :parents => %w(1 2)), [:default, :day, :week_1, :week_2, :biweek_1, :biweek_2, :month_1, :month_2, :archive]
+      it "by :parents plural option" do
+        compare_records Record.search(:parents => %w(1 2)), [:default, :day, :week_1, :week_2, :biweek_1, :biweek_2, :month_1, :month_2, :archive]
       end
       
-      it "filters by :parents singular and plural options" do
-        compare_records Record.search(:order => 'created_at desc', :parent => 1, :parents => %w(2 5)), [:default, :day, :week_1, :week_2, :biweek_1, :biweek_2, :month_1, :month_2, :archive]
+      it "by :parents singular and plural options" do
+        compare_records Record.search(:parent => 1, :parents => %w(2 5)), [:default, :day, :week_1, :week_2, :biweek_1, :biweek_2, :month_1, :month_2, :archive]
       end
 
-      it "filters statuses by date_range" do
-        compare_records Record.search(:order => 'created_at desc', :created => (@now-5.days..@now-7.minutes)), [:day, :week_1, :week_2]
+      it "statuses by date_range" do
+        compare_records Record.search(:created => (@now-5.days..@now-7.minutes)), [:day, :week_1, :week_2]
       end
 
-      it "filters today's statuses" do
-        compare_records Record.search(:order => 'created_at desc', :created => {:period => :daily}), [:default, :day]
+      it "today's records" do
+        compare_records Record.search(:created => {:period => :daily}), [:default, :day]
+      end
+
+      it "daily records" do
+        compare_records Record.search(:created => {:period => :daily, :start => @now - 3.days}), [:week_1]
+      end
+      
+      it "this week's records" do
+        compare_records Record.search(:created => {:period => :weekly}), [:default, :day, :week_1, :week_2]
+      end
+      
+      it "this fortnight's records" do
+        compare_records Record.search(:created => {:period => :'bi-weekly'}), [:default, :day, :week_1, :week_2, :biweek_1, :biweek_2]
+      end
+      
+      it "earlier fortnight's records" do
+        compare_records Record.search(:created => {:period => :'bi-weekly', :start => '2007-6-14 6:00:00'}), [:month_1, :month_2]
+      end
+      
+      it "this month's records" do
+        compare_records Record.search(:created => {:period => :monthly}), [:default, :day, :week_1, :week_2, :biweek_1, :biweek_2, :month_1, :month_2]
+      end
+      
+      it "older month's records" do
+        compare_records Record.search(:created => {:period => :monthly, :start => '2007-5-5'}), [:archive]
       end
 
       before :all do
@@ -86,6 +119,7 @@ module CanSearchInScopes
       end
   
       def compare_records(actual, expected)
+        actual = actual.sort { |x, y| y.created_at <=> x.created_at }
         expected.each do |e| 
           a_index = actual.index(records(e))
           e_index = expected.index(e)

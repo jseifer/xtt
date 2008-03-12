@@ -20,7 +20,7 @@ module CanSearchInScopes
 
     def initialize(name, options = {})
       super
-      @attribute ||= begin
+      @attribute ||= options[:attribute] || begin
         name_str = name.to_s
         name_str =~ /_at$/ ? name : (name_str << "_at").to_sym
       end
@@ -30,11 +30,7 @@ module CanSearchInScopes
       search_scopes.scopes_by_type[self].inject([]) do |all, scope|
         value = options.delete(scope.name)
         if value.respond_to?(:[])
-          unless period = search_scopes.model.date_periods[value[:period]]
-            raise "Unknown period: #{value[:period].inspect}"
-          end
-          date  = parse_filtered_time(value[:start])
-          value = period.call(date)
+          value = value[:period] && search_scopes.model.date_range_from_period(value[:period], value[:start])
         end
         if value
           all << {:conditions => "#{search_scopes.model.table_name}.#{scope.attribute} #{value.to_s :db}"}
@@ -57,13 +53,18 @@ module CanSearchInScopes
   # Custom ActiveRecord class methods
   def date_periods() @date_periods ||= CanSearchInScopes::DateRangeScope.periods.dup end
 
+  def date_range_from_period(period_name, date = nil)
+    if period = date_periods[period_name.to_sym]
+      parsed_date = CanSearchInScopes::DateRangeScope.parse_filtered_time(date)
+      period.call(parsed_date)
+    else
+      raise "Unknown period: #{period_name.inspect}"
+    end
+  end
+
   def with_date_period(attribute, period_name, date = nil, &block)
     if period_name
-      unless period = date_periods[period_name.to_sym]
-        raise "Unknown period: #{period_name.inspect}"
-      end
-      date  = CanSearchInScopes::DateRangeScope.parse_filtered_time(date)
-      range = period.call(date)
+      range = date_range_from_period(period_name, date)
       [with_date_range(attribute, range, &block), range]
     else
       [block.call, nil]
