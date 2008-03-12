@@ -1,5 +1,7 @@
 class Status
-  can_filter_by_dates
+  can_search do
+    # test
+  end
 
   module FilteredHourMethods
     def self.extended(hours)
