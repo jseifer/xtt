@@ -46,6 +46,12 @@ describe CanFilterByDates do
       check_filter :spec, '2008-1-1', (Time.local(2008, 1, 1)..Time.local(2008, 1, 1, 0, 5))
     end
     
+    it "allows custom instance-level filter" do
+      date_filters[:custom_spec] = lambda { |now| (now..now + 420) }
+      check_filter :custom_spec, '2008-1-1', (Time.local(2008, 1, 1)..Time.local(2008, 1, 1, 0, 7))
+      date_filters.delete(:custom_spec)
+    end
+    
     it "returns block result and nil range with nil filter" do
       with_date_filter(:attr, nil, nil) { 5 }.should == [5, nil]
     end

@@ -3,9 +3,11 @@ module CanFilterByDates
   def self.filters() @filters ||= {} end
   filters[nil] = lambda { |now, block|}
 
+  def date_filters() @date_filters ||= CanFilterByDates.filters.dup end
+
   def with_date_filter(attribute, filter, now = nil, &block)
     if filter
-      unless filter = CanFilterByDates.filters[filter.to_sym]
+      unless filter = date_filters[filter.to_sym]
         raise "Unknown filter: #{filter.inspect}"
       end
       now   = parse_filtered_time(now)
