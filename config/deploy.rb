@@ -40,7 +40,6 @@ task :backup, :roles => :db, :only => { :primary => true } do
   # The on_rollback handler is only executed if this task is executed within
   # a transaction (see below), AND it or a subsequent task fails.
   filename = "/tmp/#{application}.dump.#{Time.now.to_f}.sql.bz2"
-  yaml = YAML::load_file('config/database.yml')
   text = capture "cat #{current_path}/config/database.yml"
   yaml = YAML::load(text)
   conf = yaml['production']
@@ -54,6 +53,14 @@ task :backup, :roles => :db, :only => { :primary => true } do
   `mkdir -p #{File.dirname(__FILE__)}/../backups`
   `rsync #{roles[:db][0].host}:#{filename} -e 'ssh -p 30187' #{File.dirname(__FILE__)}/../backups/`
   run "rm -f #{filename}"
-  
+
+  yaml = YAML::load_file('config/database.yml')
+  conf = yaml['development']
+  puts conf.inspect
+  filename.gsub!("/tmp", "./backups")
+  puts "Loading data from #{filename} into *local* development DB"
+  puts "Executing `bunzip2 -c #{filename} | mysql5 -u #{conf['username']} -h #{conf['host'] || '127.0.0.1'} -p #{conf['database']}`"
+  `bunzip2 -c #{filename} | mysql5 -u #{conf['username']} -h #{conf['host']} -p #{conf['database']}`
+
 #  backup_public_dir
 end
