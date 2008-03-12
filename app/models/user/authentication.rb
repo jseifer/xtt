@@ -11,21 +11,21 @@ class User
   # Virtual attribute for the unencrypted password
   attr_accessor :password
 
-  validates_presence_of     :login, :email
-  validates_presence_of     :password,                   :if => :password_required?
-  validates_presence_of     :password_confirmation,      :if => :password_required?
-  validates_length_of       :password, :within => 4..40, :if => :password_required?
-  validates_confirmation_of :password,                   :if => :password_required?
-  validates_length_of       :login,    :within => 2..40
-  validates_length_of       :email,    :within => 2..200
-  validates_format_of       :login, :with => login_format
-  validates_format_of       :email, :with => email_format
+  validates_presence_of     :login, :email,                :if => :not_openid?
+  validates_presence_of     :password,                     :if => :password_required?
+  validates_presence_of     :password_confirmation,        :if => :password_required?
+  validates_length_of       :password, :within => 4..40,   :if => :password_required?
+  validates_confirmation_of :password,                     :if => :password_required?
+  validates_length_of       :login, :within => 2..40,      :if => :not_openid?
+  validates_length_of       :email, :within => 2..200,     :if => :not_openid?
+  validates_format_of       :login, :with => login_format, :if => :not_openid?
+  validates_format_of       :email, :with => email_format, :if => :not_openid?
   validates_uniqueness_of   :login, :email
-  before_save :encrypt_password
+  before_save :encrypt_password, :if => :not_openid?
   
   # prevents a user from submitting a crafted form that bypasses activation
   # anything else you want your user to change should be added here.
-  attr_accessible :login, :email, :password, :password_confirmation, :aim_login
+  attr_accessible :login, :email, :password, :password_confirmation, :aim_login, :identity_url
 
   # Authenticates a user by their login name and unencrypted password.  Returns the user or nil.
   def self.authenticate(login, password)
@@ -96,8 +96,13 @@ protected
     self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
     self.crypted_password = encrypt(password)
   end
-    
+
+  def not_openid?
+    identity_url.blank?
+  end
+
   def password_required?
+    return false unless not_openid? # ugh
     crypted_password.blank? || !password.blank?
   end
 end

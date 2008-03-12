@@ -9,7 +9,7 @@
   <ul class="media-list">
     <li class="media-item clearfix last">
       <div class="media">
-        <%= link_to gravatar_for(current_user), current_user %>
+        <%= link_to gravatar_for(@status.user), @status.user %>
       </div>
       <div class="media-content">
         <h4 class="media-title"><%= link_to_status @status %></h4>
@@ -55,28 +55,31 @@
     <% unless @status.active? -%>
     <div id="status-hours">
       <% form_for @status, :html => { :id => 'edit-status-hours', :class => 'form' } do |f| -%>
-			<%= f.error_messages %>
+      <%= f.error_messages %>
       <table cellspacing="0" cellpadding="0" class="tblform">
-				<tr>
-					<th>
-						<%= f.label :message %>
-					</th>
-					<td>
-						<%= f.text_field :code_and_message %>
-					</td>
-				</tr>
         <tr>
           <th>
-  					<%= f.label :set_hours, "Total hour(s) worked:" %>
+            <%= f.label :message %>
           </th>
           <td>
-  					<%= f.text_field :set_hours %>
+            <%= f.text_field :code_and_message %>
+          </td>
+        </tr>
+        <tr>
+          <th>
+            <%= f.label :set_hours, "Total hour(s) worked:" %>
+          </th>
+          <td>
+            <%= f.text_field :set_hours %>
             <p class="quiet">Modifying your time could potentially cause overlap with your other statuses.</p>
           </td>
         </tr>
         <tr>
           <td colspan="2">
-            <p class="btns"><%= save_button %></p>
+            <p class="btns">
+              <%= save_button %>
+              <%= hidden_field_tag :destination, params[:destination] %>
+            </p>
           </td>
         </tr>
       </table>
@@ -87,34 +90,34 @@
       <% form_for @status, :html => { :id => 'edit-status-times', :class => 'form' } do |f| -%>
         <%= f.error_messages %>
         <table cellspacing="0" cellpadding="0" class="tblform">
-					<tr>
-						<th>
-							<%= f.label :message %>
-						</th>
-						<td>
-							<%= f.text_field :code_and_message %>
-						</td>
-					</tr>
-    			<tr>
-    				<th>
-    					<%= f.label :created_at, "Start Time:" %>
-    				</th>
-    				<td>
-    					<%= f.date_select :created_at %>
-    					<%= f.time_select :created_at %>
-    				</td>
-    			</tr>
-    			<% unless @status.active? -%>
-    			<tr>
-    				<th>
-    					<%= f.label :finished_at, "End Time:" %>
-    				</th>
-    				<td>
-    					<%= f.date_select :finished_at %>
-    					<%= f.time_select :finished_at %>
-    				</td>
-    			</tr>
-    			<% end -%>
+          <tr>
+            <th>
+              <%= f.label :message %>
+            </th>
+            <td>
+              <%= f.text_field :code_and_message %>
+            </td>
+          </tr>
+          <tr>
+            <th>
+              <%= f.label :created_at, "Start Time:" %>
+            </th>
+            <td>
+              <%= f.date_select :created_at %>
+              <%= f.time_select :created_at %>
+            </td>
+          </tr>
+          <% unless @status.active? -%>
+          <tr>
+            <th>
+              <%= f.label :finished_at, "End Time:" %>
+            </th>
+            <td>
+              <%= f.date_select :finished_at %>
+              <%= f.time_select :finished_at %>
+            </td>
+          </tr>
+          <% end -%>
           <tr>
             <td colspan="2">
               <p class="btns"><%= save_button %></p>

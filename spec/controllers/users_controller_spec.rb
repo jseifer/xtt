@@ -155,6 +155,18 @@ describe UsersController, "POST #create (with invitation)" do
       @user.can_access?(@project).should == true
     end
     
+    it "creates user with different email address as pending" do
+      act!
+      @user.should be_pending
+    end
+    
+    it "creates user with invited email address as active" do
+      @user.email = @invitation.email
+      @attributes['email'] = @invitation.email
+      act!
+      @user.should be_active
+    end
+    
     it "deletes invitation" do
       act!
       lambda { @invitation.reload }.should raise_error(ActiveRecord::RecordNotFound)

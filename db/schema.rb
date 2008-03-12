@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 26) do
+ActiveRecord::Schema.define(:version => 28) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -90,6 +90,25 @@ ActiveRecord::Schema.define(:version => 26) do
     t.integer "user_id"
   end
 
+  create_table "open_id_authentication_associations", :force => true do |t|
+    t.binary  "server_url"
+    t.string  "handle"
+    t.binary  "secret"
+    t.integer "issued"
+    t.integer "lifetime"
+    t.string  "assoc_type"
+  end
+
+  create_table "open_id_authentication_nonces", :force => true do |t|
+    t.string  "nonce"
+    t.integer "created"
+  end
+
+  create_table "open_id_authentication_settings", :force => true do |t|
+    t.string "setting"
+    t.binary "value"
+  end
+
   create_table "projects", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -98,6 +117,7 @@ ActiveRecord::Schema.define(:version => 26) do
     t.string   "code"
   end
 
+  add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
   add_index "projects", ["code"], :name => "index_projects_on_code"
 
   create_table "statuses", :force => true do |t|
@@ -134,6 +154,7 @@ ActiveRecord::Schema.define(:version => 26) do
     t.datetime "last_status_at"
     t.string   "time_zone"
     t.string   "aim_login"
+    t.string   "identity_url"
   end
 
 end

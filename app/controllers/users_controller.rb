@@ -38,6 +38,7 @@ class UsersController < ApplicationController
     @user       = User.new(params[:user])
     @invitation = Invitation.find_by_code(params[:code]) unless params[:code].blank?
     @user.register! if @user.valid?
+    @user.activate! if @invitation && @user.email == @invitation.email
     if @user.errors.empty?
       if @invitation
         @invitation.project_ids.each do |project|
@@ -46,7 +47,7 @@ class UsersController < ApplicationController
         @invitation.destroy
       end
       self.current_user = @user
-      flash[:notice] = "Thanks for signing up!  Watch your email address for an activation link before you can log in."
+      flash[:notice] = "Thanks for signing up!#{"  Watch your email address for an activation link before you can log in." if @user.active?}"
       redirect_back_or_default(login_path)
     else
       render :action => 'new'

@@ -52,12 +52,25 @@ describe StatusesController, "POST #create" do
   
   describe StatusesController, "(successful creation)" do
     define_models
-    act! { post :create, :status => @attributes }
+    act! { post :create, @params }
     
-    before { @status.stub!(:new_record?).and_return(false) }
+    before do
+      @params = {:status => @attributes}
+      @status.stub!(:new_record?).and_return(false)
+    end
     
     it_assigns :status
     it_redirects_to { root_path }
+    
+    it "redirects to alternate path with destination parameter" do
+      @params.update :destination => '/projects'
+      acting.should redirect_to(projects_path)
+    end
+    
+    it "ignores external destination parameter" do
+      @params.update :destination => 'http://google.com'
+      acting.should redirect_to(root_path)
+    end
   end
   
   describe StatusesController, "(successful creation with OUT button)" do
