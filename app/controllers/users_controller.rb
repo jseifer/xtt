@@ -1,3 +1,4 @@
+require 'fastercsv'
 class UsersController < ApplicationController
   before_filter :find_user, :only => [:show, :edit, :update, :suspend, :unsuspend, :destroy, :purge]
   before_filter :login_required,       :only => [:index, :show, :edit, :update]

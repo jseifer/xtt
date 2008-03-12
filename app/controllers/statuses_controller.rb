@@ -1,5 +1,6 @@
+require 'fastercsv'
 class StatusesController < ApplicationController
-  before_filter :find_status,    :only => [:show, :edit, :update, :destroy]
+  before_filter :find_status, :only => [:show, :edit, :update, :destroy]
   before_filter :login_required
 
   # USER SCOPE
@@ -21,6 +22,10 @@ class StatusesController < ApplicationController
       format.xml  { render :xml  => @status }
     end
   end
+  
+  def import
+    @statuses = []
+  end
 
   def create
     if params[:submit] == 'Out'
@@ -29,11 +34,40 @@ class StatusesController < ApplicationController
         params[:status][:code_and_message].strip!
       end
       params[:status][:code_and_message] = "Out" if params[:status][:code_and_message].blank?
+
+    elsif params[:replace]
+      # delete all statuses?
+      if params[:confirm] == "on" and params[:confirm2] == "on" 
+        Status.transaction do 
+          current_user.backup_statuses!
+          Status.delete_all ["user_id=?", current_user.id]
+          @statuses = import_statuses(params[:replace])
+        end
+        flash[:notice] = "Successfully replaced your statuses with #{current_user.statuses.size} new statuses"
+        if status = current_user.statuses.find(:first, :order => "created_at desc")
+          status.send :cache_user_status
+        end
+        if @statuses.any?
+          render :action => "import"
+          return
+        end
+      end
+    elsif params[:import]
+      Status.transaction do
+        @statuses = import_statuses(params[:import])
+        if @statuses.any?
+          render :action => "import"
+          return
+        end
+      end
+    else
+      @status  = current_user.post params[:status][:code_and_message]
     end
-    @status  = current_user.post params[:status][:code_and_message]
 
     respond_to do |format|
-      if @status.new_record?
+      if @status.nil? # no records?
+        redirect_to statuses_path
+      elsif @status.new_record?
         format.html { render :action => "new" }
         format.xml  { render :xml  => @status.errors, :status => :unprocessable_entity }
       else
@@ -90,5 +124,23 @@ protected
     else
       redirect_to @status.project || root_path
     end
+  end
+
+  def import_statuses(data)
+    invalid = []
+    FasterCSV.parse(data, {:headers=>true}).each do |row|
+      next if row['code_and_message'].blank?
+      logger.warn row.inspect
+      #if row.compact.size == 3
+        @status = current_user.post row['code_and_message'], "import"
+        @status.update_attributes({ :created_at => row['created_datetime'], :finished_at => row['finished_datetime'], :user_id => current_user.id })
+        unless @status.valid?
+          invalid << @status
+        end
+      #else
+        # do nothing
+      #end
+    end
+    invalid
   end
 end

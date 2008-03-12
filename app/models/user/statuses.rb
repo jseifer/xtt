@@ -22,6 +22,15 @@ class User
     statuses.create :code_and_message => message, :source => source
   end
 
+  def backup_statuses!
+    t = Time.now.to_i.to_s
+    FileUtils.mkdir_p(File.join(RAILS_ROOT, "backups", t))
+    File.open(File.join(RAILS_ROOT, "backups", t, login + ".xml"), "w+") do |f|
+      # because we assume you're an idiot
+      f.write statuses.to_xml
+    end
+  end
+
 
 protected
 

@@ -2,8 +2,8 @@
   <% box.title = "Your profile" %>
   <% box.header_utils = capture do %>
     <%= link_to 'Profile', {}, :id => 'tab-profile' %> 
-    <%= link_to 'Notifications', :id => 'tab-notification' %>
-    <%= link_to 'Colors', :id => 'tab-colors' %>
+    <%= link_to 'Notifications', {}, :id => 'tab-notification' %>
+    <%= link_to 'Colors', {}, :id => 'tab-colors' %>
   <% end %>
   
   <% box.content = capture do %>
@@ -15,4 +15,23 @@
   </div>
   <% end %>
   
+<% end %>
+
+<% box(:special, 'adjust') do |box| %>
+  <% box.title = "Adjust data "%>
+  <% box.content = capture do %>
+  <div id="profile-adjust">
+    <p>This box belongs in /statuses somewhere. See also: <%= link_to "Import statuses", import_statuses_path %></p>
+    <p>You can adjust the headers to suit yourself.</p>
+    <% form_for @user.statuses.build, :html => { :class => "form" } do |f| %>
+      <p><textarea name="replace" style="font-size:80%;width:100%" rows="10">created_datetime,finished_datetime,code_and_message
+<%= FasterCSV.generate(:force_quotes => true) { |csv| @user.statuses.each { |status| csv << [status.created_at, status.finished_at, (status.project ? "@#{status.project.code} " : "") + h(status.message.to_s.gsub('"', '""'))] } } -%>
+</textarea></p>
+      <p>Confirm you want to replace all statuses by checkng this box <input type="checkbox" name="confirm" /></p>
+      <p>No, really, this will delete all your old statuses and replace them.</p>
+      <p>Absolutely sure? <input type="checkbox" name="confirm2" /></p>
+      <p class="btns"><input type="image" src="/images/btns/ghost.png" class="btn" /></p>
+    <% end %>
+  </div>
+  <% end %>
 <% end %>

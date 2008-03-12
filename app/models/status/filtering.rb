@@ -4,6 +4,7 @@ class Status
   module FilteredHourMethods
     def self.extended(hours)
       hours.collect! do |(grouped, hour)|
+        RAILS_DEFAULT_LOGGER.warn "========== #{grouped.inspect}, #{hour.inspect}"
         user_id, date = grouped.split("::")
         [user_id.to_i, Time.parse(date), hour]
       end
@@ -60,9 +61,14 @@ class Status
   end
   
   def self.filtered_hours(user_id, filter, options = {})
+    logger.warn "==========\n#{user_id}, #{filter}, #{options.inspect}"
     with_user user_id do
+      logger.warn "==========whee"
       hours = with_date_filter(:created_at, filter, options[:date]) do
-        calculate :sum, :hours, :group => "CONCAT(user_id, '::', DATE(CONVERT_TZ(created_at, '+00:00', '#{Time.zone.utc_offset_string}')))"
+      logger.warn "==========calculate"
+        r = calculate :sum, :hours, :group => "CONCAT(user_id, '::', DATE(CONVERT_TZ(created_at, '+00:00', '#{Time.zone.utc_offset_string}')))"
+        logger.warn r.inspect
+        r
       end.first.extend(FilteredHourMethods)
     end
   end
