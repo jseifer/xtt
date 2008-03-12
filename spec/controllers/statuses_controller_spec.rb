@@ -45,11 +45,20 @@ describe StatusesController, "POST #create" do
     @attributes = {:code_and_message => 'foo'}
     @status = Status.new(@attributes)
     login_as :default
-    @user.stub!(:post).with('foo').and_return(@status)
+    @user.stub!(:post).and_return(@status)
     @user.statuses.stub!(:before).and_return(nil)
     @status.user = @user
   end
-  
+
+  describe StatusesController, "(successful creation with text field" do
+    define_models
+    act! { post :create, :statuses => "2007-12-25 00:00:25,2007-12-25 00:00:35,monkey,stealing bananas" }
+    
+    it "creates a status" do
+      acting.should change(Status, :count).by(1)
+    end
+  end
+    
   describe StatusesController, "(successful creation)" do
     define_models
     act! { post :create, @params }
