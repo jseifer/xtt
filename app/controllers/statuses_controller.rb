@@ -34,7 +34,7 @@ class StatusesController < ApplicationController
         params[:status][:code_and_message].strip!
       end
       params[:status][:code_and_message] = "Out" if params[:status][:code_and_message].blank?
-
+      @status  = current_user.post params[:status][:code_and_message]
     elsif params[:replace]
       # delete all statuses?
       if params[:confirm] == "on" and params[:confirm2] == "on" 
@@ -44,28 +44,23 @@ class StatusesController < ApplicationController
           @statuses = import_statuses(params[:replace])
         end
         flash[:notice] = "Successfully replaced your statuses with #{current_user.statuses.size} new statuses"
-        if status = current_user.statuses.find(:first, :order => "created_at desc")
+        if status = current_user.statuses.find(:first, :order => "created_at desc", :conditions => "created_at is not null")
           status.send :cache_user_status
-        end
-        if @statuses.any?
-          render :action => "import"
-          return
         end
       end
     elsif params[:import]
       Status.transaction do
         @statuses = import_statuses(params[:import])
-        if @statuses.any?
-          render :action => "import"
-          return
-        end
       end
     else
       @status  = current_user.post params[:status][:code_and_message]
     end
 
     respond_to do |format|
-      if @status.nil? # no records?
+      if @statuses and @statuses.any?
+        format.html { render :action => "import" }
+        format.xml  {} # FAIL
+      elsif @status.nil?
         redirect_to statuses_path
       elsif @status.new_record?
         format.html { render :action => "new" }
@@ -134,6 +129,7 @@ protected
       #if row.compact.size == 3
         @status = current_user.post row['code_and_message'], "import"
         @status.update_attributes({ :created_at => row['created_datetime'], :finished_at => row['finished_datetime'], :user_id => current_user.id })
+        @status.process!
         unless @status.valid?
           invalid << @status
         end
