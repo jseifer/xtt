@@ -39,6 +39,20 @@ module CanSearchInScopes
       scoped_by :range, :attribute => :created_at, :scope => :date_range
     end
   end
+  
+  class RefRecord < ActiveRecord::Base
+    set_table_name 'can_search_records'
+    can_search do
+      scoped_by :parents
+    end
+  end
+  
+  class DateRecord < ActiveRecord::Base
+    set_table_name 'can_search_records'
+    can_search do
+      scoped_by :created, :scope => :date_range
+    end
+  end
 end
 
 Debugger.start

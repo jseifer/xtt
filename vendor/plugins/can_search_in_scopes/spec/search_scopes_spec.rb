@@ -23,6 +23,14 @@ module CanSearchInScopes
     end
     
     describe "filters" do
+      it "searches record with only Reference scopes" do
+        RefRecord.search(:limit => 1).first.name.should == records(:default).name
+      end
+
+      it "searches record with only DateRange scopes" do
+        DateRecord.search(:limit => 1).first.name.should == records(:default).name
+      end
+
       it "recent records with no filter" do
         compare_records Record.search, [:default, :day, :week_1, :week_2, :biweek_1, :biweek_2, :month_1, :month_2, :archive]
       end

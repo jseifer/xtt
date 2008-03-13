@@ -27,7 +27,9 @@ module CanSearchInScopes
     end
     
     def self.scope_options_for(search_scopes, options = {})
-      search_scopes.scopes_by_type[self].inject([]) do |all, scope|
+      scopes = search_scopes.scopes_by_type[self]
+      return nil if scopes.blank?
+      scopes.inject([]) do |all, scope|
         value = options.delete(scope.name)
         if value.respond_to?(:[])
           value = value[:period] && search_scopes.model.date_range_from_period(value[:period], value[:start])

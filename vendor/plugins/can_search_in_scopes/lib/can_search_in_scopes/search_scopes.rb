@@ -48,7 +48,9 @@ module CanSearchInScopes
     end
     
     def self.scope_options_for(search_scopes, options = {})
-      conditions = search_scopes.scopes_by_type[self].inject({}) do |cond, scope|
+      scopes = search_scopes.scopes_by_type[self]
+      return nil if scopes.blank?
+      conditions = scopes.inject({}) do |cond, scope|
         value, values = options.delete(scope.singular_name), options.delete(scope.name) || []
         values << value if value
         if values.size == 1
