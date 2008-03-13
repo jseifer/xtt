@@ -9,22 +9,22 @@ module CanSearchInScopes
     describe "#with_date_period(filter, now = nil, &block) with ActiveSupport defaults" do
       it "creates daily range" do
         pending "No :daily filter, do you have ActiveSupport loaded?" unless DateRangeScope.periods.key?(:daily)
-        check_filter :daily, Time.utc(2008, 1, 1, 12), (Time.utc(2008, 1, 1)..Time.utc(2008, 1, 2))
+        check_filter :daily, Time.utc(2008, 1, 1, 12), (Time.utc(2008, 1, 1)..Time.utc(2008, 1, 2)-1.second)
       end
 
       it "creates weekly range" do
         pending "No :weekly filter, do you have ActiveSupport loaded?" unless DateRangeScope.periods.key?(:weekly)
-        check_filter :weekly, Time.utc(2008, 1, 1), (Time.utc(2007, 12, 31)..Time.utc(2008, 1, 7))
+        check_filter :weekly, Time.utc(2008, 1, 1), (Time.utc(2007, 12, 31)..Time.utc(2008, 1, 7)-1.second)
       end
 
       it "creates bi-weekly range for first half of the month" do
         pending "No :'bi-weekly' filter, do you have ActiveSupport loaded?" unless DateRangeScope.periods.key?(:'bi-weekly')
-        check_filter :'bi-weekly', Time.utc(2008, 1, 5), (Time.utc(2008, 1, 1)..Time.utc(2008, 1, 15))
+        check_filter :'bi-weekly', Time.utc(2008, 1, 5), (Time.utc(2008, 1, 1)..Time.utc(2008, 1, 15)-1.second)
       end
 
       it "creates bi-weekly range for second half of the month" do
         pending "No :'bi-weekly' filter, do you have ActiveSupport loaded?" unless DateRangeScope.periods.key?(:'bi-weekly')
-        check_filter :'bi-weekly', Time.utc(2008, 1, 16), (Time.utc(2008, 1, 15)..Time.utc(2008, 2, 1)-1)
+        check_filter :'bi-weekly', Time.utc(2008, 1, 16), (Time.utc(2008, 1, 15)..Time.utc(2008, 2, 1)-1.second)
       end
 
       it "creates monthly range" do
