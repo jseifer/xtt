@@ -50,9 +50,18 @@ describe StatusesController, "POST #create" do
     @status.user = @user
   end
 
-  describe StatusesController, "(successful creation with text field" do
+  describe StatusesController, "(successful replace-creation with text field" do
     define_models
-    act! { post :create, :statuses => "2007-12-25 00:00:25,2007-12-25 00:00:35,monkey,stealing bananas" }
+    act! { post :create, :replace => "created_datetime,finished_datetime,code_and_message\n2007-12-25 00:00:25,2007-12-25 00:00:35,monkey,stealing bananas" }
+    
+    it "creates a status" do
+      acting.should change(Status, :count).by(0)
+    end
+  end
+
+  describe StatusesController, "(successful import-creation with text field" do
+    define_models
+    act! { post :create, { :import => "created_datetime,finished_datetime,code_and_message\n2007-12-25 00:00:25,2007-12-25 00:00:35,monkey,stealing bananas", :format => "html" } }
     
     it "creates a status" do
       acting.should change(Status, :count).by(1)
