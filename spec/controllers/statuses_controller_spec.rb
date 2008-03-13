@@ -75,8 +75,9 @@ describe StatusesController, "POST #create" do
     end
 
     it "uses the correct timezone" do
+      @user.time_zone = -8
       act!
-      @user.statuses(true)[0].created_at.should == Time.mktime(2007,12,25,0,0,25)
+      @user.statuses(true)[0].created_at.utc.should == Time.mktime(2007,12,25,0,0,25)
     end
   end
 

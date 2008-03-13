@@ -52,7 +52,8 @@ class StatusesController < ApplicationController
       Status.transaction do
         @statuses = import_statuses(params[:import])
       end
-    else
+
+  elsif params[:status]
       @status  = current_user.post params[:status][:code_and_message]
     end
 
@@ -128,7 +129,7 @@ protected
       logger.warn row.inspect
       #if row.compact.size == 3
         @status = current_user.post row['code_and_message'], "import"
-        @status.update_attributes({ :created_at => row['created_datetime'], :finished_at => row['finished_datetime'], :user_id => current_user.id })
+        @status.update_attributes({ :created_at => Time.parse(row['created_datetime']), :finished_at => Time.parse(row['finished_datetime']), :user_id => current_user.id })
         @status.process!
         unless @status.valid?
           invalid << @status
