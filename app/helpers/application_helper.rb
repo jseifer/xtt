@@ -90,4 +90,16 @@ module ApplicationHelper
     (is_negative ? '-' : '') + (hours > 0 ? "#{hours}:" : '') + ('%02d:%02d' % [minutes, seconds])
   end  
 
+
+  def csv_statuses(ary)
+    FasterCSV.generate(:force_quotes => true) do |csv| 
+      ary.each do |status|
+        csv << [
+          status.created_at ? status.created_at.strftime("%Y-%m-%d %H:%M") : nil,
+          status.finished_at ? status.finished_at.strftime("%Y-%m-%d %H:%M") : nil,
+          (status.project ? "@#{status.project.code} " : "") + h(status.message.to_s.gsub('"', '""'))
+        ] 
+      end
+    end
+  end
 end

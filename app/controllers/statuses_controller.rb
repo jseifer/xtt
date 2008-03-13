@@ -35,19 +35,19 @@ class StatusesController < ApplicationController
       end
       params[:status][:code_and_message] = "Out" if params[:status][:code_and_message].blank?
       @status  = current_user.post params[:status][:code_and_message]
-    elsif params[:replace]
-      # delete all statuses?
-      if params[:confirm] == "on" and params[:confirm2] == "on" 
-        Status.transaction do 
-          current_user.backup_statuses!
-          Status.delete_all ["user_id=?", current_user.id]
-          @statuses = import_statuses(params[:replace])
-        end
-        flash[:notice] = "Successfully replaced your statuses with #{current_user.statuses.size} new statuses"
-        if status = current_user.statuses.find(:first, :order => "created_at desc", :conditions => "created_at is not null")
-          status.send :cache_user_status
-        end
+
+    elsif params[:replace] and params[:confirm] == "on" and params[:confirm2] == "on" 
+      # Lock up the whole fucking db while we do this really long task! Yeah!!!
+      Status.transaction do 
+        current_user.backup_statuses!
+        Status.delete_all ["user_id=?", current_user.id]
+        @statuses = import_statuses(params[:replace])
       end
+      flash[:notice] = "Successfully replaced your statuses with #{current_user.statuses.count} new statuses"
+      if status = current_user.statuses.find(:first, :order => "created_at desc", :conditions => "created_at is not null")
+        status.send :cache_user_status
+      end
+
     elsif params[:import]
       Status.transaction do
         @statuses = import_statuses(params[:import])

@@ -44,18 +44,39 @@ describe StatusesController, "POST #create" do
   before do
     @attributes = {:code_and_message => 'foo'}
     @status = Status.new(@attributes)
+    controller.stub!(:login_required)
     login_as :default
     @user.stub!(:post).and_return(@status)
     @user.statuses.stub!(:before).and_return(nil)
     @status.user = @user
   end
 
-  describe StatusesController, "(successful replace-creation with text field" do
+  describe StatusesController, "(successful replace-creation with text field)" do
     define_models
-    act! { post :create, :replace => "created_datetime,finished_datetime,code_and_message\n2007-12-25 00:00:25,2007-12-25 00:00:35,monkey,stealing bananas" }
+    act! {
+      post :create, { :replace => "created_datetime,finished_datetime,code_and_message\n2007-12-25 00:00:25,2007-12-25 00:00:35,monkey,stealing bananas", :confirm => "on", :confirm2 => "on" }
+    }
     
-    it "creates a status" do
-      acting.should change(Status, :count).by(0)
+    before do
+      login_as :default
+      controller.stub!(:login_required)
+      @user.stub!(:backup_statuses!)
+    end
+
+    it "replaces status" do
+      count = Status.count
+      act!
+      (Status.count - count).should == -1
+    end
+    
+    it "backs up statuses" do
+      @user.should_receive(:backup_statuses!)
+      act!
+    end
+
+    it "uses the correct timezone" do
+      act!
+      @user.statuses(true)[0].created_at.should == Time.mktime(2007,12,25,0,0,25)
     end
   end
 
@@ -64,7 +85,9 @@ describe StatusesController, "POST #create" do
     act! { post :create, { :import => "created_datetime,finished_datetime,code_and_message\n2007-12-25 00:00:25,2007-12-25 00:00:35,monkey,stealing bananas", :format => "html" } }
     
     it "creates a status" do
-      acting.should change(Status, :count).by(1)
+      count = Status.count
+      act!
+      (Status.count - count).should == 1
     end
   end
     
