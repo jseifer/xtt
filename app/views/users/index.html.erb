@@ -20,7 +20,7 @@
         <% if current_user.last_status_project -%>
           <h4 class="media-title"><%= link_to_project current_user.last_status_project, "You're working on #{current_user.last_status_project.name}" %></h4>
         <% end -%>
-          <p class="quiet"><%=h current_user.last_status_message %></p>
+          <p class="quiet"><%= link_to h(current_user.last_status_message), current_user.last_status %></p>
           <% unless current_user.last_status.out? %>
           <span class="others">
             <span class="num livetime" title="<%= current_user.last_status.created_at.utc.strftime("%d %b, %Y %I:%M %p") %>"><%= current_user.last_status.hours.to_f %></span>

@@ -9,28 +9,28 @@
   <div class="mblock-cnt">
     <div id="signin">
       <% form_tag session_path, :class => 'form' do -%>
-      <p><label for="login">Login</label>
-      <%= text_field_tag 'login' %></p>
+      <div id="unamepass">
+        <p><label for="login">Login (<a id="use-openid" href="#openid">Use OpenID</a>)</label>
+        <%= text_field_tag 'login' %></p>
 
-      <p><label for="password">Password</label>
-      <%= password_field_tag 'password' %></p>
+        <p><label for="password">Password</label>
+        <%= password_field_tag 'password' %></p>
 
-      <p><label for="remember_me">Remember me:</label>
-      <%= check_box_tag 'remember_me' %></p>
-
-      <hr />
-      <p><i>or, sign in with openID</i></p>
-      <p>
-        <label for="openid_url">OpenID:</label>
-        <%= text_field_tag "openid_url" %>
-      </p>
-
+        <p><label for="remember_me"><%= check_box_tag 'remember_me' %> Remember me</label></p>
+      </div>
+      <div id="openid" style="display:none">
+        <p>
+          <label for="openid_url">OpenID (<a id="use-standard" href="#standard">Standard Login</a>)</label>
+          <%= text_field_tag "openid_url" %>
+        </p>
+      </div>
       <p class="btns">
 				<%= img_button('signin') %>
 				<%= hidden_field_tag :to, params[:to] unless params[:to].blank? %>
 			</p>
     <% end -%>
     </div>
+
     
     <div id="reset">
 			<% form_tag reset_password_users_path, :class => 'form' do -%>
@@ -43,6 +43,17 @@
 </div>
 
 <% content_for :dom_loaded do %>
+
+  $('use-openid').observe('click', function() {
+    $('unamepass').hide();
+    $('openid').show();
+  });
+  
+  $('use-standard').observe('click', function() {
+    $('openid').hide();
+    $('unamepass').show();
+  })
+  
   new Control.Tabs("tool-tabs", {
     linkSelector: 'a',
     afterChange: function(container) {
