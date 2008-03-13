@@ -104,7 +104,7 @@ Element.addMethods('INPUT', {
 
 Object.extend(Date.prototype, {
   /**
-   * Given a formatted string, replace the necissary items and return.
+   * Given a formatted string, replace the necessary items and return.
    * Example: Time.now().strftime("%B %d, %Y") => February 11, 2008
    * @param {String} format The formatted string used to format the results
    */
@@ -177,7 +177,7 @@ Object.extend(Date, {
   },
   
   /**
-   * Return the distance of time in words between two Date's
+   * Return the distance of time in words between two Dates
    * Example: '5 days ago', 'about an hour ago'
    * @param {Date} fromTime The start date to use in the calculation
    * @param {Date} toTime The end date to use in the calculation
