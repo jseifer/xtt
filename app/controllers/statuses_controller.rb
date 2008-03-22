@@ -34,10 +34,12 @@ class StatusesController < ApplicationController
 
     respond_to do |format|
       if @status.new_record?
-        format.html { render :action => "new" }
-        format.xml  { render :xml  => @status.errors, :status => :unprocessable_entity }
+        format.html   { render :action => "new" }
+        format.iphone { render :action => "new" }
+        format.xml    { render :xml  => @status.errors, :status => :unprocessable_entity }
       else
-        format.html { redirect_after_status }
+        format.html   { redirect_after_status }
+        format.iphone { redirect_after_status }
         format.xml  { render :xml  => @status, :status => :created, :location => @status }
       end
     end

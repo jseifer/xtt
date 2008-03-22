@@ -6,14 +6,39 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta name="viewport" content="width = 320" /> 
   <meta name="viewport" content="initial-scale=1, user-scalable=no" />
-  <%= stylesheet_link_tag 'iphone' %>
+  <%= stylesheet_link_tag 'iphone', 'iphone_hack' %>
+	<%= javascript_include_tag 'prototype' %>
 	<title>XTT</title>
+	<script type="text/javascript" charset="utf-8">
+	 document.observe('dom:loaded', function() {
+	   <%= yield :dom_loaded %>
+	 });
+	</script>
 </head>
 
 <body>
   <div id="wrapper">
+    <div id="header">
+      <a href="/">home</a>
+    </div>
+    <div id="currently" class="clearfix">
+      Currently: <% if current_user.last_status_project %>
+        <%= link_to_project current_user.last_status_project, " #{current_user.last_status_project.name}" %>
+        <% end %>
+      <p><%= link_to h(current_user.last_status_message), current_user.last_status %></p>
+        <% unless current_user.last_status.out? %>
+        <span class="others">
+          <span class="num livetime" title="<%= current_user.last_status.created_at.utc.strftime("%d %b, %Y %I:%M %p") %>"><%= current_user.last_status.hours.to_f %></span>
+          <span class="meta">logged</span>
+        </span>
+        <% end %>
+    </div>
+    <div id="status"><%= yield :status %></div>
     <div id="content" class="clearfix">
       <%= yield %>
+    </div>
+    <div id="footer">
+      Copyright &copy; 2008 ENTP.com.
     </div>
   </div>
   
