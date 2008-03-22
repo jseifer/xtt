@@ -76,8 +76,8 @@ protected
   end
 
   def extract_code_and_message(message)
-    code = nil?
-    raise "Message was blank" if message.blank?
+    code = nil
+    # raise "Message was blank" if message.blank?
     message.sub! /\@\w*/ do |c|
       code = c[1..-1]; ''
     end
