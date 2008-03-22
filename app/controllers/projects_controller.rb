@@ -18,6 +18,7 @@ class ProjectsController < ApplicationController
     @hours       = @project.statuses.filtered_hours(user_status_for(params[:user_id]), params[:filter], :date => params[:date])
     respond_to do |format|
       format.html # show.html.erb
+      format.iphone
       format.xml  { render :xml  => @project }
       format.csv  # show.csv.erb
     end

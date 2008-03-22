@@ -63,6 +63,7 @@ class Status < ActiveRecord::Base
   end
   
   def code_and_message=(value)
+    raise "No message" if value.blank?
     @code, msg = extract_code_and_message(value)
     self.message = msg
   end
@@ -75,7 +76,8 @@ protected
   end
 
   def extract_code_and_message(message)
-    code = nil
+    code = nil?
+    raise "Message was blank" if message.blank?
     message.sub! /\@\w*/ do |c|
       code = c[1..-1]; ''
     end
