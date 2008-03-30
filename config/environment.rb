@@ -41,6 +41,11 @@ Rails::Initializer.run do |config|
     :secret      => 'bd088a0f5b476fe5a2c02653a93ed14a95a8396829ce4e726ee77553ab6438a98d0f3e6d80fc6b120370ba047f28e09f71543ae5f842365e5070e7db51fb2cb8'
   }
 
+  config.gem :bj, :version => '1.0.1'
+  config.gem :has_finder
+  config.gem :fastercsv
+  config.gem :googlecharts, :lib => "gchart"
+
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
   # (create the session table with 'rake db:sessions:create')
@@ -58,8 +63,7 @@ Rails::Initializer.run do |config|
   config.time_zone = "UTC"
   
   config.after_initialize do
-    gem 'bj', '1.0.1'
-    %w(ostruct md5 gchart has_finder bj).each { |lib| require lib }
+    %w(ostruct md5).each { |lib| require lib }
     Bj.config["production.no_tickle"] = true if RAILS_ENV == 'production'
   end
 end
