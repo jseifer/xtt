@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  has_finder :all, :order => 'login'
+  named_scope :all, :order => 'login'
   
   def related_users
     @related_users ||= with_memberships { User.find :all, :order => 'last_status_at desc', :select => "DISTINCT users.*" }

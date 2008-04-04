@@ -16,7 +16,7 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :code
   after_save :create_membership
   
-  has_finder :all, :order => 'name'
+  named_scope :all, :order => 'name'
   
   def editable_by?(user)
     users.include?(user)

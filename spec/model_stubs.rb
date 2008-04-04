@@ -24,6 +24,8 @@ ModelStubbing.define_models do
   
   model Membership # none
   
+  model Context
+  
   model Help do
     stub :name => "foo"
     stub :foo, :name => "bar"

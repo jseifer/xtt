@@ -59,7 +59,7 @@ Rails::Initializer.run do |config|
   
   config.after_initialize do
     gem 'bj', '1.0.1'
-    %w(ostruct md5 gchart has_finder bj).each { |lib| require lib }
+    %w(ostruct md5 gchart bj).each { |lib| require lib }
     Bj.config["production.no_tickle"] = true if RAILS_ENV == 'production'
   end
 end

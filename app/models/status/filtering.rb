@@ -26,8 +26,8 @@ class Status
     end
   end
 
-  has_finder :for_project, lambda { |project| { :conditions => {:project_id => project.id}, :extend => LatestExtension } }
-  has_finder :without_project, :conditions => {:project_id => nil}, :extend => LatestExtension
+  named_scope :for_project, lambda { |project| { :conditions => {:project_id => project.id}, :extend => LatestExtension } }
+  named_scope :without_project, :conditions => { :project_id => nil }, :extend => LatestExtension
   
   class << self
     attr_accessor :filter_types
