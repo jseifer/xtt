@@ -3,6 +3,7 @@ class Membership < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :user
+  belongs_to :context
   
   validates_presence_of :project_id, :user_id
   validates_uniqueness_of :code, :scope => :user_id

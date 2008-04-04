@@ -1,0 +1,9 @@
+Context
+
+<h1><%=h @context.name %></h1>
+
+Memberships
+<ul><% @context.memberships.each do |membership| %>
+  <li><%= link_to h(membership.project.name), membership.project %></li>
+<% end %>
+</ul>

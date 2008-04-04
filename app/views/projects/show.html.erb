@@ -89,7 +89,7 @@
       <% sbox.header_utils = %(
         <div id="tool-tabs">
           <a href="#invite">Invite</a>
-          <a href="#tracking">Track</a>
+          <a href="#tracking">Context</a>
           <a href="#export">CSV</a>
           <a href="#edit">Edit</a>
         </div>) %>
@@ -105,7 +105,8 @@
             } else if(item == "export") {
               $('sbox-tools').down('h3').update("Export this project's data");
             } else {
-              $('sbox-tools').down('h3').update("Auto track updates");
+              //$('sbox-tools').down('h3').update("Auto track updates");
+              $('sbox-tools').down('h3').update("Set context");
             }
           }
           });
@@ -128,6 +129,20 @@
     </div>
 
     <div id="tracking" style="display:none">
+      <% form_for(@membership.context ||= @membership.build_context, :html => { :class => "form" }) do |form| %>
+        <% if @context %>
+        <p>This project is contextualismic!</p>
+        <% else %>
+        <p>You can create a context for this project, to help group similar projects by client or category</p>
+        <% end %>
+        <input type="hidden" name="context[membership_ids]" value="<%= [form.object.membership_ids, @membership.id].flatten.join(",") %>" />
+        <%= form.text_field :name %>
+        <p class="btns"><%= save_button %></p>
+      <% end %>
+    
+      <% if false %>
+      <!-->
+      this shit is commented out because we don't track, yet.
       <% if @project.feeds.size > 0 %>
        <ul class="text-list">
         <% @project.feeds.each_with_index do |feed, index| %>
@@ -153,6 +168,7 @@
           </p>
           <p class="btns"><%= save_button %></p>
         <% end -%>
+      --><% end %>
     </div>
     <% end -%>
   <% end -%>
