@@ -1,5 +1,4 @@
 class Project < ActiveRecord::Base
-  class InvalidCodeError < StandardError; end
   include Status::Methods
   
   validates_presence_of :user_id, :name, :code
@@ -18,10 +17,6 @@ class Project < ActiveRecord::Base
   after_save :create_membership
   
   has_finder :all, :order => 'name'
-  
-  def self.find_by_code(code)
-    find(:first, :conditions => {:code => code}) || raise(InvalidCodeError)
-  end
   
   def editable_by?(user)
     users.include?(user)

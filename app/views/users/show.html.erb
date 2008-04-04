@@ -79,12 +79,13 @@
   <% sbox.content = capture do %>
   <div id="projectlist">
     <ul class="text-list" id="project-lists">
-    <% unless @projects.empty? %>
-  	<% @projects.each_with_index do |project, index| -%>
-      <li<%= %( class="last") if first_in_collection?(@projects, index) %> id="project-<%= project.id %>">
+    <% unless @memberships.empty? %>
+  	<% @memberships.each_with_index do |membership, index| -%>
+  	  <% project = membership.project %>
+      <li<%= %( class="last") if first_in_collection?(@memberships, index) %> id="project-<%= project.id %>">
         <a href="<%= url_for_filtered_statuses :user_id => @user, :filter => params[:filter], :date => params[:date], :project => project %>">
           <span class="ttl"><%=h project.name %></span>
-          <span class="desc">Send messages using <em>@<%=h project.code %></em></span>
+          <span class="desc">Send messages using <em>@<%=h membership.code %></em></span>
         </a>
         <div id="showcase-project-<%= project.id %>" style="display:none">
           <h3>Edit <%= h(project.name) %></h3>

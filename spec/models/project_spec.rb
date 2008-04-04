@@ -5,9 +5,6 @@ describe_validations_for Project, :name => 'foo', :user_id => 32 do
 end
 
 describe Project do
-  it "raises InvalidCodeError on bad codes" do
-    lambda { Project.find_by_code("fido") }.should raise_error(Project::InvalidCodeError)
-  end
   
   it "downcases Project#name to #code if empty" do
     p = Project.new :name => "FOO BAR-BAZ"

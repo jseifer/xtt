@@ -16,7 +16,8 @@ class UsersController < ApplicationController
     end
     @user == current_user ? status_query.call : Status.in_projects(current_user, &status_query)
     project_ids = returning(@statuses.collect { |s| s.project_id }) { |ids| ids.uniq! ; ids.compact! }
-    @projects = project_ids.empty? ? [] : Project.find_all_by_id(project_ids)
+    # @projects = project_ids.empty? ? [] : Project.find_all_by_id(project_ids)
+    @memberships = project_ids.empty? ? [] : Membership.find(:all, :conditions => ['user_id=? AND project_id IN (?)', @user.id, project_ids])
   end
 
   # user signup

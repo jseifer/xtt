@@ -2,10 +2,14 @@
     <label for="project_name">Project name:</label>
     <%= form.text_field :name %>
   </p>
+  <% fields_for @membership do |m| %>
 	<p>
-	  <label for="project_code">Code used to post to this project?</label>
-	  <span class="at">@</span><%= form.text_field :code, :maxlength => 10 %>
+	  <label for="project_code">Your code used to post to this project?</label>
+	  <span class="at">@</span><%= m.text_field :code, :maxlength => 10 %>
+	  we suggest '@<%=h form.object.code %>'.
 	</p>
+	
+	<% end %>
 
 
 		

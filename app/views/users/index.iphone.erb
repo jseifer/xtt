@@ -12,8 +12,8 @@
 <div id="projectlist">
   <h2>Your Projects</h2>
   <ul class="text-list" id="project-lists">
-    <% current_user.projects.each do |project| %>
-    <li>@<%= project.code %> <%= link_to h(project.name), project %></li>
+    <% current_user.memberships.each do |membership| %>
+    <li>@<%= membership.code %> <%= link_to h(membership.project.name), membership.project %></li>
     <% end %>
   </ul>
 </div>

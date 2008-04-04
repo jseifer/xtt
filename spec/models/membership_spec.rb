@@ -25,6 +25,11 @@ describe Membership do
     m = Membership.new :user_id => 1, :project_id => 1
     m.should_not be_valid
   end
+
+  it "raises InvalidCodeError on bad codes" do
+    lambda { Project.find_by_code("fido") }.should raise_error(Membership::InvalidCodeError)
+  end
+
 end
 
 describe_validations_for Membership, :user_id => 1, :project_id => 1 do

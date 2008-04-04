@@ -25,10 +25,14 @@ class Status < ActiveRecord::Base
     transitions :from => :pending, :to => :processed, :guard => :calculate_hours
   end
   
+  def membership
+    project ? user.memberships.find_by_project_id(project_id) : nil
+  end
+  
   def code_and_message
     @code ?
       ("@#{@code} #{message}") :
-      (project? ? "@#{project.code} #{message}" : message)
+      (membership ? "@#{membership.code} #{message}" : message)
   end
 
   def followup(reload = false)
@@ -70,7 +74,7 @@ class Status < ActiveRecord::Base
 
 protected
   def set_project_from_code
-    self.project = @code.blank? ? nil : user.projects.find_by_code(@code) unless new_record? && project?
+    self.project = @code.blank? ? nil : user.memberships.find_by_code(@code).project unless new_record? && project?
   rescue
     self.errors.add_to_base("Invalid project code: @#{@code}")
   end

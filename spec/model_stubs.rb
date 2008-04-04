@@ -22,7 +22,7 @@ ModelStubbing.define_models do
     stub :code => 'abc', :email => 'invited-user@example.com', :project_ids => '55'
   end
   
-  model Membership
+  model Membership # none
   
   model Help do
     stub :name => "foo"
@@ -54,8 +54,8 @@ ModelStubbing.define_models :users do
   end
   
   model Membership do
-    stub :user => all_stubs(:user), :project => all_stubs(:project)
-    stub :admin, :user => all_stubs(:admin_user)
+    stub :user => all_stubs(:user), :project => all_stubs(:project), :code => 'abc'
+    stub :admin, :user => all_stubs(:admin_user), :code => 'abc'
   end
 
   model Feed do
@@ -71,8 +71,8 @@ ModelStubbing.define_models :statuses do
   end
 
   model Membership do
-    stub :user => all_stubs(:user), :project => all_stubs(:project)
-    stub :another, :user => all_stubs(:user), :project => all_stubs(:another_project)
+    stub :user => all_stubs(:user), :project => all_stubs(:project), :code => 'abc'
+    stub :another, :user => all_stubs(:user), :project => all_stubs(:another_project), :code => 'def'
   end
 end
 

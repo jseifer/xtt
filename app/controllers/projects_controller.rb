@@ -53,7 +53,7 @@ class ProjectsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @project.update_attributes(params[:project])
+      if @project.update_attributes(params[:project]) and @membership.update_attributes(params[:membership])
         flash[:notice] = 'Project was successfully updated.'
         format.html { redirect_to(@project) }
         format.xml  { head :ok }
@@ -83,6 +83,7 @@ class ProjectsController < ApplicationController
 protected
   def find_project
     @project = Project.find(params[:id])
+    @membership = @project.memberships.find_by_user_id(current_user.id)
   end
   
   def authorized?
