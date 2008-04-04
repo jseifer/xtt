@@ -27,7 +27,7 @@ describe Membership do
   end
 
   it "raises InvalidCodeError on bad codes" do
-    lambda { Project.find_by_code("fido") }.should raise_error(Membership::InvalidCodeError)
+    lambda { Membership.find_by_code("fido") }.should raise_error(Membership::InvalidCodeError)
   end
 
 end
