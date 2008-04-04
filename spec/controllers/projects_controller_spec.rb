@@ -7,7 +7,7 @@ describe ProjectsController, "GET #index" do
 
   before do
     @projects = []
-    @user = mock_model User, :projects => @projects, :active? => true, :time_zone => "UTC"
+    @user = mock_model User, :projects => @projects, :active? => true, :time_zone => "UTC", :id => "1"
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
   end
@@ -115,7 +115,7 @@ describe ProjectsController, "POST #create" do
     login_as :default
     @attributes = {}
     @project = mock_model Project, :new_record? => false, :errors => []
-    @user = mock_model User, :owned_projects => [], :active? => true, :time_zone => "UTC"
+    @user = mock_model User, :owned_projects => [], :active? => true, :time_zone => "UTC", :id => "1"
     @user.owned_projects.stub!(:build).with(@attributes).and_return(@project)
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
@@ -188,7 +188,10 @@ describe ProjectsController, "PUT #update" do
   before do
     @attributes = {}
     @project = projects(:default)
+    @membership = mock_model(Membership, :update_attributes => true)
+
     Project.stub!(:find).with('1').and_return(@project)
+    @project.memberships.stub!(:find_by_user_id).and_return @membership
     controller.stub!(:login_required)
   end
   

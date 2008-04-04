@@ -83,7 +83,7 @@ class ProjectsController < ApplicationController
 protected
   def find_project
     @project = Project.find(params[:id])
-    @membership = @project.memberships.find_by_user_id(current_user.id)
+    @membership = @project.memberships.find_by_user_id(current_user)
   end
   
   def authorized?
