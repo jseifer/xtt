@@ -83,7 +83,7 @@ describe UsersController, "GET #show" do
   before do
     @user = users(:default)
     @statuses   = [mock_model(Status, :project_id => 1), mock_model(Status, :project_id => 3), mock_model(Status, :project_id => 1)]
-    @projects   = [mock_model(Project), mock_model(Project)]
+    @memberships = [mock_model(Membership), mock_model(Membership)]
     @date_range = :date_range
     @hours      = 75.0
     controller.stub!(:login_required)
@@ -103,10 +103,10 @@ describe UsersController, "GET #show" do
         @user.statuses.should_receive(:filter).with(*options[:args]).and_return([@statuses, @date_range])
         @user.statuses.should_receive(:filtered_hours).with(*options[:args][0..-3] + [:daily, {:date => nil}]).and_return(@hours)
         @user.statuses.should_receive(:filtered_hours).with(*options[:args][0..-2] + [{:date => nil}]).and_return(@hours)
-        Project.should_receive(:find_all_by_id).with([1,3]).and_return(@projects)
+        Membership.should_receive(:find_for).with(@user.id, [1,3]).and_return(@memberships)
       end
       
-      it_assigns :user, :statuses, :date_range, :hours, :projects
+      it_assigns :user, :statuses, :date_range, :hours, :memberships
       it_renders :template, :show
     end
   end

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 28) do
+ActiveRecord::Schema.define(:version => 29) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -88,6 +88,7 @@ ActiveRecord::Schema.define(:version => 28) do
   create_table "memberships", :force => true do |t|
     t.integer "project_id"
     t.integer "user_id"
+    t.string  "code"
   end
 
   create_table "open_id_authentication_associations", :force => true do |t|

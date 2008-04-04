@@ -194,7 +194,7 @@ describe ProjectsController, "PUT #update" do
   
   describe ProjectsController, "(successful save)" do
     define_models
-    act! { put :update, :id => 1, :project => @attributes }
+    act! { put :update, :id => 1, :project => @attributes, :membership => {} }
 
     before do
       @project.stub!(:save).and_return(true)
@@ -207,7 +207,7 @@ describe ProjectsController, "PUT #update" do
 
   describe ProjectsController, "(unsuccessful save)" do
     define_models
-    act! { put :update, :id => 1, :project => @attributes }
+    act! { put :update, :id => 1, :project => @attributes, :membership => {} }
 
     before do
       @project.stub!(:save).and_return(false)
@@ -220,7 +220,7 @@ describe ProjectsController, "PUT #update" do
   
   describe ProjectsController, "(successful save, xml)" do
     define_models
-    act! { put :update, :id => 1, :project => @attributes, :format => 'xml' }
+    act! { put :update, :id => 1, :project => @attributes, :format => 'xml', :membership => {} }
 
     before do
       @project.stub!(:save).and_return(true)
@@ -233,7 +233,7 @@ describe ProjectsController, "PUT #update" do
   
   describe ProjectsController, "(unsuccessful save, xml)" do
     define_models
-    act! { put :update, :id => 1, :project => @attributes, :format => 'xml' }
+    act! { put :update, :id => 1, :project => @attributes, :format => 'xml', :membership => {} }
 
     before do
       @project.stub!(:save).and_return(false)
