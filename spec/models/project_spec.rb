@@ -14,4 +14,12 @@ describe Project do
     p.valid?
     p.code.should == 'foobarbaz'
   end
+  
+  it "uniquely enforces code" do
+    p1 = Project.create! :name => "FOO BAR-BAZ", :user_id => 1
+    p1.should be_valid
+    p2 = Project.new :name => "FOO BAR-BAZ", :user_id => 2
+    p2.should_not be_valid
+  end
+    
 end

@@ -14,6 +14,7 @@ class Project < ActiveRecord::Base
   end
   
   before_validation :create_code
+  validates_uniqueness_of :code
   after_save :create_membership
   
   has_finder :all, :order => 'name'
