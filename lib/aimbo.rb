@@ -22,6 +22,28 @@ module Net::TOC
   Debug = true
 end
 
+class XttBot < Net::TOC
+  
+  def client
+    self
+  end
+
+  def xtt_loop
+    while(true) do
+      begin
+        connect
+        puts "buddy list is #{buddy_list.inspect}"
+        wait
+
+      rescue Errno::EPIPE, Errno::ECONNRESET
+        puts "DISCONNECT"
+        disconnect
+        connect # reconnect
+      end
+    end
+  end
+end
+
 class Aimbo
   
   @@credentials = {
@@ -34,7 +56,7 @@ class Aimbo
   include IM
   
   def initialize
-    @client ||= Net::TOC.new(@@credentials[:username], @@credentials[:password]) 
+    @client ||= XttBot.new(@@credentials[:username], @@credentials[:password]) 
     @error_notifier ||= setup_error_notification
     @im_notifier ||= setup_im
     @setup_away ||= setup_away
@@ -85,19 +107,7 @@ end
 
 aimbo = Aimbo.new
 client = aimbo.client
-
-while(true) do
-  begin
-  client.connect
-  puts "buddy list is #{client.buddy_list.inspect}"
-  client.wait
-  rescue Errno::ECONNRESET => err
-    puts "DISCONNECT"
-    client.disconnect
-    client.connect # reconnect
-  end
-end
-
+client.xtt_loop
 return
 
 #/var/www/xtt/releases/20080208021931/vendor/rails/railties/lib/commands/runner.rb:47: 
