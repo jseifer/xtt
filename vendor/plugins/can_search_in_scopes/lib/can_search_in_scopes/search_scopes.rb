@@ -13,61 +13,64 @@ module CanSearchInScopes
     
     def scoped_by(name, options = {})
       options[:scope] ||= :reference
-      scope = self.class.scope_types[options[:scope]].new(name, options)
-      (@scopes_by_type[scope.class] ||= []) << scope
-      @scopes[name] = scope
+      if scope_class = self.class.scope_types[options[:scope]]
+        scope = scope_class.new(@model, name, options)
+        (@scopes_by_type[scope_class] ||= []) << scope
+        @scopes[name] = scope
+      end
     end
-    
+
+    def scope_for(options = {})
+      @scopes.values.inject(@model) { |finder, scope| scope.scope_for(finder, options) }
+    end
+
     def [](name)
       @scopes[name]
     end
   end
   
   class BaseScope
-    attr_reader :name, :attribute
-    def initialize(name, options = {})
-      @name = name
+    attr_reader :name, :attribute, :finder_name, :model
+    def initialize(model, name, options = {})
+      @model, @name = model, name
     end
     
-    # strip out any scoped keys from options, scope the given search_block with them, and the with_scope options
-    def self.scope_options_for(search_scopes, options = {})
+    # strip out any scoped keys from options and return a chained finder.
+    def scope_for(finder, options = {})
+      finder
     end
-    
+
     def ==(other)
-      self.class == other.class && other.name == @name && other.attribute == @attribute
+      self.class == other.class && other.name == @name && other.attribute == @attribute && other.finder_name == @finder_name
     end
   end
   
   class ReferenceScope < BaseScope
     attr_reader :singular_name
-    def initialize(name, options = {})
+    def initialize(model, name, options = {})
       super
       single         = name.to_s.singularize
       @singular_name = single.to_sym
-      @attribute     = options[:attribute] || single.foreign_key.to_sym
+      @attribute     = options[:attribute]   || single.foreign_key.to_sym
+      @finder_name   = options[:finder_name] || "by_#{name}".to_sym
+      @model.named_scope @finder_name, lambda { |records| {:conditions => {@attribute => records}} }
     end
-    
-    def self.scope_options_for(search_scopes, options = {})
-      scopes = search_scopes.scopes_by_type[self]
-      return nil if scopes.blank?
-      conditions = scopes.inject({}) do |cond, scope|
-        value, values = options.delete(scope.singular_name), options.delete(scope.name) || []
-        values << value if value
-        if values.size == 1
-          cond[scope.attribute] = values.first
-        elsif values.size > 1
-          cond[scope.attribute] = values
-        end
-        cond
-      end
-      conditions.blank? ? nil : {:conditions => conditions}
+
+    def scope_for(finder, options = {})
+      value, values = options.delete(@singular_name), options.delete(@name) || []
+      values << value if value
+      return finder if values.empty?
+      finder.send(@finder_name, values.size == 1 ? values.first : values)
     end
     
     def ==(other)
       super && other.singular_name == @singular_name
     end
   end
-  
+
+  class DateRangeScope < BaseScope
+  end
+
   SearchScopes.scope_types[:reference] = ReferenceScope
 end
 

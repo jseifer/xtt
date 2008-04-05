@@ -24,33 +24,77 @@ require 'ruby-debug'
 require 'spec'
 require 'can_search_in_scopes'
 require 'can_search_in_scopes/search_scopes'
-require 'can_search_in_scopes/date_range_scope'
+#require 'can_search_in_scopes/date_range_scope'
 
 module CanSearchInScopes
   class Record < ActiveRecord::Base
     set_table_name 'can_search_records'
     
     def self.per_page() 3 end
+
+    def self.create_table
+      connection.create_table table_name, :force => true do |t|
+        t.string   :name
+        t.integer  :parent_id
+        t.datetime :created_at
+      end
+      connection.add_index :can_search_records, :name
+    end
     
-    can_search do
-      scoped_by :parents
-      scoped_by :masters, :attribute => :parent_id
-      scoped_by :created, :scope => :date_range
-      scoped_by :range, :attribute => :created_at, :scope => :date_range
+    def self.drop_table
+      connection.drop_table table_name
+    end
+    
+    def self.seed_data(now = Time.now.utc)
+      transaction do
+        create :name => 'default',  :parent_id => 1, :created_at => now - 5.minutes
+        create :name => 'day',      :parent_id => 2, :created_at => now - 8.minutes
+        create :name => 'week_1',   :parent_id => 1, :created_at => now - 3.days
+        create :name => 'week_2',   :parent_id => 2, :created_at => now - (4.days + 20.hours)
+        create :name => 'biweek_1', :parent_id => 2, :created_at => now - 8.days
+        create :name => 'biweek_2', :parent_id => 1, :created_at => now - (14.days + 20.hours)
+        create :name => 'month_1',  :parent_id => 2, :created_at => now - 20.days
+        create :name => 'month_2',  :parent_id => 1, :created_at => now - (28.days + 20.hours)
+        create :name => 'archive',  :parent_id => 1, :created_at => now - 35.days
+      end
     end
   end
-  
-  class RefRecord < ActiveRecord::Base
-    set_table_name 'can_search_records'
-    can_search do
-      scoped_by :parents
+
+  module CanSearchSpecHelper
+    def self.included(base)
+      base.before :all do
+        @now = Time.utc 2007, 6, 30, 6
+        Record.create_table
+        Record.seed_data @now
+        @expected_index = Record.find(:all).inject({}) { |h, r| h.update r.name.to_sym => r }
+      end
+
+      base.before do
+        Time.stub!(:now).and_return(@now)
+      end
+      
+      base.after :all do
+        Record.connection.drop_table :can_search_records
+      end
     end
-  end
-  
-  class DateRecord < ActiveRecord::Base
-    set_table_name 'can_search_records'
-    can_search do
-      scoped_by :created, :scope => :date_range
+
+    def records(key)
+      @expected_index[key]
+    end
+    
+    def compare_records(actual, expected)
+      actual = actual.sort { |x, y| y.created_at <=> x.created_at }
+      expected.each do |e| 
+        a_index = actual.index(records(e))
+        e_index = expected.index(e)
+        if a_index.nil?
+          fail "Record record(#{e.inspect}) was not in the array, but should have been."
+        else
+          fail "Record record(#{e.inspect}) is in wrong position: #{a_index.inspect} instead of #{e_index.inspect}" unless a_index == e_index
+        end
+      end
+      
+      actual.size.should == expected.size
     end
   end
 end
