@@ -4,6 +4,6 @@ class ContextMembershipUserFk < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :contexts, :column_name
+    remove_column :contexts, :context_id
   end
 end
