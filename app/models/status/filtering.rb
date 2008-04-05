@@ -38,18 +38,18 @@ class Status
   
   # user_id can be an integer or nil
   def self.filter(user_id, filter, options = {})
-    range   = filter ? date_range_from_period(filter, options[:date]) : nil
+    range   = filter ? date_range_for(filter, options[:date]) : nil
     records = search :user => user_id, :created => range,
       :order => 'statuses.created_at desc', :page => options[:page], :per_page => options[:per_page]
     [records, range]
   end
   
   def self.hours(user_id, filter, options = {})
-    scoped_sum :hours, :user => user_id, :created => {:period => filter, :start => options[:date]}
+    search_for(:user => user_id, :created => {:period => filter, :start => options[:date]}).sum :hours
   end
   
   def self.filtered_hours(user_id, filter, options = {})
-    hours = scoped_sum :hours, :user => user_id, :created => {:period => filter, :start => options[:date]},
+    hours = search_for(:user => user_id, :created => {:period => filter, :start => options[:date]}).sum :hours,
       :group => "CONCAT(user_id, '::', DATE(CONVERT_TZ(created_at, '+00:00', '#{Time.zone.utc_offset_string}')))"
     hours.extend(FilteredHourMethods)
   end

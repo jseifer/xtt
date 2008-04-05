@@ -50,7 +50,7 @@ module CanSearchInScopes
   def date_periods() @date_periods ||= CanSearchInScopes::DateRangeScope.periods.dup end
 
   def date_range_for(period_name, time = nil)
-    if period = date_periods[period_name]
+    if period = date_periods[period_name.to_sym]
       period.call(parse_filtered_time(time))
     else
       raise "Invalid period: #{period_name.inspect}"

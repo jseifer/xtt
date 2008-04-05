@@ -7,10 +7,10 @@ module CanSearchInScopes
   
   def search(options = {})
     options = options.dup
-    scope_for(options).send(options.key?(:page) ? :paginate : :all, options)
+    search_for(options).send(options.key?(:page) ? :paginate : :all, options)
   end
 
-  def scope_for(options = {})
-    search_scopes.scope_for(options)
+  def search_for(options = {})
+    search_scopes.search_for(options)
   end
 end

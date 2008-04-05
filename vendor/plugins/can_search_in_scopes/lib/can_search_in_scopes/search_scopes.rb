@@ -20,7 +20,7 @@ module CanSearchInScopes
       end
     end
 
-    def scope_for(options = {})
+    def search_for(options = {})
       @scopes.values.inject(@model) { |finder, scope| scope.scope_for(finder, options) }
     end
 
@@ -66,9 +66,6 @@ module CanSearchInScopes
     def ==(other)
       super && other.singular_name == @singular_name
     end
-  end
-
-  class DateRangeScope < BaseScope
   end
 
   SearchScopes.scope_types[:reference] = ReferenceScope
