@@ -7,7 +7,7 @@ class Membership < ActiveRecord::Base
   
   validates_presence_of :project_id, :user_id
   validates_uniqueness_of :code, :scope => :user_id
-  validate :unique?
+  validates_uniqueness_of :project_id, :scope => :user_id
   
   def self.find_by_code(code)
     find(:first, :conditions => {:code => code}) || raise(InvalidCodeError)
@@ -16,9 +16,12 @@ class Membership < ActiveRecord::Base
   def find_for(user_id, project_ids)
     find(:all, :conditions => ['user_id=? AND project_id IN (?)', user_id, project_ids])
   end
-
-protected
-  def unique?
-    errors.add_to_base "Duplicate Membership for User and Project" if self.class.exists?(attributes)
+  
+  def context_name
+    context ? context.name : ''
   end
+  def context_name=(val)
+    context = user.contexts.find_or_create_by_name(val)
+  end
+
 end

@@ -16,18 +16,24 @@ describe Membership do
   
   it "adds users as project members" do
     projects(:default).user_id = nil
-    Membership.create! :user => users(:default), :project => projects(:default)
+    Membership.create! :user => users(:default), :project => projects(:default), :code => 'test'
     projects(:default).users.include?(users(:default)).should == true
   end
 
   it "doesn't allow duplicates" do
-    Membership.create!(:user_id => 1, :project_id => 1)
-    m = Membership.new :user_id => 1, :project_id => 1
+    Membership.create!(:user_id => 1, :project_id => 1, :code => 'test')
+    m = Membership.new :user_id => 1, :project_id => 1, :code => 'other'
     m.should_not be_valid
   end
 
   it "raises InvalidCodeError on bad codes" do
     lambda { Membership.find_by_code("fido") }.should raise_error(Membership::InvalidCodeError)
+  end
+  
+  it "requires a code unique to the user" do
+    Membership.create(:user_id => 1, :project_id => 1, :code => 'test')
+    m = Membership.new(:user_id => 1, :project_id => 2, :code => 'test')
+    m.should have(1).error_on(:code)
   end
 
 end
