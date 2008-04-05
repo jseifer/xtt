@@ -70,6 +70,7 @@ TextFieldOptions.prototype = {
       this.values.push(opt.innerHTML)
     }.bind(this))
     this.targetField.observe('keyup', this.onValueChange.bind(this))
+    this.getValue()
   },
   onOptionClick: function(event) {
     Event.stop(event)
@@ -78,8 +79,7 @@ TextFieldOptions.prototype = {
   },
   onValueChange: function(event) {
     Event.stop(event)
-    i = this.values.indexOf(event.element().value)
-    this.selectOption(this.element.childElements()[i])
+    this.getValue()
   },
   deselectOptions: function() {
     var current = this.element.down('.selected')
@@ -88,6 +88,10 @@ TextFieldOptions.prototype = {
   selectOption: function(ele) {
     this.deselectOptions()
     if (ele != null) { ele.addClassName('selected') }
+  },
+  getValue: function() {
+    i = this.values.indexOf(this.targetField.value)
+    this.selectOption(this.element.childElements()[i])
   },
   setValue: function(val) {
     this.targetField.value = val
