@@ -2,14 +2,15 @@
     <label for="project_name">Project name:</label>
     <%= form.text_field :name %>
   </p>
-  <% fields_for @membership do |m| %>
-	<p>
-	  <label for="project_code">Your code used to post to this project?</label>
-	  <span class="at">@</span><%= m.text_field :code, :maxlength => 10 %>
-	  we suggest '@<%=h form.object.code %>'.
+  
+  <p>
+	  <label for="project_code">Default Code for posting to this project?</label>
+	  <span class="at">@</span>
+	  <%= form.text_field :code, :maxlength => 10 %>
+    For example: '@proj' or '@project'
+    <% unless form.object.new_record? %>
+    <br />
+    This only changes the default for new members; To change your own code
+    look under "membership".
+    <% end %>
 	</p>
-	
-	<% end %>
-
-
-		
