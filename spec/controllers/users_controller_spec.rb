@@ -90,9 +90,9 @@ describe UsersController, "GET #show" do
     controller.stub!(:current_user).and_return(@user)
   end
 
-  [ {:filter => nil, :args => [:weekly, {:date => nil, :page => nil}]},
-    {:filter => nil, :args => [:weekly, {:date => nil, :page => nil}]},
-    {:filter => 'weekly', :args => ['weekly', {:date => nil, :page => nil}]}].each do |options|
+  [ {:filter => nil, :args => [:weekly, {:projects => nil, :date => nil, :page => nil}]},
+    {:filter => nil, :args => [:weekly, {:projects => nil, :date => nil, :page => nil}]},
+    {:filter => 'weekly', :args => ['weekly', {:date => nil, :page => nil, :projects => nil}]}].each do |options|
       
     describe UsersController, "(filtered)" do
       define_models

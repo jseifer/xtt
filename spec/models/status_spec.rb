@@ -215,31 +215,6 @@ describe Status, 'permissions' do
   end
 end
 
-describe Status, "(filtering)" do
-  define_models
-
-  it "finds statuses by user" do
-    users(:default).statuses.should == [statuses(:in_project), statuses(:default)]
-  end
-  
-  it "finds statuses by project" do
-    projects(:default).statuses.should == [statuses(:in_project)]
-    Status.for_project(projects(:default)).should == [statuses(:in_project)]
-  end
-  
-  it "finds statuses without project" do
-    Status.without_project.should == [statuses(:default)]
-  end
-  
-  it "finds user statuses by project" do
-    users(:default).statuses.for_project(projects(:default)).should == [statuses(:in_project)]
-  end
-  
-  it "finds user statuses without project" do
-    users(:default).statuses.without_project.should == [statuses(:default)]
-  end
-end
-
 describe Status, "(filtering by date)" do
   define_models :copy => false do
     time 2007, 6, 30, 6
