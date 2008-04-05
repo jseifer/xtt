@@ -26,13 +26,13 @@ class Status < ActiveRecord::Base
   end
   
   def membership
-    project ? user.memberships.find_by_project_id(project_id) : nil
+    project ? user.memberships.for(project) : nil
   end
   
   def code_and_message
     @code ?
       ("@#{@code} #{message}") :
-      (membership ? "@#{membership.code} #{message}" : message)
+      (membership ? "@#{membership.code || project.code} #{message}" : message)
   end
 
   def followup(reload = false)
@@ -76,7 +76,11 @@ protected
   def set_project_from_code
     self.project = @code.blank? ? nil : user.memberships.find_by_code(@code).project unless new_record? && project?
   rescue
-    self.errors.add_to_base("Invalid project code: @#{@code}")
+    if p = user.projects.find_by_code(@code)
+      self.project = p
+    else
+      self.errors.add_to_base("Invalid project code: @#{@code}")
+    end
   end
 
   def extract_code_and_message(message)

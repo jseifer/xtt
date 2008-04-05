@@ -545,6 +545,26 @@ li.daybreak {
 
 /* @group forms */
 
+.form .row {
+  padding: 5px 0;
+  border-bottom: 1px solid #ccc;
+}
+.form .row.final {
+  border-bottom: none !important;
+}
+
+.form fieldset {
+  border: none;
+  padding: 5px 0 0 0;
+  margin: 10px 0;
+  border-top: 1px solid #ddd;
+}
+.form fieldset legend {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.95em;
+}
+
 .form label {
   font-weight: bold;
   display: block;
@@ -647,6 +667,33 @@ p.btns a {
   border-bottom-color: #ccc;
   border-right-color: #ccc;
   color: #444;
+}
+
+.form div.text_field_options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.form div.text_field_options > div {
+  font-size: 0.95em;
+  float: left;
+  background-color: #fff;
+  color: #333;
+  margin-right: 5px;
+  margin-bottom: 3px;
+  padding: 1px 5px 2px;
+  font-weight: bold;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border: 1px solid #ccc;
+}
+.form div.text_field_options > div.selected,
+.form div.text_field_options > div.selected:hover {
+  background-color: #06f;
+  color: #fff;
+}
+.form div.text_field_options > div:hover {
+  background-color: #aaa;
 }
 
 /* @end */

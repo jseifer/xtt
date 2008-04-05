@@ -12,11 +12,10 @@ class Project < ActiveRecord::Base
     end
   end
   
-  before_validation :create_code
-  validates_uniqueness_of :code
-  after_save :create_membership
+  before_validation_on_create :create_code
+  after_create :create_membership_for_owner
   
-  has_finder :all, :order => 'name'
+  named_scope :all, :order => 'name'
   
   def editable_by?(user)
     users.include?(user)
@@ -27,8 +26,8 @@ class Project < ActiveRecord::Base
   end
 
 protected
-  def create_membership
-    memberships.create :user_id => user_id
+  def create_membership_for_owner
+    memberships.create :user_id => user_id, :code => code
   end
   
   def create_code
@@ -38,4 +37,5 @@ protected
       code.downcase!
     end
   end
+  
 end

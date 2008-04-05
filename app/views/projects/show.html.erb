@@ -39,12 +39,12 @@
     <% if @statuses.each_with_index do |status, index| -%>
       <li class="hentry media-item clearfix<%= %( last) if first_in_collection?(@statuses, index) %><%= %( daybreak)  if (status.created_at.day != prev_status.created_at.day) rescue '' %>">
         <% if (index == 0) || (status.created_at.day != prev_status.created_at.day) %>        
-        <p class="day-break" style="display:none">
-          <span class="num"><%= js_day_name status.created_at %></span>
-          <span class="day"><%= js_datetime status.created_at, :short %></span>
-        </p>
+          <p class="day-break" style="display:none">
+            <span class="num"><%= js_day_name status.created_at %></span>
+            <span class="day"><%= js_datetime status.created_at, :short %></span>
+          </p>
         <% else  %>
-        <span class="time-span" style="display:none"><%= status.created_at.to_s :time %></span>
+          <span class="time-span" style="display:none"><%= status.created_at.to_s :time %></span>
         <% end -%>
         <% prev_status = status %>
         
@@ -55,15 +55,15 @@
           <h4 class="media-title status"><%= link_to(status_for(status), status, :class => 'entry-title entry-content') %></h4>
           <p class="quiet">posted by <%= link_to(h(status.user.login), status.user) %>,  <%= status_at status %> from <strong><%=h status.source || "the web" %></strong></p>
           <% if status.processed? -%>
-          <span class="others">
-            <span class="num"><%= status.hours.to_f %></span>
-            <span class="meta">hours</span>
-          </span>
+            <span class="others">
+              <span class="num"><%= status.hours.to_f %></span>
+              <span class="meta">hours</span>
+            </span>
           <% elsif !status.out? %>
-          <span class="others">
-            <span class="num livetime" title="<%= status.created_at.utc.strftime("%d %b, %Y %I:%M %p") %>"><%= status.hours.to_f %></span>
-            <span class="meta">logged</span>
-          </span>
+            <span class="others">
+              <span class="num livetime" title="<%= status.created_at.utc.strftime("%d %b, %Y %I:%M %p") %>"><%= status.hours.to_f %></span>
+              <span class="meta">logged</span>
+            </span>
           <% end %>
         </div>
       </li>
@@ -85,63 +85,60 @@
       <p class="btns"><%= save_button %></p>
     <% end -%>
     </div>
-    <% if @project.owned_by? current_user or current_user.admin? -%>
-      <% sbox.header_utils = %(
-        <div id="tool-tabs">
-          <a href="#invite">Invite</a>
-          <a href="#tracking">Track</a>
-          <a href="#export">CSV</a>
-          <a href="#edit">Edit</a>
-        </div>) %>
-      <% content_for :dom_loaded do %>
-        new Control.Tabs("tool-tabs", {
-          linkSelector: 'a',
-          afterChange: function(container) {
-            var item = container.readAttribute('id');
-            if(item == "edit") {
-              $('sbox-tools').down('h3').update("Edit this project");
-            } else if(item == "invite") {
-              $('sbox-tools').down('h3').update("Invite someone to this project");
-            } else if(item == "export") {
-              $('sbox-tools').down('h3').update("Export this project's data");
-            } else {
-              $('sbox-tools').down('h3').update("Auto track updates");
-            }
-          }
-          });
+    <% sbox.header_utils = %(
+      <div id="tool-tabs">
+        <a href="#invite">Invite</a>
+        <a href="#membership">Me</a>
+        <a href="#export">CSV</a>
+        <a href="#edit">Edit</a>
+      </div>) 
+    %>
+    <% content_for :dom_loaded do %>
+      <% unless @project.owned_by? current_user or current_user.admin? %>
+      $('tool-tabs').down('[href=#edit]').remove();
+      $('tool-tabs').down('[href=#export]').remove();
       <% end %>
-    <div id="edit" style="display:none">
-      <%= error_messages_for :project %>
-      <% form_for @project, :html => {:class => 'form'} do |f| -%>
-      <%= render :partial => "form", :object => f %>
-        <p class="btns"><%= update_button %></p>
-      <% end -%>
-    </div>
-    
-    <div id="export" style="display:none">
-      Navigate using the date, next/previous buttons below the graph and select your preferred output format to view.
-      <ul class="text-list">
-        <li><%= link_to "CSV", params.update(:format => 'csv') %></li>
-        <li><%= link_to "XML", params.update(:format => 'xml') %></li>
-      </ul>
-      <!-- todo: icon -->
-    </div>
+      new Control.Tabs("tool-tabs", {
+        linkSelector: 'a',
+        afterChange: function(container) {
+          var item = container.readAttribute('id');
+          if(item == "edit") {
+            $('sbox-tools').down('h3').update("Edit this project");
+          } else if(item == "invite") {
+            $('sbox-tools').down('h3').update("Invite someone to this project");
+          } else if(item == "export") {
+            $('sbox-tools').down('h3').update("Export this project's data");
+          } else {
+            //$('sbox-tools').down('h3').update("Auto track updates");
+            $('sbox-tools').down('h3').update("Edit Membership");
+          }
+        }
+      });
+    <% end %>
 
-    <div id="tracking" style="display:none">
-      <% if @project.feeds.size > 0 %>
-       <ul class="text-list">
-        <% @project.feeds.each_with_index do |feed, index| %>
-          <li<%= %( class="last") if first_in_collection?(@project.feeds, index) %>>
-            <span class="ttl"><%= link_to h(feed.name), feed %></span>
-            <span class="desc">Updated 10 minutes ago</span>
-          </li>
+    <div id="membership" style="display:none">
+      <% form_for(@membership, :html => { :class => "form" }, :method => 'put') do |form| %>
+        <%= render :partial => 'memberships/form', :object => form %>
+        <p class="btns"><%= save_button %></p>
+      <% end %>
+  
+      <% if false %>
+      <!--
+      this shit is commented out because we don't track, yet.
+        <% if @project.feeds.size > 0 %>
+         <ul class="text-list">
+          <% @project.feeds.each_with_index do |feed, index| %>
+            <li<%= %( class="last") if first_in_collection?(@project.feeds, index) %>>
+              <span class="ttl"><%= link_to h(feed.name), feed %></span>
+              <span class="desc">Updated 10 minutes ago</span>
+            </li>
+          <% end %>
+          </ul>
         <% end %>
-        </ul>
-        <% end %>
-                
+              
         <% form_for @project.feeds.new, :html => {:class => 'form' } do |f| -%>       
         <p>Have an RSS feed that you'd like to auto update this project with?</p>
-        
+    
           <%= f.hidden_field :project_id %>
           <p>
             <label for="project_feed_name">Give this feed a title</label>
@@ -152,9 +149,31 @@
             <%= f.text_field :url, :value => "http://" %>
           </p>
           <p class="btns"><%= save_button %></p>
+    
         <% end -%>
+      -->
+      <% end %>
     </div>
-    <% end -%>
+  
+    <% if @project.owned_by? current_user or current_user.admin? -%>
+  
+      <div id="edit" style="display:none">
+        <%= error_messages_for :project %>
+        <% form_for @project, :html => {:class => 'form'} do |f| -%>
+        <%= render :partial => "form", :object => f %>
+          <p class="btns"><%= update_button %></p>
+        <% end -%>
+      </div>
+    
+      <div id="export" style="display:none">
+        Navigate using the date, next/previous buttons below the graph and select your preferred output format to view.
+        <ul class="text-list">
+          <li><%= link_to "CSV", params.update(:format => 'csv') %></li>
+          <li><%= link_to "XML", params.update(:format => 'xml') %></li>
+        </ul>
+        <!-- todo: icon -->
+      </div>
+    <% end %>
   <% end -%>
 <% end -%>
 

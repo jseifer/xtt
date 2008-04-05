@@ -28,7 +28,19 @@ class PaginationTest < Test::Unit::TestCase
     def guess_collection_name
       @developers = session[:wp]
       @options    = session[:wp_options]
+      
       render :inline => '<%= will_paginate @options %>'
+    end
+
+    def paginated_section
+      @developers = session[:wp]
+      @options    = session[:wp_options]
+      
+      render :inline => <<-ERB
+        <% paginated_section @options do %>
+          <%= content_tag :div, '', :id => "developers" %>
+        <% end %>
+      ERB
     end
 
     protected
@@ -75,8 +87,16 @@ class PaginationTest < Test::Unit::TestCase
     assert_select 'div.will_paginate', 1, 'no main DIV' do
       assert_select 'a[href]', 4 do |elements|
         validate_page_numbers [1,1,3,3], elements
-        assert_select elements.first, 'a', "Prev"
-        assert_select elements.last, 'a', "Next"
+        # test rel attribute values:
+        assert_select elements[1], 'a', '1' do |link|
+          assert_equal 'prev start', link.first['rel']
+        end
+        assert_select elements.first, 'a', "Prev" do |link|
+          assert_equal 'prev start', link.first['rel']
+        end
+        assert_select elements.last, 'a', "Next" do |link|
+          assert_equal 'next', link.first['rel']
+        end
       end
       assert_select 'span.current', entries.current_page.to_s
     end
@@ -151,7 +171,7 @@ class PaginationTest < Test::Unit::TestCase
         assert_select elements.last, 'a', "Next &raquo;"
       end
       assert_select 'span.current', entries.current_page.to_s
-      assert_equal '&laquo; Previous 1 2 ... 5 6 7 ... 10 11 Next &raquo;', pagination.first.inner_text
+      assert_equal '&laquo; Previous 1 2 &hellip; 5 6 7 &hellip; 10 11 Next &raquo;', pagination.first.inner_text
     end
   end
 
@@ -169,7 +189,7 @@ class PaginationTest < Test::Unit::TestCase
   def test_no_pagination
     get :list_developers, :per_page => 12
     entries = assigns :developers
-    assert_equal 1, entries.page_count
+    assert_equal 1, entries.total_pages
     assert_equal 11, entries.size
 
     assert_equal '', @response.body
@@ -181,11 +201,24 @@ class PaginationTest < Test::Unit::TestCase
     end
   end
 
+  class LegacyCollection < WillPaginate::Collection
+    alias :page_count :total_pages
+    undef :total_pages
+  end
+  
   uses_mocha 'helper internals' do
     def test_collection_name_can_be_guessed
       collection = mock
-      collection.expects(:page_count).returns(1)
+      collection.expects(:total_pages).returns(1)
       get :guess_collection_name, {}, :wp => collection
+    end
+
+    def test_deprecation_notices_with_page_count
+      collection = LegacyCollection.new 1, 1, 2
+
+      assert_deprecated collection.class.name do
+        get :guess_collection_name, {}, :wp => collection
+      end
     end
   end
   
@@ -211,6 +244,20 @@ class PaginationTest < Test::Unit::TestCase
     assert_select 'div.pagination', 1 do |div|
       assert_equal 'custom_id', div.first['id']
     end
+  end
+
+  if ActionController::Base.respond_to? :rescue_responses
+    def test_rescue_response_hook_presence
+      assert_equal :not_found,
+        DevelopersController.rescue_responses['WillPaginate::InvalidPage']
+    end
+  end
+
+  def test_paginated_section
+    collection = WillPaginate::Collection.new 1, 1, 2
+    get :paginated_section, {}, :wp => collection, :wp_options => { :class => 'will_paginate' }
+    assert_select 'div.will_paginate', 2
+    assert_select 'div.will_paginate + div#developers', 1
   end
   
 protected
@@ -238,5 +285,32 @@ protected
         assert_no_match pattern, el['href']
       end
     end
+  end
+  
+  def collect_deprecations
+    old_behavior = WillPaginate::Deprecation.behavior
+    deprecations = []
+    WillPaginate::Deprecation.behavior = Proc.new do |message, callstack|
+      deprecations << message
+    end
+    result = yield
+    [result, deprecations]
+  ensure
+    WillPaginate::Deprecation.behavior = old_behavior
+  end
+end
+
+class ViewHelpersTest < Test::Unit::TestCase
+  include WillPaginate::ViewHelpers
+
+  def test_page_entries_info
+    arr = ('a'..'z').to_a
+    collection = arr.paginate :page => 2, :per_page => 5
+    assert_equal %{Displaying entries <b>6&nbsp;-&nbsp;10</b> of <b>26</b> in total},
+      page_entries_info(collection)
+    
+    collection = arr.paginate :page => 7, :per_page => 4
+    assert_equal %{Displaying entries <b>25&nbsp;-&nbsp;26</b> of <b>26</b> in total},
+      page_entries_info(collection)
   end
 end

@@ -131,7 +131,7 @@ describe Status, "being updated" do
   it "allows changed message" do
     @status.update_attributes(:code_and_message => "@abc booya").should be_true
     @status.message.should == 'booya'
-    @status.project.code.should == 'abc'
+    @status.user.memberships.for(@status.project).code.should == 'abc'
   end
   
   it "requires valid code, yet still updates message" do

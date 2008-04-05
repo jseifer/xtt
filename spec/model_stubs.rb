@@ -24,6 +24,8 @@ ModelStubbing.define_models do
   
   model Membership # none
   
+  model Context
+  
   model Help do
     stub :name => "foo"
     stub :foo, :name => "bar"
@@ -72,7 +74,7 @@ ModelStubbing.define_models :statuses do
 
   model Membership do
     stub :user => all_stubs(:user), :project => all_stubs(:project), :code => 'abc'
-    stub :another, :user => all_stubs(:user), :project => all_stubs(:another_project), :code => 'def'
+    stub :another, :user => all_stubs(:user), :project => all_stubs(:another_project)
   end
 end
 

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 29) do
+ActiveRecord::Schema.define(:version => 31) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -59,6 +59,13 @@ ActiveRecord::Schema.define(:version => 29) do
     t.integer  "exit_status"
   end
 
+  create_table "contexts", :force => true do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "feeds", :force => true do |t|
     t.string   "name"
     t.string   "url"
@@ -89,6 +96,7 @@ ActiveRecord::Schema.define(:version => 29) do
     t.integer "project_id"
     t.integer "user_id"
     t.string  "code"
+    t.integer "context_id"
   end
 
   create_table "open_id_authentication_associations", :force => true do |t|

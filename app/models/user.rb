@@ -4,8 +4,14 @@ class User < ActiveRecord::Base
   before_create { |u| u.admin = true if User.count.zero? }
     
   has_many :owned_projects, :order => 'projects.name', :class_name => 'Project'
-
-  has_many :memberships, :dependent => :delete_all
+  has_many :contexts, :order => 'contexts.name'
+  has_many :memberships, :dependent => :delete_all do
+    def for(project)
+      loaded? ? 
+        proxy_target.detect { |r| r.project_id == project.id } : 
+        find(:first, :conditions => { :project_id => project.id})
+    end
+  end
   has_many :projects, :order => 'projects.name', :through => :memberships
   
   has_many :recent_projects, :through => :statuses, :class_name => Project.name, :source => :project do
@@ -14,7 +20,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  has_finder :all, :order => 'login'
+  named_scope :all, :order => 'login'
   
   def related_users
     @related_users ||= with_memberships { User.find :all, :order => 'last_status_at desc', :select => "DISTINCT users.*" }
