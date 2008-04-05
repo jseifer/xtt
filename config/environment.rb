@@ -45,6 +45,9 @@ Rails::Initializer.run do |config|
   config.gem :has_finder
   config.gem :fastercsv
   config.gem :googlecharts, :lib => "gchart"
+  config.gem :hpricot
+  config.active_support.use_standard_json_time_format = true
+  config.active_record.include_root_in_json = true
 
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
