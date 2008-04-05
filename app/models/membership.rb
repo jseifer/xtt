@@ -21,7 +21,7 @@ class Membership < ActiveRecord::Base
     context ? context.name : ''
   end
   def context_name=(val)
-    context = user.contexts.find_or_create_by_name(val)
+    self.context = user.contexts.find_or_create_by_name(val)
   end
 
 end

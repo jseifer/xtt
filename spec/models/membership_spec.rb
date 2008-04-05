@@ -2,7 +2,10 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Membership do
   define_models :memberships do
-    model Membership
+    model Membership do
+      stub :user => all_stubs(:user), :project => all_stubs(:another_project), :code => 'foo'
+    end
+    model Context
   end
   
   it "knows arbitrary users are not project members" do
@@ -35,7 +38,13 @@ describe Membership do
     m = Membership.new(:user_id => 1, :project_id => 2, :code => 'test')
     m.should have(1).error_on(:code)
   end
-
+  
+  it "sets the context from context_name" do
+    memberships(:default).context_name = "foo"
+    memberships(:default).context.should be_an_instance_of(Context)
+    memberships(:default).context.name.should == "foo"
+  end
+  
 end
 
 describe_validations_for Membership, :user_id => 1, :project_id => 1 do
