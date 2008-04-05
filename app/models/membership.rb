@@ -4,11 +4,11 @@ class Membership < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
   belongs_to :context
-  
+
   validates_presence_of :project_id, :user_id
   validates_uniqueness_of :code, :scope => :user_id
   validates_uniqueness_of :project_id, :scope => :user_id
-  
+
   def self.find_by_code(code)
     find(:first, :conditions => {:code => code}) || raise(InvalidCodeError)
   end
@@ -20,8 +20,8 @@ class Membership < ActiveRecord::Base
   def context_name
     context ? context.name : ''
   end
+
   def context_name=(val)
     self.context = user.contexts.find_or_create_by_name(val)
   end
-
 end

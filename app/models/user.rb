@@ -12,7 +12,8 @@ class User < ActiveRecord::Base
         find(:first, :conditions => { :project_id => project.id})
     end
   end
-  has_many :projects, :order => 'projects.name', :through => :memberships
+
+  has_many :projects, :select => 'projects.*, memberships.code as project_code', :through => :memberships, :order => 'projects.name'
   
   has_many :recent_projects, :through => :statuses, :class_name => Project.name, :source => :project do
     def latest

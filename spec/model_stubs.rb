@@ -74,7 +74,7 @@ ModelStubbing.define_models :statuses do
 
   model Membership do
     stub :user => all_stubs(:user), :project => all_stubs(:project), :code => 'abc'
-    stub :another, :user => all_stubs(:user), :project => all_stubs(:another_project)
+    stub :another, :user => all_stubs(:user), :project => all_stubs(:another_project), :code => 'def'
   end
 end
 

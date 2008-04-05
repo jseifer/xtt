@@ -59,6 +59,11 @@ ActiveRecord::Schema.define(:version => 31) do
     t.integer  "exit_status"
   end
 
+  create_table "can_search_record", :force => true do |t|
+    t.integer  "parent_id"
+    t.datetime "created_at"
+  end
+
   create_table "contexts", :force => true do |t|
     t.string   "name"
     t.integer  "user_id"
@@ -126,6 +131,7 @@ ActiveRecord::Schema.define(:version => 31) do
     t.string   "code"
   end
 
+  add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
   add_index "projects", ["code"], :name => "index_projects_on_code"
 
   create_table "statuses", :force => true do |t|
