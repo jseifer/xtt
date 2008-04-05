@@ -117,7 +117,7 @@
     <% end %>
 
     <div id="membership" style="display:none">
-      <% form_for(@membership, :html => { :class => "form" }) do |form| %>
+      <% form_for(@membership, :html => { :class => "form" }, :method => 'put') do |form| %>
         <%= render :partial => 'memberships/form', :object => form %>
         <p class="btns"><%= save_button %></p>
       <% end %>

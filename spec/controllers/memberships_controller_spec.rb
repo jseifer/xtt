@@ -38,6 +38,26 @@ describe MembershipsController, "POST #create" do
   
 end
 
+describe MembershipsController, "PUT #update" do
+
+  describe MembershipsController, "(successful update)" do
+    define_models :users
+    
+    before do
+      login_as :default
+      @membership = memberships(:default)
+    end
+    
+    it "updates the code and context" do
+      put :update, :id => @membership.id, :membership => {:code => 'xyz', :context_name => 'foo'}
+      @membership.reload
+      @membership.code.should == 'xyz'
+      @membership.context.name.should == 'foo'
+    end
+    
+  end
+end
+
 describe MembershipsController, "DELETE #destroy" do
   define_models :users
   act! { delete :destroy, :id => 1, :format => 'js' }
