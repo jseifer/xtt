@@ -118,7 +118,7 @@ describe Status, "being updated" do
   it "allows changed project" do
     @status.update_attributes(:code_and_message => "@def booya").should be_true
     @status.message.should == 'booya'
-    @status.user.memberships.for(@status.project).code.should == 'def'
+    @status.project.code.should == 'def'
   end
   
   it "allows changing to OUT" do
