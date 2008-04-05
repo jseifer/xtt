@@ -22,11 +22,10 @@ $:.unshift "#{dir}/../lib"
 
 require 'ruby-debug'
 require 'spec'
-require 'can_search_in_scopes'
-require 'can_search_in_scopes/search_scopes'
-#require 'can_search_in_scopes/date_range_scope'
+require 'can_search'
+require 'can_search/search_scopes'
 
-module CanSearchInScopes
+module CanSearch
   class Record < ActiveRecord::Base
     set_table_name 'can_search_records'
     

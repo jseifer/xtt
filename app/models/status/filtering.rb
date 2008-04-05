@@ -34,7 +34,7 @@ class Status
     attr_accessor :filter_types
   end
   
-  self.filter_types = Set.new CanSearchInScopes::DateRangeScope.periods.keys
+  self.filter_types = Set.new CanSearch::DateRangeScope.periods.keys
   
   # user_id can be an integer or nil
   def self.filter(user_id, filter, options = {})

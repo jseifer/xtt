@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-module CanSearchInScopes
+module CanSearch
   describe "all Reference Scopes", :shared => true do
     include CanSearchSpecHelper
 
@@ -9,7 +9,7 @@ module CanSearchInScopes
     end
 
     it "creates named_scope" do
-      Record.scopes[@scope.finder_name].should_not be_nil
+      Record.scopes[@scope.named_scope].should_not be_nil
     end
 
     it "paginates records" do
@@ -39,7 +39,7 @@ module CanSearchInScopes
         Record.can_search do
           scoped_by :parents
         end
-        @scope = ReferenceScope.new(Record, :parents, :attribute => :parent_id, :singular => :parent, :scope => :reference, :finder_name => :by_parents)
+        @scope = ReferenceScope.new(Record, :parents, :attribute => :parent_id, :singular => :parent, :scope => :reference, :named_scope => :by_parents)
       end
 
       it_should_behave_like "all Reference Scopes"
@@ -50,7 +50,7 @@ module CanSearchInScopes
         Record.can_search do
           scoped_by :masters, :attribute => :parent_id
         end
-        @scope = ReferenceScope.new(Record, :masters, :attribute => :parent_id, :singular => :master, :scope => :reference, :finder_name => :by_masters)
+        @scope = ReferenceScope.new(Record, :masters, :attribute => :parent_id, :singular => :master, :scope => :reference, :named_scope => :by_masters)
       end
 
       it_should_behave_like "all Reference Scopes"
@@ -59,9 +59,9 @@ module CanSearchInScopes
     describe "(Reference Scope with custom attribute and finder name)" do
       before do
         Record.can_search do
-          scoped_by :masters, :attribute => :parent_id, :finder_name => :great_scott
+          scoped_by :masters, :attribute => :parent_id, :named_scope => :great_scott
         end
-        @scope = ReferenceScope.new(Record, :masters, :attribute => :parent_id, :singular => :master, :scope => :reference, :finder_name => :great_scott)
+        @scope = ReferenceScope.new(Record, :masters, :attribute => :parent_id, :singular => :master, :scope => :reference, :named_scope => :great_scott)
       end
 
       it_should_behave_like "all Reference Scopes"

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
-module CanSearchInScopes
+module CanSearch
   DateRangeScope.periods[:spec] = lambda do |now|
     (now..now + 300)
   end
@@ -13,7 +13,7 @@ module CanSearchInScopes
     end
 
     it "creates named_scope" do
-      Record.scopes[@scope.finder_name].should_not be_nil
+      Record.scopes[@scope.named_scope].should_not be_nil
     end
 
     it "filters records by time range" do
@@ -55,7 +55,7 @@ module CanSearchInScopes
         Record.can_search do
           scoped_by :created, :scope => :date_range
         end
-        @scope = DateRangeScope.new(Record, :created, :attribute => :created_at, :scope => :date_range, :finder_name => :created)
+        @scope = DateRangeScope.new(Record, :created, :attribute => :created_at, :scope => :date_range, :named_scope => :created)
       end
 
       it_should_behave_like "all DateRange Scopes"
@@ -66,7 +66,7 @@ module CanSearchInScopes
         Record.can_search do
           scoped_by :latest, :scope => :date_range, :attribute => :created_at
         end
-        @scope = DateRangeScope.new(Record, :latest, :attribute => :created_at, :scope => :date_range, :finder_name => :latest )
+        @scope = DateRangeScope.new(Record, :latest, :attribute => :created_at, :scope => :date_range, :named_scope => :latest )
       end
 
       it_should_behave_like "all DateRange Scopes"
@@ -75,9 +75,9 @@ module CanSearchInScopes
     describe "(DateRange Scope with custom attribute and finder)" do
       before do
         Record.can_search do
-          scoped_by :latest, :scope => :date_range, :attribute => :created_at, :finder_name => :woot
+          scoped_by :latest, :scope => :date_range, :attribute => :created_at, :named_scope => :woot
         end
-        @scope = DateRangeScope.new(Record, :latest, :attribute => :created_at, :scope => :date_range, :finder_name => :woot)
+        @scope = DateRangeScope.new(Record, :latest, :attribute => :created_at, :scope => :date_range, :named_scope => :woot)
       end
 
       it_should_behave_like "all DateRange Scopes"
