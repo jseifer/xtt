@@ -1,6 +1,6 @@
 class FeedsController < ApplicationController
   def index
-    @feeds = Feed.find(:all)
+    @feeds = Feed.all
 
     respond_to do |format|
       format.html # index.html.erb

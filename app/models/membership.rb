@@ -10,7 +10,7 @@ class Membership < ActiveRecord::Base
   validates_uniqueness_of :project_id, :scope => :user_id
 
   def self.find_by_code(code)
-    find(:first, :conditions => {:code => code}) || raise(InvalidCodeError)
+    first(:conditions => {:code => code}) || raise(InvalidCodeError)
   end
 
   def find_for(user_id, project_ids)

@@ -30,6 +30,6 @@ class Feed < ActiveRecord::Base
   end
 
   def status_for(item)
-    status = Status.find(:first, :conditions => ['created_at > ?', item[:created_at]], :order => "created_at asc", :limit => 1)
+    status = Status.first(:conditions => ['created_at > ?', item[:created_at]], :order => "created_at asc", :limit => 1)
   end
 end

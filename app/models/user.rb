@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
   
   has_many :recent_projects, :through => :statuses, :class_name => Project.name, :source => :project do
     def latest
-      @latest ||= find(:first)
+      @latest ||= first
     end
   end
 

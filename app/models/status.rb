@@ -24,13 +24,13 @@ class Status < ActiveRecord::Base
   end
   
   def membership
-    project ? user.memberships.for(project) : nil
+    @membership = (project? ? user.memberships.for(project) : nil) || false unless @membership == false
   end
   
   def code_and_message
     @code ?
       ("@#{@code} #{message}") :
-      (membership ? "@#{membership.code || project.code} #{message}" : message)
+      (membership ? "@#{membership.code} #{message}" : message)
   end
 
   def followup(reload = false)
