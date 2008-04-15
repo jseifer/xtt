@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   before_create { |u| u.admin = true if User.count.zero? }
 
   has_many :campfires
+  has_many :tendrils
     
   has_many :owned_projects, :order => 'projects.name', :class_name => 'Project'
   has_many :contexts, :order => 'contexts.name'

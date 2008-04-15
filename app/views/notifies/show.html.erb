@@ -38,9 +38,31 @@
 <% box(:sidebar, "tools") do |sbox| %>
   <% sbox.title = "Projects used by this notifier" -%>
   <% sbox.content = capture do %>
+    <% projects, others = current_user.projects.partition { |p| @notifies.projects.include?(p) } %>
     <ul>
-    <% @notifies.projects.each do |project| %>
-      <li><%=h project.name %></li>
+    <% projects.each do |project| %>
+      <li>
+        <% tendril = project.tendrils.select { |t| t.notifies == @notifies }[0] %>
+        <% form_for tendril, { :url => tendril_path(tendril) }, :html => { :method => :delete } do |f| %>
+          <%= f.hidden_field :project_id,    :value => project.id %>
+          <%= f.hidden_field :notifies_type, :value => 'Campfire' %>
+          <%= f.hidden_field :notifies_id,   :value => @notifies.id %>
+          <a href="#" onclick="$(this).up('form').submit();return false"><%=h project.name %></a>
+        <% end %>
+      </li>
+    <% end %>
+    </ul>
+    <h3>Use this notifier on more projects</h3>
+    <ul>
+    <% others.each do |project| %>
+      <li>
+        <% form_for Tendril.new do |f| %>
+          <%= f.hidden_field :project_id, :value => project.id %>
+          <%= f.hidden_field :notifies_type, :value => 'Campfire' %>
+          <%= f.hidden_field :notifies_id,   :value => @notifies.id %>
+          <a href="#" onclick="$(this).up('form').submit();return false"><%=h project.name %></a>
+        <% end %>
+      </li>
     <% end %>
     </ul>
   <% end %>

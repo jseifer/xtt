@@ -4,7 +4,7 @@ class CreateTendrils < ActiveRecord::Migration
       t.integer :project_id
       t.string :notifies_type
       t.integer :notifies_id
-
+      t.integer :user_id
       t.timestamps
     end
   end

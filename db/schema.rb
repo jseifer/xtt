@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(:version => 20080415210629) do
     t.integer  "project_id"
     t.string   "notifies_type"
     t.integer  "notifies_id"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
