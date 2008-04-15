@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080415231554) do
+ActiveRecord::Schema.define(:version => 20080415234011) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"

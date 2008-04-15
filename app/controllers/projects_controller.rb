@@ -91,10 +91,7 @@ protected
   end
   
   def user_status_for(status)
-    case status
-      when 'me'    then current_user.id
-      when /^\d+$/ then status.to_i
-      else nil
-    end
+    @user = status == 'me' ? current_user : User.find_by_permalink(status)
+    @user ? @user.id : nil
   end
 end
