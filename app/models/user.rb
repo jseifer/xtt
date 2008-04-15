@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  concerned_with :authentication, :state_machine, :statuses
+  concerns :authentication, :state_machine, :statuses
   
   before_create { |u| u.admin = true if User.count.zero? }
     

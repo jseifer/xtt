@@ -411,6 +411,22 @@ li.daybreak {
   font-size: 92%;
 }
 
+#project-lists li.context {
+  background-color: #e2e2e2;
+}
+#project-lists li.context a {
+  font-weight: bold;
+  font-size: 16px;
+  color: #444;
+  
+}
+#project-lists li.context:hover {
+  background-color: #cacaca;
+}
+#project-lists li.context:hover a {
+  color: #000;
+}
+
 .invite {
   background-color: #390;
   font-weight: bold;

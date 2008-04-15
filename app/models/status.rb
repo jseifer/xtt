@@ -3,7 +3,7 @@ class Status < ActiveRecord::Base
   validates_presence_of :user_id, :message
   validate :times_are_sane
   
-  concerned_with :hacky_date_methods, :filtering
+  concerns :hacky_date_methods, :filtering
   
   attr_writer :code_and_message
   attr_writer :followup

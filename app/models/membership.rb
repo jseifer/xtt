@@ -8,7 +8,11 @@ class Membership < ActiveRecord::Base
   validates_presence_of :project_id, :user_id
   validates_uniqueness_of :code, :scope => :user_id
   validates_uniqueness_of :project_id, :scope => :user_id
-
+  
+  def code
+    (self[:code].nil? || self[:code].empty?) && project ? project.code : self[:code]
+  end
+  
   def self.find_by_code(code)
     first(:conditions => {:code => code}) || raise(InvalidCodeError)
   end
