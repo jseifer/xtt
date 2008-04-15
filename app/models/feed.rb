@@ -1,7 +1,7 @@
 class Feed < ActiveRecord::Base
   belongs_to :user # created_by
   belongs_to :project
-  concerned_with :xml_parser
+  concerns :xml_parser
   
   def self.options
     options = {
