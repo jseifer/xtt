@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 31) do
+ActiveRecord::Schema.define(:version => 20080415210629) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -57,6 +57,16 @@ ActiveRecord::Schema.define(:version => 31) do
     t.text     "stdout"
     t.text     "stderr"
     t.integer  "exit_status"
+  end
+
+  create_table "campfires", :force => true do |t|
+    t.string   "domain"
+    t.string   "login"
+    t.string   "password"
+    t.string   "room"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "contexts", :force => true do |t|
@@ -126,7 +136,6 @@ ActiveRecord::Schema.define(:version => 31) do
     t.string   "code"
   end
 
-  add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
   add_index "projects", ["code"], :name => "index_projects_on_code"
 
   create_table "statuses", :force => true do |t|
@@ -142,6 +151,14 @@ ActiveRecord::Schema.define(:version => 31) do
   end
 
   add_index "statuses", ["created_at", "user_id"], :name => "index_statuses_on_created_at_and_user_id"
+
+  create_table "tendrils", :force => true do |t|
+    t.integer  "project_id"
+    t.string   "notifies_type"
+    t.integer  "notifies_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "login"

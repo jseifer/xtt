@@ -4,6 +4,7 @@ class Project < ActiveRecord::Base
   validates_presence_of :user_id, :name, :code
 
   belongs_to :user
+  has_many :tendrils
   has_many :feeds
   has_many :memberships, :dependent => :delete_all
   has_many :users, :order => 'login', :through => :memberships do
