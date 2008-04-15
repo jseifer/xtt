@@ -36,7 +36,7 @@
        contexts << etc
     %>
     <% contexts.each do |context, memberships| %>
-      <li class='context'><%= context %></li>
+      <li class='context'><%=h context %></li>
     	<% memberships.each_with_index do |membership, index| -%>
     	  <% project = membership.project %>
   			<% project_hours = project.statuses.filtered_hours(nil, :daily) ; user_hours = project_hours.total(current_user) -%>
