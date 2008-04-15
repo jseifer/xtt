@@ -1,3 +1,3 @@
-class ContextsController < Application
+class ContextsController < ApplicationController
   
 end
