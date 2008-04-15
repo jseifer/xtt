@@ -25,6 +25,10 @@ ModelStubbing.define_models do
   model Membership # none
   
   model Context
+
+  model Campfire do
+    stub :domain => "hoover"
+  end
   
   model Help do
     stub :name => "foo"

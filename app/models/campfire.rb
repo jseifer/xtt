@@ -1,5 +1,6 @@
 class Campfire < ActiveRecord::Base
   has_many :tendrils, :as => :notifies
+  has_many :projects, :through => :tendrils
   belongs_to :user # creator
 
   def send_message(message)

@@ -1,0 +1,47 @@
+<% box(:special, 'project-header') do |box| %>
+  <% box.title = "Showing notifier" %>
+  <% box.content = capture do %>
+    <% form_for @notifies, :url => notify_path(@notifies), :html => { :class => "form" } do |f| %>
+      <h2>Notifier type: <%=h @notifies.class.name %></h2>
+      <hr />
+      <ul class="media-list">
+        <li class="media-item status-form last">
+          <p>http://<%= f.text_field :domain, :size => 10 %>.campfirenow.com</p>
+        </li>
+        <li>
+          <p>
+            <%= f.label :login %>
+            <%= f.text_field :login %>
+          </p>
+          <p>
+            <%= f.label :password %>
+            <%= f.text_field :password %>
+          </p>
+          <p>
+            <%= f.label "Room name" %>
+            <%= f.text_field :room %>
+          </p>
+
+          <!-- todo: get a list of rooms -->
+          <p class="btns">
+            <%= update_button %>
+          </p>
+        </li>
+      </ul>
+
+    <% end %>
+    Oh, hai.
+  <% end %>
+<% end %>
+
+
+<% box(:sidebar, "tools") do |sbox| %>
+  <% sbox.title = "Projects used by this notifier" -%>
+  <% sbox.content = capture do %>
+    <ul>
+    <% @notifies.projects.each do |project| %>
+      <li><%=h project.name %></li>
+    <% end %>
+    </ul>
+  <% end %>
+<% end %>
