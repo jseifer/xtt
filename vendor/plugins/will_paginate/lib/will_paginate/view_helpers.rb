@@ -140,7 +140,7 @@ module WillPaginate
     end
 
     def self.total_pages_for_collection(collection) #:nodoc:
-      if collection.respond_to? :page_count and !collection.respond_to? :total_pages
+      if collection.respond_to?('page_count') and !collection.respond_to?('total_pages')
         WillPaginate::Deprecation.warn <<-MSG
           You are using a paginated collection of class #{collection.class.name}
           which conforms to the old API of WillPaginate::Collection by using
@@ -174,8 +174,8 @@ module WillPaginate
     def to_html
       links = @options[:page_links] ? windowed_links : []
       # previous/next buttons
-      links.unshift page_link_or_span(@collection.previous_page, 'disabled', @options[:prev_label])
-      links.push    page_link_or_span(@collection.next_page,     'disabled', @options[:next_label])
+      links.unshift page_link_or_span(@collection.previous_page, %w(disabled prev_page), @options[:prev_label])
+      links.push    page_link_or_span(@collection.next_page,     %w(disabled next_page), @options[:next_label])
       
       html = links.join(@options[:separator])
       @options[:container] ? @template.content_tag(:div, html, html_attributes) : html
@@ -209,7 +209,7 @@ module WillPaginate
       visible_page_numbers.inject [] do |links, n|
         # detect gaps:
         links << gap_marker if prev and n > prev + 1
-        links << page_link_or_span(n)
+        links << page_link_or_span(n, 'current')
         prev = n
         links
       end
@@ -226,9 +226,11 @@ module WillPaginate
       if window_to > total_pages
         window_from -= window_to - total_pages
         window_to = total_pages
-      elsif window_from < 1
+      end
+      if window_from < 1
         window_to += 1 - window_from
         window_from = 1
+        window_to = total_pages if window_to > total_pages
       end
       
       visible   = (1..total_pages).to_a
@@ -240,23 +242,40 @@ module WillPaginate
       visible
     end
     
-    def page_link_or_span(page, span_class = 'current', text = nil)
+    def page_link_or_span(page, span_class, text = nil)
       text ||= page.to_s
+      classnames = Array[*span_class]
+      
       if page and page != current_page
-        @template.link_to text, url_options(page), :rel => rel_value(page)
+        @template.link_to text, url_for(page), :rel => rel_value(page), :class => classnames[1]
       else
-        @template.content_tag :span, text, :class => span_class
+        @template.content_tag :span, text, :class => classnames.join(' ')
       end
     end
 
     # Returns URL params for +page_link_or_span+, taking the current GET params
     # and <tt>:params</tt> option into account.
-    def url_options(page)
-      options = { param_name => page }
-      # page links should preserve GET parameters
-      options = params.merge(options) if @template.request.get?
-      options.rec_merge!(@options[:params]) if @options[:params]
-      return options
+    def url_for(page)
+      unless @url_string
+        @url_params = { :escape => false }
+        # page links should preserve GET parameters
+        stringified_merge @url_params, @template.params if @template.request.get?
+        stringified_merge @url_params, @options[:params] if @options[:params]
+        
+        if param_name.index(/[^\w-]/)
+          page_param = (defined?(CGIMethods) ? CGIMethods : ActionController::AbstractRequest).
+            parse_query_parameters("#{param_name}=#{page}")
+          
+          stringified_merge @url_params, page_param
+        else
+          @url_params[param_name] = page
+        end
+
+        url = @template.url_for(@url_params)
+        @url_string = url.sub(/([?&]#{CGI.escape param_name}=)#{page}/, '\1@')
+        return url
+      end
+      @url_string.sub '@', page.to_s
     end
 
   private
@@ -278,11 +297,24 @@ module WillPaginate
     end
 
     def param_name
-      @param_name ||= @options[:param_name].to_sym
+      @param_name ||= @options[:param_name].to_s
     end
 
-    def params
-      @params ||= @template.params.to_hash.symbolize_keys
+    def stringified_merge(target, other)
+      other.each do |key, value|
+        key = key.to_s
+        existing = target[key]
+
+        if value.is_a?(Hash)
+          target[key] = existing = {} if existing.nil?
+          if existing.is_a?(Hash)
+            stringified_merge(existing, value)
+            return
+          end
+        end
+        
+        target[key] = value
+      end
     end
   end
 end
