@@ -1,0 +1,3 @@
+class ContextsController < Application
+  
+end
