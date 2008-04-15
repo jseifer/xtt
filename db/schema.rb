@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 31) do
+ActiveRecord::Schema.define(:version => 20080415231554) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -59,12 +59,20 @@ ActiveRecord::Schema.define(:version => 31) do
     t.integer  "exit_status"
   end
 
+  create_table "can_search_record", :force => true do |t|
+    t.integer  "parent_id"
+    t.datetime "created_at"
+  end
+
   create_table "contexts", :force => true do |t|
     t.string   "name"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "permalink"
   end
+
+  add_index "contexts", ["permalink"], :name => "index_contexts_on_permalink"
 
   create_table "feeds", :force => true do |t|
     t.string   "name"
@@ -124,10 +132,11 @@ ActiveRecord::Schema.define(:version => 31) do
     t.datetime "updated_at"
     t.integer  "user_id"
     t.string   "code"
+    t.string   "permalink"
   end
 
-  add_index "projects", ["name", "user_id"], :name => "index_projects_on_name_and_parent"
   add_index "projects", ["code"], :name => "index_projects_on_code"
+  add_index "projects", ["permalink"], :name => "index_projects_on_permalink"
 
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
@@ -164,6 +173,11 @@ ActiveRecord::Schema.define(:version => 31) do
     t.string   "time_zone"
     t.string   "aim_login"
     t.string   "identity_url"
+    t.string   "permalink"
   end
+
+  add_index "users", ["email"], :name => "index_users_on_email"
+  add_index "users", ["identity_url"], :name => "index_users_on_identity_url"
+  add_index "users", ["permalink"], :name => "index_users_on_permalink"
 
 end

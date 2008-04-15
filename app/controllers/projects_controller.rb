@@ -82,7 +82,7 @@ class ProjectsController < ApplicationController
 
 protected
   def find_project
-    @project = Project.find(params[:id])
+    @project = Project.find_by_permalink(params[:id])
     @membership = @project.memberships.find_by_user_id(current_user)
   end
   
