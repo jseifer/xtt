@@ -10,7 +10,7 @@ class Membership < ActiveRecord::Base
   validates_uniqueness_of :project_id, :scope => :user_id
   
   def code
-    (self[:code].nil? || self[:code].empty?) ? project.code : self[:code]
+    (self[:code].nil? || self[:code].empty?) && project ? project.code : self[:code]
   end
   
   def self.find_by_code(code)
