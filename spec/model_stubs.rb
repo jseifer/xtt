@@ -30,6 +30,10 @@ ModelStubbing.define_models do
     stub :domain => "hoover"
   end
   
+  model Tendril do
+    stub :notifies_type => "Campfire", :notifies_id => 1
+  end
+  
   model Help do
     stub :name => "foo"
     stub :foo, :name => "bar"
