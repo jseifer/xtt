@@ -30,30 +30,39 @@
   <div id="projectlist">
     <ul class="text-list" id="project-lists">
     <% unless current_user.projects.empty? %>
-  	<% current_user.projects.each_with_index do |project, index| -%>
-			<% project_hours = project.statuses.filtered_hours(nil, :daily) ; user_hours = project_hours.total(current_user) -%>
-      <li<%= %( class="last") if first_in_collection?(current_user.projects, index) %> id="project-<%= project.id %>">
-        <a href="<%= url_for project %>">
-          <span class="ttl"><%=h project.name %></span>
-          <span class="desc">message using <em class="project-code">@<%=h project.code %></em></span>
-          <span class="you">
-            <span class="num"><%= number_with_precision user_hours, 2 %></span>
-            <span class="meta">you</span>
-          </span>
-          <span class="others">
-            <span class="num"><%= number_with_precision project_hours.total - user_hours, 2 %></span>
-            <span class="meta">others</span>
-          </span>
-        </a>
-        <div id="showcase-project-<%= project.id %>" style="display:none">
-          <h3>Edit <%= h(project.name) %></h3>
-          <%= error_messages_for :project %>
-            <% form_for project, :html => {:class => "form" } do |f| -%>
-            <%= render :partial => "projects/form", :object => f %>
-          <% end %>
-        </div>
-      </li>
-  	<% end -%>
+    <% contexts = current_user.memberships.group_by {|m| m.context.nil? ? 'etcetera' : m.context.name }.sort_by {|g| g.first } 
+       etc = contexts.detect {|c| c.first == 'etcetera'}
+       contexts.delete(etc)
+       contexts << etc
+    %>
+    <% contexts.each do |context, memberships| %>
+      <li class='context'><%=h context %></li>
+    	<% memberships.each_with_index do |membership, index| -%>
+    	  <% project = membership.project %>
+  			<% project_hours = project.statuses.filtered_hours(nil, :daily) ; user_hours = project_hours.total(current_user) -%>
+        <li<%= %( class="last") if first_in_collection?(current_user.projects, index) %> id="project-<%= project.id %>">
+          <a href="<%= url_for project %>">
+            <span class="ttl"><%=h project.name %></span>
+            <span class="desc">message using <em class="project-code">@<%=h membership.code %></em></span>
+            <span class="you">
+              <span class="num"><%= number_with_precision user_hours, 2 %></span>
+              <span class="meta">you</span>
+            </span>
+            <span class="others">
+              <span class="num"><%= number_with_precision project_hours.total - user_hours, 2 %></span>
+              <span class="meta">others</span>
+            </span>
+          </a>
+          <div id="showcase-project-<%= project.id %>" style="display:none">
+            <h3>Edit <%= h(project.name) %></h3>
+            <%= error_messages_for :project %>
+              <% form_for project, :html => {:class => "form" } do |f| -%>
+              <%= render :partial => "projects/form", :object => f %>
+            <% end %>
+          </div>
+        </li>
+    	  <% end -%>
+      <% end -%>
   	<% else %>
     	<% new_project_text = capture do %>
     	  <span class="ttl">You don't have any projects</span>

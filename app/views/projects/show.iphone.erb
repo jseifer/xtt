@@ -1,6 +1,6 @@
 <% content_for :status do %>
   <% form_for current_user.statuses.build, { :style => "width: 90%"} do |f| -%>
-  	<%= f.text_field :code_and_message, :class => 'status-entry', :value => "@#{@project.code} " %>
+  	<%= f.text_field :code_and_message, :class => 'status-entry', :value => "@#{@membership.code} " %>
     <p class="btns">
       <%= hidden_field_tag :destination, project_path(@project) %>
       <%= update_button %>

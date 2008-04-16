@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 28) do
+ActiveRecord::Schema.define(:version => 20080415234011) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -59,6 +59,31 @@ ActiveRecord::Schema.define(:version => 28) do
     t.integer  "exit_status"
   end
 
+  create_table "can_search_record", :force => true do |t|
+    t.integer  "parent_id"
+    t.datetime "created_at"
+  end
+
+  create_table "campfires", :force => true do |t|
+    t.string   "domain"
+    t.string   "login"
+    t.string   "password"
+    t.string   "room"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "contexts", :force => true do |t|
+    t.string   "name"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "permalink"
+  end
+
+  add_index "contexts", ["permalink"], :name => "index_contexts_on_permalink"
+
   create_table "feeds", :force => true do |t|
     t.string   "name"
     t.string   "url"
@@ -88,6 +113,8 @@ ActiveRecord::Schema.define(:version => 28) do
   create_table "memberships", :force => true do |t|
     t.integer "project_id"
     t.integer "user_id"
+    t.string  "code"
+    t.integer "context_id"
   end
 
   create_table "open_id_authentication_associations", :force => true do |t|
@@ -115,9 +142,11 @@ ActiveRecord::Schema.define(:version => 28) do
     t.datetime "updated_at"
     t.integer  "user_id"
     t.string   "code"
+    t.string   "permalink"
   end
 
   add_index "projects", ["code"], :name => "index_projects_on_code"
+  add_index "projects", ["permalink"], :name => "index_projects_on_permalink"
 
   create_table "statuses", :force => true do |t|
     t.integer  "user_id"
@@ -132,6 +161,15 @@ ActiveRecord::Schema.define(:version => 28) do
   end
 
   add_index "statuses", ["created_at", "user_id"], :name => "index_statuses_on_created_at_and_user_id"
+
+  create_table "tendrils", :force => true do |t|
+    t.integer  "project_id"
+    t.string   "notifies_type"
+    t.integer  "notifies_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "login"
@@ -154,6 +192,11 @@ ActiveRecord::Schema.define(:version => 28) do
     t.string   "time_zone"
     t.string   "aim_login"
     t.string   "identity_url"
+    t.string   "permalink"
   end
+
+  add_index "users", ["email"], :name => "index_users_on_email"
+  add_index "users", ["identity_url"], :name => "index_users_on_identity_url"
+  add_index "users", ["permalink"], :name => "index_users_on_permalink"
 
 end

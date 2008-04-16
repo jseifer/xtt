@@ -53,7 +53,7 @@ class ProjectsController < ApplicationController
 
   def update
     respond_to do |format|
-      if @project.update_attributes(params[:project])
+      if @project.update_attributes(params[:project]) and @membership.update_attributes(params[:membership])
         flash[:notice] = 'Project was successfully updated.'
         format.html { redirect_to(@project) }
         format.xml  { head :ok }
@@ -82,7 +82,8 @@ class ProjectsController < ApplicationController
 
 protected
   def find_project
-    @project = Project.find(params[:id])
+    @project = Project.find_by_permalink(params[:id])
+    @membership = @project.memberships.find_by_user_id(current_user)
   end
   
   def authorized?
@@ -90,10 +91,7 @@ protected
   end
   
   def user_status_for(status)
-    case status
-      when 'me'    then current_user.id
-      when /^\d+$/ then status.to_i
-      else nil
-    end
+    @user = status == 'me' ? current_user : User.find_by_permalink(status)
+    @user ? @user.id : nil
   end
 end

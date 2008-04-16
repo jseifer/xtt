@@ -7,7 +7,7 @@ describe ProjectsController, "GET #index" do
 
   before do
     @projects = []
-    @user = mock_model User, :projects => @projects, :active? => true, :time_zone => "UTC"
+    @user = mock_model User, :projects => @projects, :active? => true, :time_zone => "UTC", :id => "1"
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
   end
@@ -32,7 +32,9 @@ describe ProjectsController, "GET #show" do
     @statuses   = []
     @date_range = :date_range
     @hours      = 75.0
-    Project.stub!(:find).with('1').and_return(@project)
+    @user       = mock_model User, :id => 5
+    Project.stub!(:find_by_permalink).with('1').and_return(@project)
+    User.stub!(:find_by_permalink).with('5').and_return(@user)
     @project.stub!(:statuses).and_return([])
     controller.stub!(:login_required)
     controller.stub!(:current_user).and_return(mock_model(User, :id => 55, :active? => true, :time_zone => "UTC"))
@@ -101,7 +103,7 @@ describe ProjectsController, "GET #edit" do
   
   before do
     @project = projects(:default)
-    Project.stub!(:find).with('1').and_return(@project)
+    Project.stub!(:find_by_permalink).with('1').and_return(@project)
     controller.stub!(:login_required)
   end
 
@@ -115,7 +117,7 @@ describe ProjectsController, "POST #create" do
     login_as :default
     @attributes = {}
     @project = mock_model Project, :new_record? => false, :errors => []
-    @user = mock_model User, :owned_projects => [], :active? => true, :time_zone => "UTC"
+    @user = mock_model User, :owned_projects => [], :active? => true, :time_zone => "UTC", :id => "1"
     @user.owned_projects.stub!(:build).with(@attributes).and_return(@project)
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
@@ -188,13 +190,16 @@ describe ProjectsController, "PUT #update" do
   before do
     @attributes = {}
     @project = projects(:default)
-    Project.stub!(:find).with('1').and_return(@project)
+    @membership = mock_model(Membership, :update_attributes => true)
+
+    Project.stub!(:find_by_permalink).with('1').and_return(@project)
+    @project.memberships.stub!(:find_by_user_id).and_return @membership
     controller.stub!(:login_required)
   end
   
   describe ProjectsController, "(successful save)" do
     define_models
-    act! { put :update, :id => 1, :project => @attributes }
+    act! { put :update, :id => 1, :project => @attributes, :membership => {} }
 
     before do
       @project.stub!(:save).and_return(true)
@@ -207,7 +212,7 @@ describe ProjectsController, "PUT #update" do
 
   describe ProjectsController, "(unsuccessful save)" do
     define_models
-    act! { put :update, :id => 1, :project => @attributes }
+    act! { put :update, :id => 1, :project => @attributes, :membership => {} }
 
     before do
       @project.stub!(:save).and_return(false)
@@ -220,7 +225,7 @@ describe ProjectsController, "PUT #update" do
   
   describe ProjectsController, "(successful save, xml)" do
     define_models
-    act! { put :update, :id => 1, :project => @attributes, :format => 'xml' }
+    act! { put :update, :id => 1, :project => @attributes, :format => 'xml', :membership => {} }
 
     before do
       @project.stub!(:save).and_return(true)
@@ -233,7 +238,7 @@ describe ProjectsController, "PUT #update" do
   
   describe ProjectsController, "(unsuccessful save, xml)" do
     define_models
-    act! { put :update, :id => 1, :project => @attributes, :format => 'xml' }
+    act! { put :update, :id => 1, :project => @attributes, :format => 'xml', :membership => {} }
 
     before do
       @project.stub!(:save).and_return(false)
@@ -252,7 +257,7 @@ describe ProjectsController, "DELETE #destroy" do
   before do
     @project = projects(:default)
     @project.stub!(:destroy)
-    Project.stub!(:find).with('1').and_return(@project)
+    Project.stub!(:find_by_permalink).with('1').and_return(@project)
     controller.stub!(:login_required)
   end
 

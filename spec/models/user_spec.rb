@@ -166,7 +166,8 @@ describe User do
     end
     
     it "changes project" do
-      @status = @user.post "@#{projects(:default).code} Foo"
+      # assumes user's code == project's code
+      @status = @user.post "@#{memberships(:default).code} Foo"
       @status.project.should == projects(:default)
     end
     

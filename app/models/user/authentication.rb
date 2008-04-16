@@ -21,6 +21,7 @@ class User
   validates_format_of       :login, :with => login_format, :if => :not_openid?
   validates_format_of       :email, :with => email_format, :if => :not_openid?
   validates_uniqueness_of   :login, :email
+  validates_uniqueness_of   :identity_url, :allow_nil => true
   before_save :encrypt_password, :if => :not_openid?
   
   # prevents a user from submitting a crafted form that bypasses activation
@@ -87,6 +88,14 @@ class User
       value.downcase!
     end
     write_attribute :email, value
+  end
+
+  def identity_url=(value)
+    unless value.nil?
+      value.strip!
+      value.downcase!
+    end
+    write_attribute :identity_url, value
   end
 
 protected
