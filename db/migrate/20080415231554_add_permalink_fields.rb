@@ -1,6 +1,10 @@
 class AddPermalinkFields < ActiveRecord::Migration
   def self.up
-    remove_index "projects", :name => "index_projects_on_name_and_parent"
+    begin
+      remove_index "projects", :name => "index_projects_on_name_and_parent"
+    rescue
+      say "I don't know why you don't have the index_projects_on_name_and_parent index, but whatev"
+    end
     add_index :users, :email
     add_index :users, :identity_url
     add_column :projects, :permalink, :string
