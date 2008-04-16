@@ -17,6 +17,10 @@ class User < ActiveRecord::Base
         proxy_target.detect { |r| r.project_id == project.id } : 
         find(:first, :conditions => { :project_id => project.id})
     end
+
+    def contexts
+      proxy_owner.memberships.sort.group_by &:context
+    end
   end
 
   has_many :projects, :select => 'projects.*, memberships.code as project_code', :through => :memberships, :order => 'projects.permalink'

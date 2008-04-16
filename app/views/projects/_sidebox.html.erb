@@ -30,13 +30,8 @@
   <div id="projectlist">
     <ul class="text-list" id="project-lists">
     <% unless current_user.projects.empty? %>
-    <% contexts = current_user.memberships.group_by {|m| m.context.nil? ? 'etcetera' : m.context.name }.sort_by {|g| g.first } 
-       etc = contexts.detect {|c| c.first == 'etcetera'}
-       contexts.delete(etc)
-       contexts << etc
-    %>
-    <% contexts.each do |context, memberships| %>
-      <li class='context'><%=h context %></li>
+    <% current_user.memberships.contexts.each do |context, memberships| %>
+      <li class='context'><%= link_to_context context %></li>
     	<% memberships.each_with_index do |membership, index| -%>
     	  <% project = membership.project %>
   			<% project_hours = project.statuses.filtered_hours(nil, :daily) ; user_hours = project_hours.total(current_user) -%>

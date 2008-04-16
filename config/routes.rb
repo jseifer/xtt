@@ -11,12 +11,13 @@ ActionController::Routing::Routes.draw do |map|
   map.filtered_user 'users/:id/:filter', :filter => status_filters, :controller => 'users', :action => 'show'
   
   map.with_options :controller => 'contexts', :action => 'show' do |context|
-    context.projects_for_all            'contexts/:id/all'
-    context.projects_for_me             'contexts/:id/:user_id', :user_id => /me/
-    context.projects_for_user           'contexts/:id/users/:user_id'
-    context.filtered_projects_for_all   'contexts/:id/all/:filter', :filter => status_filters
-    context.filtered_projects_for_me    'contexts/:id/:user_id/:filter', :filter => status_filters, :user_id => /me/
-    context.filtered_projects_for_all   'contexts/:id/:user_id/:filter', :filter => status_filters
+    context.context_projects                    'contexts/:id'
+    context.context_projects_for_all            'contexts/:id/all'
+    context.context_projects_for_me             'contexts/:id/:user_id', :user_id => /me/
+    context.context_projects_for_user           'contexts/:id/users/:user_id'
+    context.context_filtered_projects_for_all   'contexts/:id/all/:filter', :filter => status_filters
+    context.context_filtered_projects_for_me    'contexts/:id/:user_id/:filter', :filter => status_filters, :user_id => /me/
+    context.context_filtered_projects_for_all   'contexts/:id/:user_id/:filter', :filter => status_filters
   end
   
   map.with_options :controller => 'projects', :action => 'show' do |project|

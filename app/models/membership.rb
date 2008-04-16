@@ -28,4 +28,22 @@ class Membership < ActiveRecord::Base
   def context_name=(val)
     self.context = user.contexts.find_or_create_by_name(val)
   end
+
+  def <=>(other)
+    if context == other.context
+      if project == other.project
+        id <=> other.id
+      else
+        project.name <=> other.project.name
+      end
+    else
+      if context && other.context.nil?
+        -1
+      elsif context.nil? && other.context
+        1
+      else
+        context.name <=> other.context.name
+      end
+    end
+  end
 end

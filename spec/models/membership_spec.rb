@@ -50,6 +50,14 @@ describe Membership do
   it "is found from a user and a group of projects" do
     Membership.find_for(users(:default), [projects(:another)]).should == [memberships(:default)]
   end
+
+  describe "sorting" do
+    define_models :contexts
+
+    it "sorts by context and then project" do
+      Membership.all.sort.should == [memberships(:another), memberships(:context), memberships(:default)]
+    end
+  end
 end
 
 describe_validations_for Membership, :user_id => 1, :project_id => 1 do
