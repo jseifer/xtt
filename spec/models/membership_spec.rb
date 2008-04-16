@@ -40,9 +40,11 @@ describe Membership do
   end
   
   it "sets the context from context_name" do
-    memberships(:default).context_name = "foo"
-    memberships(:default).context.should be_an_instance_of(Context)
-    memberships(:default).context.name.should == "foo"
+    mem = memberships(:default)
+    mem.context_name = "foo"
+    mem.context.should be_an_instance_of(Context)
+    mem.context.name.should == "foo"
+    mem.user.should == mem.context.user
   end
 
   it "is found from a user and a group of projects" do
