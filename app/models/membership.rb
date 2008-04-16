@@ -17,7 +17,7 @@ class Membership < ActiveRecord::Base
     first(:conditions => {:code => code}) || raise(InvalidCodeError)
   end
 
-  def find_for(user_id, project_ids)
+  def self.find_for(user_id, project_ids)
     find(:all, :conditions => ['user_id=? AND project_id IN (?)', user_id, project_ids])
   end
   
