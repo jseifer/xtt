@@ -224,7 +224,7 @@ describe Status, "(filtering by date)" do
     end
     
     model Status do
-      stub :message => 'default', :state => 'processed', :hours => 5, :created_at => current_time - 5.minutes, :user => all_stubs(:user)
+      stub :message => 'default', :state => 'processed', :hours => 5, :created_at => current_time - 5.minutes, :user => all_stubs(:user), :project_id => 1
       stub :status_day, :message => 'status_day', :created_at => current_time - 8.minutes, :user => all_stubs(:other_user)
       stub :status_week_1, :message => 'status_week_1', :created_at => current_time - 3.days
       stub :status_week_2, :message => 'status_week_2', :created_at => current_time - (4.days + 20.hours), :user => all_stubs(:other_user)
@@ -233,6 +233,7 @@ describe Status, "(filtering by date)" do
       stub :status_month_1, :message => 'status_month_1', :created_at => current_time - 20.days, :user => all_stubs(:other_user)
       stub :status_month_2, :message => 'status_month_2', :created_at => current_time - (28.days + 20.hours)
       stub :archive, :message => 'archive', :created_at => current_time - 35.days
+      stub :uncounted, :message => 'uncounted', :created_at => current_time - 2.minutes, :project_id => nil
     end
   end
   
@@ -248,7 +249,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows recent statuses with no filter" do
-    compare_stubs :statuses, Status.filter(nil, nil)[0], [:default, :status_day, :status_week_1, :status_week_2,
+    compare_stubs :statuses, Status.filter(nil, nil)[0], [:uncounted, :default, :status_day, :status_week_1, :status_week_2,
       :status_biweek_1, :status_biweek_2, :status_month_1, :status_month_2, :archive]
   end
   
@@ -258,7 +259,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows recent statuses by user" do
-    expected = [:default, :status_week_1,  :status_biweek_2, :status_month_2, :archive]
+    expected = [:uncounted, :default, :status_week_1,  :status_biweek_2, :status_month_2, :archive]
     compare_stubs :statuses, Status.filter(@user.id, nil)[0], expected
     compare_stubs :statuses, @user.statuses.filter(nil)[0],   expected
   end
@@ -271,7 +272,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows today's statuses" do
-    compare_stubs :statuses, Status.filter(nil, :daily)[0], [:default, :status_day]
+    compare_stubs :statuses, Status.filter(nil, :daily)[0], [:uncounted, :default, :status_day]
   end
   
   it "counts today's status hours" do
@@ -280,7 +281,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows today's statuses by user" do
-    expected = [:default]
+    expected = [:uncounted, :default]
     compare_stubs :statuses, Status.filter(@user.id, 'daily')[0], expected
     compare_stubs :statuses, @user.statuses.filter('daily')[0],   expected
   end
@@ -293,7 +294,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows this week's statuses" do
-    compare_stubs :statuses, Status.filter(nil, 'weekly')[0], [:default, :status_day, :status_week_1, :status_week_2]
+    compare_stubs :statuses, Status.filter(nil, 'weekly')[0], [:uncounted, :default, :status_day, :status_week_1, :status_week_2]
   end
   
   it "counts this week's status hours" do
@@ -302,7 +303,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows this week's statuses by user" do
-    expected = [:default, :status_week_1]
+    expected = [:uncounted, :default, :status_week_1]
     compare_stubs :statuses, Status.filter(@user.id, 'weekly')[0], expected
     compare_stubs :statuses, @user.statuses.filter[0],             expected
   end
@@ -315,7 +316,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows this fortnight's statuses" do
-    compare_stubs :statuses, Status.filter(nil, 'bi-weekly')[0], [:default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2]
+    compare_stubs :statuses, Status.filter(nil, 'bi-weekly')[0], [:uncounted, :default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2]
   end
   
   it "counts this fortnight's status hours" do
@@ -324,7 +325,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows this fortnight's statuses by user" do
-    expected = [:default, :status_week_1, :status_biweek_2]
+    expected = [:uncounted, :default, :status_week_1, :status_biweek_2]
     compare_stubs :statuses, Status.filter(@user.id, 'bi-weekly')[0], expected
     compare_stubs :statuses, @user.statuses.filter('bi-weekly')[0],   expected
   end
@@ -363,7 +364,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows this month's statuses" do
-    compare_stubs :statuses, Status.filter(nil, 'monthly')[0],  [:default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2, :status_month_1, :status_month_2]
+    compare_stubs :statuses, Status.filter(nil, 'monthly')[0],  [:uncounted, :default, :status_day, :status_week_1, :status_week_2, :status_biweek_1, :status_biweek_2, :status_month_1, :status_month_2]
   end
   
   it "counts this month's status hours" do
@@ -372,7 +373,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows this month's statuses by user" do
-    expected = [:default, :status_week_1, :status_biweek_2, :status_month_2]
+    expected = [:uncounted, :default, :status_week_1, :status_biweek_2, :status_month_2]
     compare_stubs :statuses, Status.filter(@user.id, 'monthly')[0], expected
     compare_stubs :statuses, @user.statuses.filter('monthly')[0],   expected
   end
