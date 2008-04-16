@@ -163,6 +163,19 @@
         <%= render :partial => "form", :object => f %>
           <p class="btns"><%= update_button %></p>
         <% end -%>
+
+
+        <h2>Tendrils</h2>
+        <p>Tendrils reach out and communicate after you create a status. Useful for notifying a chat room of status changes.</p>
+        <ul>
+        <% @project.tendrils.each do |tendril| %>
+          <li><%=h tendril.notifies_type %>: <%=h tendril.notifies.domain %>
+            <% if tendril.notifies.user == current_user %><%= link_to 'edit', notify_path(:id => tendril.notifies.id) %><% end %>
+          </li>
+        <% end %>
+        </ul>
+
+
       </div>
     
       <div id="export" style="display:none">

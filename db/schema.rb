@@ -64,6 +64,16 @@ ActiveRecord::Schema.define(:version => 20080415234011) do
     t.datetime "created_at"
   end
 
+  create_table "campfires", :force => true do |t|
+    t.string   "domain"
+    t.string   "login"
+    t.string   "password"
+    t.string   "room"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "contexts", :force => true do |t|
     t.string   "name"
     t.integer  "user_id"
@@ -151,6 +161,15 @@ ActiveRecord::Schema.define(:version => 20080415234011) do
   end
 
   add_index "statuses", ["created_at", "user_id"], :name => "index_statuses_on_created_at_and_user_id"
+
+  create_table "tendrils", :force => true do |t|
+    t.integer  "project_id"
+    t.string   "notifies_type"
+    t.integer  "notifies_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "login"

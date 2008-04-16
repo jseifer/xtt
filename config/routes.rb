@@ -5,6 +5,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :helps, :controller => "help"
   map.resources :statuses
+  map.resources :notifies, :tendrils
   map.resources :projects, :member => {:invite => :post}
   
   map.filtered_user 'users/:id/:filter', :filter => status_filters, :controller => 'users', :action => 'show'
