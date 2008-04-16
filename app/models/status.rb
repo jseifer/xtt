@@ -1,3 +1,5 @@
+require 'tinder'
+
 class Status < ActiveRecord::Base
   validate :set_project_from_code
   validates_presence_of :user_id, :message

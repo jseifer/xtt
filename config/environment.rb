@@ -42,6 +42,7 @@ Rails::Initializer.run do |config|
   }
 
   config.gem :bj, :version => '1.0.1'
+  config.gem :tinder, :version => '0.1.6'
   config.gem :fastercsv, :version => '1.2.3'
   config.gem :googlecharts, :lib => "gchart", :version => '0.2.0'
   config.gem :hpricot, :version => '0.6'
@@ -59,7 +60,7 @@ Rails::Initializer.run do |config|
   # config.active_record.schema_format = :sql
 
   # Activate observers that should always be running
-  config.active_record.observers = :user_observer
+  config.active_record.observers = [ :user_observer, :status_observer ]
 
   # Make Active Record use UTC-base instead of local time
   config.time_zone = "UTC"
