@@ -26,7 +26,7 @@ Rails::Initializer.run do |config|
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
   # Add additional load paths for your own custom dirs
-  config.load_paths += %W( #{RAILS_ROOT}/app/concerns #{RAILS_ROOT}/vendor/googlecharts-0.2.0/lib #{RAILS_ROOT}/vendor/ruby-openid-1.1.4/lib #{RAILS_ROOT}/vendor/ruby-yadis-0.3.4/lib #{RAILS_ROOT}/vendor/fastercsv-1.2.3/lib)
+  config.load_paths += %W( #{RAILS_ROOT}/app/concerns )
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
@@ -53,11 +53,6 @@ Rails::Initializer.run do |config|
   # which shouldn't be used to store highly confidential information
   # (create the session table with 'rake db:sessions:create')
   # config.action_controller.session_store = :active_record_store
-
-  # Use SQL instead of Active Record's schema dumper when creating the test database.
-  # This is necessary if your schema can't be completely dumped by the schema dumper,
-  # like if you have constraints or database-specific column types
-  # config.active_record.schema_format = :sql
 
   # Activate observers that should always be running
   config.active_record.observers = [ :user_observer, :status_observer ]
