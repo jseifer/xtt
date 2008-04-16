@@ -32,7 +32,9 @@ describe ProjectsController, "GET #show" do
     @statuses   = []
     @date_range = :date_range
     @hours      = 75.0
-    Project.stub!(:find).with('1').and_return(@project)
+    @user       = mock_model User, :id => 5
+    Project.stub!(:find_by_permalink).with('1').and_return(@project)
+    User.stub!(:find_by_permalink).with('5').and_return(@user)
     @project.stub!(:statuses).and_return([])
     controller.stub!(:login_required)
     controller.stub!(:current_user).and_return(mock_model(User, :id => 55, :active? => true, :time_zone => "UTC"))
@@ -101,7 +103,7 @@ describe ProjectsController, "GET #edit" do
   
   before do
     @project = projects(:default)
-    Project.stub!(:find).with('1').and_return(@project)
+    Project.stub!(:find_by_permalink).with('1').and_return(@project)
     controller.stub!(:login_required)
   end
 
@@ -190,7 +192,7 @@ describe ProjectsController, "PUT #update" do
     @project = projects(:default)
     @membership = mock_model(Membership, :update_attributes => true)
 
-    Project.stub!(:find).with('1').and_return(@project)
+    Project.stub!(:find_by_permalink).with('1').and_return(@project)
     @project.memberships.stub!(:find_by_user_id).and_return @membership
     controller.stub!(:login_required)
   end
@@ -255,7 +257,7 @@ describe ProjectsController, "DELETE #destroy" do
   before do
     @project = projects(:default)
     @project.stub!(:destroy)
-    Project.stub!(:find).with('1').and_return(@project)
+    Project.stub!(:find_by_permalink).with('1').and_return(@project)
     controller.stub!(:login_required)
   end
 

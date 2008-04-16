@@ -97,7 +97,7 @@ describe UsersController, "GET #show" do
     describe UsersController, "(filtered)" do
       define_models
       
-      act! { get :show, options.merge(:id => @user.id) }
+      act! { get :show, options.merge(:id => @user.to_param) }
       
       before do
         @user.statuses.should_receive(:filter).with(*options[:args]).and_return([@statuses, @date_range])

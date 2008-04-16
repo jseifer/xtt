@@ -122,7 +122,7 @@ class UsersController < ApplicationController
 protected
   def find_user
     return false unless logged_in?
-    @user = current_user.id.to_s == params[:id] ? current_user : User.find(params[:id])
+    @user = current_user.permalink.to_s == params[:id] ? current_user : User.find_by_permalink(params[:id])
   end
   
   def authorized?

@@ -1,6 +1,8 @@
 class Project < ActiveRecord::Base
   include Status::Methods
 
+  has_permalink :name
+
   validates_presence_of :user_id, :name, :code
 
   belongs_to :user
@@ -15,7 +17,7 @@ class Project < ActiveRecord::Base
   before_validation_on_create :create_code
   after_create :create_membership_for_owner
 
-  named_scope :all, :order => 'name'
+  named_scope :all, :order => 'permalink'
 
   def editable_by?(user)
     users.include?(user)
@@ -23,6 +25,10 @@ class Project < ActiveRecord::Base
 
   def owned_by?(user)
     user && user_id == user.id
+  end
+
+  def to_param
+    permalink
   end
 
 protected

@@ -44,7 +44,10 @@ describe Membership do
     memberships(:default).context.should be_an_instance_of(Context)
     memberships(:default).context.name.should == "foo"
   end
-  
+
+  it "is found from a user and a group of projects" do
+    Membership.find_for(users(:default), [projects(:another)]).should == [memberships(:default)]
+  end
 end
 
 describe_validations_for Membership, :user_id => 1, :project_id => 1 do

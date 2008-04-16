@@ -1,10 +1,12 @@
 class User < ActiveRecord::Base
   concerns :authentication, :state_machine, :statuses
-  
+
+  has_permalink :login
+
   before_create { |u| u.admin = true if User.count.zero? }
-    
-  has_many :owned_projects, :order => 'projects.name', :class_name => 'Project'
-  has_many :contexts, :order => 'contexts.name'
+
+  has_many :owned_projects, :order => 'projects.permalink', :class_name => 'Project'
+  has_many :contexts, :order => 'contexts.permalink'
   has_many :memberships, :dependent => :delete_all do
     def for(project)
       loaded? ? 
@@ -13,7 +15,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  has_many :projects, :select => 'projects.*, memberships.code as project_code', :through => :memberships, :order => 'projects.name'
+  has_many :projects, :select => 'projects.*, memberships.code as project_code', :through => :memberships, :order => 'projects.permalink'
   
   has_many :recent_projects, :through => :statuses, :class_name => Project.name, :source => :project do
     def latest
@@ -21,7 +23,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  named_scope :all, :order => 'login'
+  named_scope :all, :order => 'permalink'
   
   def related_users
     @related_users ||= with_memberships { User.find :all, :order => 'last_status_at desc', :select => "DISTINCT users.*" }
@@ -38,6 +40,10 @@ class User < ActiveRecord::Base
       when Project then accessible_project_id?(user_or_status_or_project.id)
       else false
     end
+  end
+
+  def to_param
+    permalink
   end
 
 protected
