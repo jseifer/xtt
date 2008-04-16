@@ -1,7 +1,4 @@
-require 'tinder'
-
 namespace :tt do
-
   task :notify => :environment do
     status = Status.find ENV['STATUS']
     status.project.tendrils.each do |tendril|
