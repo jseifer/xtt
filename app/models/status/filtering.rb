@@ -65,8 +65,8 @@ protected
   def self.scope_by_context(value)
     if value
       value = value.id if value.is_a? Context
-      with_scope :find => {:conditions => {'contexts.id' => value}, :select => "DISTINCT statuses.*",
-          :joins => "INNER JOIN memberships on statuses.project_id = memberships.project_id INNER JOIN contexts ON contexts.user_id = memberships.user_id"} do
+      with_scope :find => {:conditions => {'memberships.context_id' => value}, :select => "DISTINCT statuses.*",
+          :joins => "INNER JOIN memberships on statuses.project_id = memberships.project_id"} do
         yield
       end
     else

@@ -2,7 +2,7 @@
   <p>
     <label for="membership_code">Your code for posting to this project?</label>
     <span class="at">@</span>
-    <%= form.text_field :code, :maxlength => 10 %>
+    <%= form.text_field :code %>
   </p>
   <p class='help'>
     For example: '@<%=h truncate(form.object.code) %>'.

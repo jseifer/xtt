@@ -2,7 +2,7 @@ class ContextsController < ApplicationController
   before_filter :login_required, :except => :index
 
   def index
-    redirect_to root_Path
+    redirect_to root_path
   end
 
   def show

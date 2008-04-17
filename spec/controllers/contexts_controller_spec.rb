@@ -1,5 +1,11 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
+describe ContextsController, "GET #index" do
+  act! { get :index }
+  
+  it_redirects_to { root_path }
+end
+
 describe ContextsController, "GET #show" do
   before do
     @context    = 'c'
