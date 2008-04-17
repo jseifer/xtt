@@ -26,16 +26,15 @@ describe ProjectsController, "GET #index" do
 end
 
 describe ProjectsController, "GET #show" do
-    
   before do
-    @project = projects(:default)
+    @project    = projects(:default)
     @statuses   = []
     @date_range = :date_range
     @hours      = 75.0
     @user       = mock_model User, :id => 5
     Project.stub!(:find_by_permalink).with('1').and_return(@project)
     User.stub!(:find_by_permalink).with('5').and_return(@user)
-    @project.stub!(:statuses).and_return([])
+    @project.stub!(:statuses).and_return(@statuses)
     controller.stub!(:login_required)
     controller.stub!(:current_user).and_return(mock_model(User, :id => 55, :active? => true, :time_zone => "UTC"))
   end
