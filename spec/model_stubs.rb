@@ -83,4 +83,20 @@ ModelStubbing.define_models :statuses do
   end
 end
 
+ModelStubbing.define_models :contexts do
+  model Project do
+    stub :etc, :name => "ETC", :permalink => 'etc'
+  end
+
+  model Context do
+    stub :user => all_stubs(:user), :name => 'Woo', :permalink => 'woo'
+  end
+
+  model Membership do
+    stub :code => 'etc', :user => all_stubs(:user), :project => all_stubs(:etc_project)
+    stub :context, :project => all_stubs(:project), :context => all_stubs(:context), :code => 'default'
+    stub :another, :project => all_stubs(:another_project), :context => all_stubs(:context), :code => 'another'
+  end
+end
+
 ModelStubbing.define_models :stubbed, :insert => false

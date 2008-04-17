@@ -36,14 +36,21 @@ module StatusesHelper
     user_id = options.key?(:user_id) ? options[:user_id] : params[:user_id]
     filter  = options.key?(:filter)  ? options[:filter]  : params[:filter]
     args    = {:date => options.key?(:date) ? options[:date] : params[:date]}
-    args[:id] = options.key?(:project) ? options[:project] : params[:id]
     prefix, args  = filter.blank? ? [nil, args] : ["filtered_", args.update(:filter => filter)]
     url = 
       if options.key?(:project) || controller.controller_name == 'projects'
+        args[:id] ||= options[:project] || params[:id]
         case user_id
           when nil, :all then send("#{prefix}project_for_all_path",  args)
           when :me       then send("#{prefix}project_for_me_path",   args.update(:user_id => :me))
           else                send("#{prefix}project_for_user_path", args.update(:user_id => user_id))
+        end
+      elsif options.key?(:context) || controller.controller_name == 'contexts'
+        args[:id] ||= options[:context] || params[:id]
+        case user_id
+          when nil, :all then send("#{prefix}context_for_all_path",  args)
+          when :me       then send("#{prefix}context_for_me_path",   args.update(:user_id => :me))
+          else                send("#{prefix}context_for_user_path", args.update(:user_id => user_id))
         end
       else
         send("#{prefix}user_path", args)
