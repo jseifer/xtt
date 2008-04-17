@@ -1,5 +1,7 @@
 class Context < ActiveRecord::Base
   has_many :memberships
+  has_many :projects, :through => :memberships
+  has_many :users,    :through => :memberships, :uniq => true
   belongs_to :user
 
   has_permalink :name

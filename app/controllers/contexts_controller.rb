@@ -2,17 +2,18 @@ class ContextsController < ApplicationController
   before_filter :login_required, :except => :index
 
   def index
-    redirect_to users_path
+    redirect_to root_Path
   end
 
   def show
-    @statuses, @date_range = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :date => params[:date], :page => params[:page], :per_page => params[:per]||20)
-    @daily_hours = @project.statuses.filtered_hours(user_status_for(params[:user_id]), :daily, :date => params[:date])
-    @hours       = @project.statuses.filtered_hours(user_status_for(params[:user_id]), params[:filter], :date => params[:date])
+    @context = current_user.contexts.find_by_permalink(params[:id]) unless params[:id].blank?
+    @statuses, @date_range = Status.filter(@context, params[:filter] ||= :weekly, :date => params[:date], :page => params[:page], :per_page => params[:per]||20)
+    @daily_hours = Status.filtered_hours(@context, :daily, :date => params[:date])
+    @hours       = Status.filtered_hours(@context, params[:filter], :date => params[:date])
     respond_to do |format|
       format.html # show.html.erb
       format.iphone
-      format.xml  { render :xml  => @project }
+      format.xml  { render :xml  => @context }
       format.csv  # show.csv.erb
     end
   end
