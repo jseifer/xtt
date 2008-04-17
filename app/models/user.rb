@@ -31,6 +31,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  named_scope :for_projects, lambda { |projects| {:conditions => {'memberships.project_id' => projects.map(&:id)}, 
+    :select => "DISTINCT users.*",
+    :joins  => "INNER JOIN memberships ON memberships.user_id = users.id" } }
+
   named_scope :all, :order => 'permalink'
   
   def related_users

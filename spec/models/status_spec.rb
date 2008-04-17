@@ -234,7 +234,7 @@ describe Status, "(filtering by date)" do
 
     model Status do
       stub :message => 'default', :state => 'processed', :hours => 5, :created_at => current_time - 5.minutes, :user => all_stubs(:user), :project_id => 1
-      stub :status_day, :message => 'status_day', :created_at => current_time - 8.minutes, :user => all_stubs(:other_user)
+      stub :status_day, :message => 'status_day', :created_at => current_time - 8.minutes, :user => all_stubs(:other_user), :project_id => 2
       stub :status_week_1, :message => 'status_week_1', :created_at => current_time - 3.days
       stub :status_week_2, :message => 'status_week_2', :created_at => current_time - (4.days + 20.hours), :user => all_stubs(:other_user)
       stub :status_biweek_1, :message => 'status_biweek_1', :created_at => current_time - 8.days, :user => all_stubs(:other_user)
@@ -308,7 +308,7 @@ describe Status, "(filtering by date)" do
   end
   
   it "shows this week's statuses by context" do
-    compare_stubs :statuses, Status.filter(@ctx, :weekly)[0], [:default, :status_week_1]
+    compare_stubs :statuses, Status.filter(nil, :weekly, :context => @ctx)[0], [:default, :status_week_1, :status_week_2]
   end
   
   it "counts this week's status hours" do
@@ -317,8 +317,8 @@ describe Status, "(filtering by date)" do
   end
   
   it "counts this week's status hours by context" do
-    Status.filtered_hours(@ctx, 'weekly').total.should == 2 * 5
-    Status.hours(@ctx, 'weekly').should == 2 * 5
+    Status.filtered_hours(nil, 'weekly', :context => @ctx).total.should == 3 * 5
+    Status.hours(nil, 'weekly', :context => @ctx).should == 3 * 5
   end
   
   it "shows this week's statuses by user" do
