@@ -31,7 +31,23 @@
     <ul class="text-list" id="project-lists">
     <% unless current_user.projects.empty? %>
     <% current_user.memberships.contexts.each do |context, memberships| %>
-      <li class='context'><%= link_to_context context %></li>
+      <% total_project = memberships.map { |m| m.project.statuses.filtered_hours(nil, :daily) } %>
+      <% total_user_hours = total_project.sum { |m| m.total(current_user) } %>
+      <% total_project_hours = total_project.sum { |m| m.total } %>
+      <li class='context'>
+        <a href="<%= url_for_context context %>">
+          <span class="ttl"><%= context ? h(context.name) : :etc %></span>
+          <span class="desc">&nbsp;</span>
+          <span class="you">
+            <span class="num"><%= number_with_precision total_user_hours, 2 %></span>
+            <span class="meta">you</span>
+          </span>
+          <span class="others">
+            <span class="num"><%= number_with_precision total_project_hours - total_user_hours, 2 %></span>
+            <span class="meta">others</span>
+          </span>
+        </a>
+      </li>
     	<% memberships.each_with_index do |membership, index| -%>
     	  <% project = membership.project %>
   			<% project_hours = project.statuses.filtered_hours(nil, :daily) ; user_hours = project_hours.total(current_user) -%>

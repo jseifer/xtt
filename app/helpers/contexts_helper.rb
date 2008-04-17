@@ -1,6 +1,9 @@
 module ContextsHelper
   def link_to_context(ctx)
-    name, perma = ctx ? [ctx.name, ctx.permalink] : [:etc, :etc]
-    link_to h(name), context_path(perma)
+    link_to h(ctx ? ctx.name : :etc), url_for_context(perma)
+  end
+
+  def url_for_context(ctx)
+    context_path(ctx ? ctx.permalink : :etc)
   end
 end

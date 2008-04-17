@@ -413,12 +413,13 @@ li.daybreak {
 
 #project-lists li.context {
   background-color: #e2e2e2;
+  padding: 8px 8px;
 }
+#project-lists 
 #project-lists li.context a {
   font-weight: bold;
   font-size: 16px;
   color: #444;
-  
 }
 #project-lists li.context:hover {
   background-color: #cacaca;

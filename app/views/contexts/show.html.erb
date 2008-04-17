@@ -102,6 +102,12 @@
 
     <div id="context" style="display:none">
       <% form_for(@context, :html => { :class => "form" }, :method => 'put') do |form| %>
+        <div class='row final'>
+          <p>
+            <%= form.label :Name %>
+            <%= form.text_field :name, :size => 10 %>
+          </p>
+        </div>
         <%# render :partial => 'memberships/form', :object => form %>
         <p class="btns"><%= save_button %></p>
       <% end %>

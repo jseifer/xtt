@@ -7,6 +7,8 @@ class Context < ActiveRecord::Base
 
   validates_uniqueness_of :name, :scope => :user_id
 
+  attr_accessible :name, :permalink
+
   def users
     @users ||= User.for_projects(projects)
   end
