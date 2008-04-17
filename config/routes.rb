@@ -4,14 +4,12 @@ ActionController::Routing::Routes.draw do |map|
   map.root :controller => 'users', :action => 'index'
 
   map.resources :helps, :controller => "help"
-  map.resources :statuses
-  map.resources :notifies, :tendrils
+  map.resources :statuses, :contexts, :notifies, :tendrils
   map.resources :projects, :member => {:invite => :post}
   
   map.filtered_user 'users/:id/:filter', :filter => status_filters, :controller => 'users', :action => 'show'
   
   map.with_options :controller => 'contexts', :action => 'show' do |context|
-    context.context_projects                    'contexts/:id'
     context.context_projects_for_all            'contexts/:id/all'
     context.context_projects_for_me             'contexts/:id/:user_id', :user_id => /me/
     context.context_projects_for_user           'contexts/:id/users/:user_id'
@@ -21,9 +19,9 @@ ActionController::Routing::Routes.draw do |map|
   end
   
   map.with_options :controller => 'projects', :action => 'show' do |project|
-    project.project_for_all  'projects/:id/all'
-    project.project_for_me   'projects/:id/:user_id', :user_id => /me/
-    project.project_for_user 'projects/:id/users/:user_id'
+    project.project_for_all           'projects/:id/all'
+    project.project_for_me            'projects/:id/:user_id', :user_id => /me/
+    project.project_for_user          'projects/:id/users/:user_id'
     project.filtered_project_for_all  'projects/:id/all/:filter', :filter => status_filters
     project.filtered_project_for_me   'projects/:id/:user_id/:filter', :user_id => /me/, :filter => status_filters
     project.filtered_project_for_user 'projects/:id/users/:user_id/:filter', :filter => status_filters
