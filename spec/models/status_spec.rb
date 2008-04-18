@@ -218,14 +218,23 @@ end
 describe Status, "(filtering by date)" do
   define_models :copy => false do
     time 2007, 6, 30, 6
+
     model User do
       stub :login => 'bob'
       stub :other, :login => 'fred'
     end
-    
+
+    model Context do
+      stub :name => "Foo", :permalink => 'foo', :user => all_stubs(:user)
+    end
+
+    model Membership do
+      stub :user => all_stubs(:user), :context => all_stubs(:context), :project_id => 1
+    end
+
     model Status do
       stub :message => 'default', :state => 'processed', :hours => 5, :created_at => current_time - 5.minutes, :user => all_stubs(:user), :project_id => 1
-      stub :status_day, :message => 'status_day', :created_at => current_time - 8.minutes, :user => all_stubs(:other_user)
+      stub :status_day, :message => 'status_day', :created_at => current_time - 8.minutes, :user => all_stubs(:other_user), :project_id => 2
       stub :status_week_1, :message => 'status_week_1', :created_at => current_time - 3.days
       stub :status_week_2, :message => 'status_week_2', :created_at => current_time - (4.days + 20.hours), :user => all_stubs(:other_user)
       stub :status_biweek_1, :message => 'status_biweek_1', :created_at => current_time - 8.days, :user => all_stubs(:other_user)
@@ -242,6 +251,7 @@ describe Status, "(filtering by date)" do
     Time.zone = -28800
     @user  = users :default
     @other = users :other
+    @ctx   = contexts :default
   end
   
   after do
@@ -297,9 +307,18 @@ describe Status, "(filtering by date)" do
     compare_stubs :statuses, Status.filter(nil, 'weekly')[0], [:uncounted, :default, :status_day, :status_week_1, :status_week_2]
   end
   
+  it "shows this week's statuses by context" do
+    compare_stubs :statuses, Status.filter(nil, :weekly, :context => @ctx)[0], [:default, :status_week_1, :status_week_2]
+  end
+  
   it "counts this week's status hours" do
     Status.filtered_hours(nil, 'weekly').total.should == 4 * 5
     Status.hours(nil, 'weekly').should == 4 * 5
+  end
+  
+  it "counts this week's status hours by context" do
+    Status.filtered_hours(nil, 'weekly', :context => @ctx).total.should == 3 * 5
+    Status.hours(nil, 'weekly', :context => @ctx).should == 3 * 5
   end
   
   it "shows this week's statuses by user" do

@@ -98,25 +98,25 @@ class UsersController < ApplicationController
   # admin only
   def suspend
     @user.suspend! 
-    redirect_to users_path
+    redirect_to root_Path
   end
 
   # admin only
   def unsuspend
     @user.unsuspend! 
-    redirect_to users_path
+    redirect_to root_Path
   end
 
   # admin only
   def destroy
     @user.delete!
-    redirect_to users_path
+    redirect_to root_Path
   end
 
   # admin only
   def purge
     @user.destroy
-    redirect_to users_path
+    redirect_to root_Path
   end
 
 protected

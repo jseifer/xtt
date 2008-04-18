@@ -17,6 +17,10 @@ class User < ActiveRecord::Base
         proxy_target.detect { |r| r.project_id == project.id } : 
         find(:first, :conditions => { :project_id => project.id})
     end
+
+    def contexts
+      proxy_owner.memberships.sort.group_by &:context
+    end
   end
 
   has_many :projects, :select => 'projects.*, memberships.code as project_code', :through => :memberships, :order => 'projects.permalink'
@@ -26,6 +30,10 @@ class User < ActiveRecord::Base
       @latest ||= first
     end
   end
+
+  named_scope :for_projects, lambda { |projects| {:conditions => {'memberships.project_id' => projects.map(&:id)}, 
+    :select => "DISTINCT users.*",
+    :joins  => "INNER JOIN memberships ON memberships.user_id = users.id" } }
 
   named_scope :all, :order => 'permalink'
   
