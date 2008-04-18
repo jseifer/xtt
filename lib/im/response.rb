@@ -23,7 +23,7 @@ module IM
           "I'm a time-tracker bot. Send me a status message like <b>@project hacking on \#54</b> or 'commands' for a list of commands"
         when "status":
           if status = @user.statuses.latest
-            project = status.project ? "#{status.project.name} (@#{status.project.code})": "Out"
+            project = status.project ? "#{status.project.name} (@#{status.user.memberships.for(project).code})": "Out"
             "Your current status is: <b>#{project}</b> <code>#{status.message}</code>"
           else
             "No current status"
@@ -31,7 +31,7 @@ module IM
         when "commands":
           "Available commands are: help, projects, commands, status."
         when "projects": 
-          "Your projects are: #{user.projects.map(&:code).to_sentence}"
+          "Your projects are: #{user.memberships.map(&:code).to_sentence}"
         else
           create_status(message)
       end
