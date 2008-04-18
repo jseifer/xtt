@@ -22,23 +22,26 @@ module Net::TOC
   Debug = true
 end
 
-class XttBot < Net::TOC
-  
-  def client
-    self
+class XttBot 
+  include Net::TOC
+
+  def initialize(*args)
+    @client = Net::TOC.new *args
   end
+
+  attr_accessor :client
 
   def xtt_loop
     while(true) do
       begin
-        connect
-        puts "buddy list is #{buddy_list.inspect}"
-        wait
+        @client.connect
+        puts "buddy list is #{@client.buddy_list.inspect}"
+        @client.wait
 
       rescue Errno::EPIPE, Errno::ECONNRESET
         puts "DISCONNECT"
-        disconnect
-        connect # reconnect
+        @client.disconnect
+        @client.connect # reconnect
       end
     end
   end
@@ -52,21 +55,22 @@ class Aimbo
     :admin    => 'courtenay187'
   }
   
-  attr_accessor :client
+  attr_accessor :client, :xtt
   include IM
   
   def initialize
-    @client ||= XttBot.new(@@credentials[:username], @@credentials[:password]) 
+    @xtt ||= XttBot.new(@@credentials[:username], @@credentials[:password])
+    @client = @xtt.client
     @error_notifier ||= setup_error_notification
     @im_notifier ||= setup_im
     @setup_away ||= setup_away
   end
   
   def setup_error_notification
-    @client.on_error do |error|
-      admin = @client.buddy_list.buddy_named(@@credentials[:admin])
-      admin.send_im("Error: #{error}")
-    end
+    #@client.on_error do |error|
+    #  admin = @client.buddy_list.buddy_named(@@credentials[:admin])
+    #  admin.send_im("Error: #{error}")
+    #end
   end
   
   def setup_im
@@ -106,8 +110,7 @@ class Aimbo
 end
 
 aimbo = Aimbo.new
-client = aimbo.client
-client.xtt_loop
+aimbo.xtt.xtt_loop
 return
 
 #/var/www/xtt/releases/20080208021931/vendor/rails/railties/lib/commands/runner.rb:47: 
