@@ -461,6 +461,12 @@ li.daybreak {
   display: block;
   color: #555;
 }
+#projects-for-context .ttl {
+  float: left;
+}
+#projects-for-context .num {
+  text-align: right;
+}
 
 .meta {
   color: #999;
