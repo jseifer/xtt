@@ -1,19 +1,19 @@
 class Context < ActiveRecord::Base
   has_many :memberships
+  has_many :projects, :through => :memberships
   belongs_to :user
 
   has_permalink :name
 
   validates_uniqueness_of :name, :scope => :user_id
 
-  def to_param
-    permalink
+  attr_accessible :name, :permalink
+
+  def users
+    @users ||= User.for_projects(projects)
   end
 
-protected
-  def after_create
-    unless user_id || memberships.empty?
-      update_attribute :user_id, memberships[0].user_id
-    end
+  def to_param
+    permalink
   end
 end
