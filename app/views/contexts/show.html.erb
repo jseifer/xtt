@@ -1,19 +1,8 @@
 <% box(:special, 'project-header') do |box| %>
-  <% box.title = "What are you doing on #{h(@context.name)}?" %>
+  <% box.title = "Time recorded for projects in #{h(@context.name)}" %>
   <% box.content = capture do %>
     <% form_for current_user.statuses.build do |f| -%>
       <ul class="media-list">
-        <li class="media-item status-form last">
-          <%= f.text_area :code_and_message, :rows => 2, :cols => 55, :class => 'status-entry' %>
-          <p class="btns">
-            <%= img_button 'out' %>
-            <%= hidden_field_tag :destination, context_path(@context) %>
-            <%= update_button %>
-          </p>
-        </li>
-        <li id="project-head">
-          <h2><%=h @context.name %></h2>
-        </li>
         <li class="clearfix" style="border-bottom:0">
           <%= render :partial => "statuses/chart", :locals => {:hours => @hours, :date_range => @date_range} %>
         </li>
@@ -82,7 +71,8 @@
   <% sbox.content = capture do %>
     <% sbox.header_utils = %(
       <div id="tool-tabs">
-        <a href="#context">Me</a>
+        <a href="#projects">Projects</a>
+        <a href="#context">Edit</a>
         <a href="#export">CSV</a>
       </div>) 
     %>
@@ -92,14 +82,30 @@
         afterChange: function(container) {
           var item = container.readAttribute('id');
           if(item == "export") {
-            $('sbox-tools').down('h3').update("Export this project's data");
+            $('sbox-tools').down('h3').update("Export data for these projects");
           } else if(item == "context") {
-            $('sbox-tools').down('h3').update("Edit Context");
+            $('sbox-tools').down('h3').update("Edit context");
+          } else if(item == "projects") {
+            $('sbox-tools').down('h3').update("Projects")
           }
         }
       });
     <% end %>
-
+    
+    <div id='projects' style='display:none'>
+      <ul id='projects-for-context' class='text-list'>
+      <% @context.projects.each_with_index do |project, index| %>
+      <% project_hours = project.statuses.filtered_hours(@user, params[:filter], :date => params[:date]) -%>
+      <li<%= %( class="last") if first_in_collection?(current_user.projects, index) %> id="project-<%= project.id %>">
+        <a href="<%= url_for project %>">
+          <span class="ttl"><%=h project.name %></span>
+          <span class="num"><%= number_with_precision project_hours.total, 2 %></span>
+        </a>
+      </li>
+      <% end %>
+      </ul>
+    </div>
+    
     <div id="context" style="display:none">
       <% form_for(@context, :html => { :class => "form" }, :method => 'put') do |form| %>
         <div class='row final'>
@@ -112,37 +118,6 @@
         <p class="btns"><%= save_button %></p>
       <% end %>
   
-      <% if false %>
-      <!--
-      this shit is commented out because we don't track, yet.
-        <% if @project.feeds.size > 0 %>
-         <ul class="text-list">
-          <% @project.feeds.each_with_index do |feed, index| %>
-            <li<%= %( class="last") if first_in_collection?(@project.feeds, index) %>>
-              <span class="ttl"><%= link_to h(feed.name), feed %></span>
-              <span class="desc">Updated 10 minutes ago</span>
-            </li>
-          <% end %>
-          </ul>
-        <% end %>
-              
-        <% form_for @project.feeds.new, :html => {:class => 'form' } do |f| -%>       
-        <p>Have an RSS feed that you'd like to auto update this project with?</p>
-    
-          <%= f.hidden_field :project_id %>
-          <p>
-            <label for="project_feed_name">Give this feed a title</label>
-            <%= f.text_field :name %>
-          </p>
-          <p>
-            <label for="project_feed_url">URL of feed</label>
-            <%= f.text_field :url, :value => "http://" %>
-          </p>
-          <p class="btns"><%= save_button %></p>
-    
-        <% end -%>
-      -->
-      <% end %>
     </div>
   
       <div id="export" style="display:none">
@@ -157,7 +132,7 @@
 <% end -%>
 
 <% box(:sidebar, 'people') do |sbox| %>
-  <% sbox.title = "Filter this context by a member" %>
+  <% sbox.title = "Filter these projects by a member" %>
   <% sbox.content_classes = "nopad" %>
   <% if params[:user_id] %>
   <% sbox.header_utils =  link_to_filtered_statuses("Remove filter", {:user_id => :all}) %>

@@ -15,7 +15,7 @@ describe IM::Response do
   end
   
   it "knows 'projects'" do
-    @user.should_receive(:projects).and_return [mock_model(Project, :code => "tt")]
+    @user.stub!(:memberships).and_return [mock_model(Membership, :code => 'tt')]
     @aim.should_receive(:send_im).with("<HTML>Your projects are: tt</HTML>")
     im = IM::Response.new "projects", @aim
   end
@@ -37,8 +37,10 @@ describe IM::Response do
   
   it "responds with project name and code" do
     @project = mock_model(Project, :name => "Fools!", :code => "fools")
-    @status  = mock_model(Status, :project => @project, :message => "thanks!")
+    @status  = mock_model(Status, :project => @project, :message => "thanks!", :user => @user)
     @user.stub!(:statuses).and_return mock('proxy', :latest => @status)
+    @user.stub!(:memberships).and_return([])
+    @user.memberships.stub!(:for).and_return mock_model(Membership, :code => 'fools')
     @aim.should_receive(:send_im).with("<HTML>Your current status is: <b>Fools! (@fools)</b> <code>thanks!</code></HTML>")
     im = IM::Response.new "status", @aim
     
