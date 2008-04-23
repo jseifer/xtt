@@ -8,7 +8,7 @@ class User::Inviter
   end
   
   def initialize(project_id, string)
-    @project = Project.find(project_id)
+    @project = Project.find_by_permalink(project_id) || raise(ActiveRecord::RecordNotFound)
     @emails, @logins = [], []
     parse(string)
   end
