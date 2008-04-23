@@ -4,6 +4,7 @@ set :deploy_to, "/var/www/#{application}"
 set :scm, :git
 set :rails_version, 8872
 set :branch, "origin/production"
+set :ssh_options, :forward_agent => true
 
 # set :deploy_via, "copy"
 
