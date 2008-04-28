@@ -95,6 +95,9 @@ class User
     unless value.nil?
       value.strip!
       value.downcase!
+      value.gsub!(/^http[:]\/\//, '')
+      value.gsub!(/\/$/, '')
+      value = "http://#{value}/" unless value.blank?
     end
     write_attribute :identity_url, value
   end
