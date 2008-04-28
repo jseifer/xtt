@@ -25,7 +25,7 @@ module IM
         when "status":
           if status = @user.statuses.latest
             project = status.project ? "#{status.project.name} (@#{status.user.memberships.for(project).code})": "Out"
-            "Your current status is: <b>#{project}</b> <code>#{status.message}</code>"
+            "Your current status is: <b>#{project}</b> #{status.message}"
           else
             "No current status"
           end
