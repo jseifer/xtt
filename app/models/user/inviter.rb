@@ -8,7 +8,7 @@ class User::Inviter
   end
   
   def initialize(project_id, string)
-    @project = Project.find_by_permalink(project_id) or raise ActiveRecord::RecordNotFound
+    @project = Project.find_by_permalink(project_id) || raise(ActiveRecord::RecordNotFound)
     @emails, @logins = [], []
     parse(string)
   end
@@ -50,7 +50,7 @@ class User::Inviter
   end
   
   def to_job
-    %{script/runner -e #{RAILS_ENV} "User::Inviter.invite(#{@project.id}, '#{(logins + emails) * ", "}')"}
+    %{script/runner -e #{RAILS_ENV} "User::Inviter.invite(#{@project.permalink.inspect}, '#{(logins + emails) * ", "}')"}
   end
   
 protected

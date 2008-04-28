@@ -21,7 +21,8 @@ class User
   validates_format_of       :login, :with => login_format, :if => :not_openid?
   validates_format_of       :email, :with => email_format, :if => :not_openid?
   validates_uniqueness_of   :login, :email
-  validates_uniqueness_of   :identity_url, :allow_nil => true
+  validates_uniqueness_of   :identity_url,                 :unless => :not_openid?  
+  validates_presence_of     :identity_url,                 :unless => :not_openid?  
   before_save :encrypt_password, :if => :not_openid?
   
   # prevents a user from submitting a crafted form that bypasses activation
@@ -105,7 +106,7 @@ protected
     self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
     self.crypted_password = encrypt(password)
   end
-
+  
   def not_openid?
     identity_url.blank?
   end

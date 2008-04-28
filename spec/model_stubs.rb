@@ -32,7 +32,7 @@ ModelStubbing.define_models do
   end
   
   model Tendril do
-    stub :notifies_type => "Campfire", :notifies_id => 1
+    stub :notifies_type => "Campfire", :notifies_id => 1, :project => all_stubs(:project)
   end
   
   model Help do

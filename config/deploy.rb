@@ -4,6 +4,7 @@ set :deploy_to, "/var/www/#{application}"
 set :scm, :git
 set :rails_version, 8872
 set :branch, "origin/production"
+set :ssh_options, :forward_agent => true
 
 # set :deploy_via, "copy"
 
@@ -17,7 +18,7 @@ task :after_update_code, :roles => :app do
     ln -s #{shared_path}/config/mongrel_cluster.yml #{release_path}/config/ && 
     ln -s #{shared_path}/config/database.yml        #{release_path}/config/ && 
     rake tmp:create &&
-    sudo rake edge REVISION=#{rails_version} RAILS_PATH=/var/www/#{application}/shared/rails
+    ln -s /var/www/#{application}/shared/rails/rails #{release_path}/vendor/rails
   CMD
 end
 
