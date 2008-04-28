@@ -76,6 +76,6 @@ describe User::Inviter do
   end
   
   it "creates valid job string" do
-    @inviter.to_job.should == %{script/runner -e test "User::Inviter.invite(#{@project.permalink.inspect}, 'foo, bar, baz@email.com, newb@email.com')"}
+    @inviter.to_job.should == %{script/runner -e test 'User::Inviter.invite(#{@project.permalink.inspect}, "foo, bar, baz@email.com, newb@email.com")'}
   end
 end

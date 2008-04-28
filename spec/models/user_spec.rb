@@ -356,6 +356,9 @@ describe User do
     end
     
     it "requires either login or identity_url" do
+      @user.login = "hello"
+      @user.should be_valid
+
       @user.login = ""
       @user.identity_url = ""
       @user.should_not be_valid
@@ -371,6 +374,7 @@ describe User do
     it "requires a unique OpenID URL" do
       user1 = create_user(:login => "hey", :email => "hey@whatisthat.com", :identity_url => "poop.com")
       user1.save
+      user1.identity_url.should == 'http://poop.com/'
       
       user2 = create_user(:login => "poop", :email => "heharr@peep.com", :identity_url => "poop.com")
       user2.should_not be_valid      
