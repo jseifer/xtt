@@ -7,6 +7,7 @@ module IM
 
       ActiveRecord::Base.verify_active_connections!
 
+      next if buddy.screen_name == 'aolsystemmsg'
       @user = User.find_by_aim_login(buddy.screen_name)
       if @user
         message = parse_message(message)
