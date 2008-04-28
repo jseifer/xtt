@@ -50,7 +50,7 @@ class User::Inviter
   end
   
   def to_job
-    %{script/runner -e #{RAILS_ENV} "User::Inviter.invite(#{@project.permalink.inspect}, '#{(logins + emails) * ", "}')"}
+    %{script/runner -e #{RAILS_ENV} 'User::Inviter.invite(#{@project.permalink.inspect}, "#{(logins + emails) * ", "}")'}
   end
   
 protected
