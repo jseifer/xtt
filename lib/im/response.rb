@@ -7,6 +7,7 @@ module IM
 
       ActiveRecord::Base.verify_active_connections!
 
+      next if buddy.screen_name == 'aolsystemmsg'
       @user = User.find_by_aim_login(buddy.screen_name)
       if @user
         message = parse_message(message)
@@ -24,7 +25,7 @@ module IM
         when "status":
           if status = @user.statuses.latest
             project = status.project ? "#{status.project.name} (@#{status.user.memberships.for(project).code})": "Out"
-            "Your current status is: <b>#{project}</b> <code>#{status.message}</code>"
+            "Your current status is: <b>#{project}</b> #{status.message}"
           else
             "No current status"
           end
