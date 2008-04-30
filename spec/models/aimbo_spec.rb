@@ -15,8 +15,8 @@ describe IM::Response do
   end
   
   it "knows 'projects'" do
-    @user.stub!(:memberships).and_return [mock_model(Membership, :code => 'tt')]
-    @aim.should_receive(:send_im).with("<HTML>Your projects are: tt</HTML>")
+    @user.stub!(:memberships).and_return [mock_model(Membership, :code => 'tt', :project => mock_model(Project, :name => 'Xtreem Time Tracker'))]
+    @aim.should_receive(:send_im).with("<HTML>Your projects are: @tt (Xtreem Time Tracker)</HTML>")
     im = IM::Response.new "projects", @aim
   end
   
