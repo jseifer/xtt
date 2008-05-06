@@ -32,7 +32,7 @@ module IM
         when "commands":
           "Available commands are: help, projects, commands, status."
         when "projects": 
-          "Your projects are: #{user.memberships.map(&:code).to_sentence}"
+          "Your projects are: #{user.memberships.map{|m| "@#{m.code} (#{m.project.name})"}.to_sentence}"
         else
           create_status(message)
       end
