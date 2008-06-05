@@ -1,6 +1,6 @@
 class HelpController < ApplicationController
   def index
-    @help = Help.find(:all)
+    @help = Help.all
 
     respond_to do |format|
       format.html # index.html.erb

@@ -27,7 +27,7 @@ Spec::Runner.configure do |config|
 
   # TODO: Make a nifty rspec matcher
   def compare_stubs(model, actual, expected)
-    expected.each do |e| 
+    expected.each do |e|
       a_index = actual.index(send(model, e))
       e_index = expected.index(e)
       if a_index.nil?

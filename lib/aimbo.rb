@@ -14,12 +14,63 @@ module TOCMonkeypatch
   end
 end
 
+module TOCBuddyMonkeypatch
+
+  def raw_update(val) # :nodoc:
+    name, online, warning, signon_time, idle, user_type = *val.split(":")
+    @warning_level = warning.to_i
+    @last_signon = Time.at(signon_time.to_i)
+    @idle_time = idle.to_i
+    if online == "F"
+      update_status :offline
+    # UGH.
+    elsif user_type.nil?
+      update_status :away
+    elsif user_type[2...3] and user_type[2...3] == "U"
+      update_status :away
+    elsif @idle_time > 0
+      update_status :idle
+    else
+      update_status :available
+    end
+  end
+end
+
 class Net::TOC::BuddyList
   include TOCMonkeypatch
 end
 
+class Net::TOC::Buddy
+  include TOCBuddyMonkeypatch
+end
+
 module Net::TOC
   Debug = true
+end
+
+class XttBot 
+  include Net::TOC
+
+  def initialize(*args)
+    @client = Net::TOC.new *args
+  end
+
+  attr_accessor :client
+
+  def xtt_loop
+    while(true) do
+      begin
+        @client.connect
+        puts "buddy list is #{@client.buddy_list.inspect}"
+        @client.wait
+
+      rescue Errno::EPIPE, Errno::ECONNRESET
+        puts "DISCONNECT"
+        @client.disconnect
+        @client.connect # reconnect
+      end
+    end
+  end
 end
 
 class Aimbo
@@ -30,21 +81,22 @@ class Aimbo
     :admin    => 'courtenay187'
   }
   
-  attr_accessor :client
+  attr_accessor :client, :xtt
   include IM
   
   def initialize
-    @client ||= Net::TOC.new(@@credentials[:username], @@credentials[:password]) 
+    @xtt ||= XttBot.new(@@credentials[:username], @@credentials[:password])
+    @client = @xtt.client
     @error_notifier ||= setup_error_notification
     @im_notifier ||= setup_im
     @setup_away ||= setup_away
   end
   
   def setup_error_notification
-    @client.on_error do |error|
-      admin = @client.buddy_list.buddy_named(@@credentials[:admin])
-      admin.send_im("Error: #{error}")
-    end
+    #@client.on_error do |error|
+    #  admin = @client.buddy_list.buddy_named(@@credentials[:admin])
+    #  admin.send_im("Error: #{error}")
+    #end
   end
   
   def setup_im
@@ -84,20 +136,7 @@ class Aimbo
 end
 
 aimbo = Aimbo.new
-client = aimbo.client
-
-while(true) do
-  begin
-  client.connect
-  puts "buddy list is #{client.buddy_list.inspect}"
-  client.wait
-  rescue Errno::ECONNRESET => err
-    puts "DISCONNECT"
-    client.disconnect
-    client.connect # reconnect
-  end
-end
-
+aimbo.xtt.xtt_loop
 return
 
 #/var/www/xtt/releases/20080208021931/vendor/rails/railties/lib/commands/runner.rb:47: 

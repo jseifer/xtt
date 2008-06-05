@@ -44,6 +44,7 @@ protected
           else
             failed_login "You already have an account for the email address listed with openID, but your saved identity URL doesn't match.  Login and fix your identity URL."
           end
+        # Sign up with openid
         #elsif self.current_user = User.create(:identity_url => identity_url)
         #  assign_registration_attributes!(registration)
         #  current_user.save!
@@ -71,7 +72,7 @@ protected
   end
 
   def model_to_registration_mapping
-    { :login => 'nickname', :email => 'email' }
+    { :email => 'email' } # nickname
   end
   
   def password_auth(login, password)

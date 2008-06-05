@@ -4,6 +4,7 @@ set :deploy_to, "/var/www/#{application}"
 set :scm, :git
 set :rails_version, 8872
 set :branch, "origin/production"
+set :ssh_options, :forward_agent => true
 
 # set :deploy_via, "copy"
 
@@ -17,7 +18,7 @@ task :after_update_code, :roles => :app do
     ln -s #{shared_path}/config/mongrel_cluster.yml #{release_path}/config/ && 
     ln -s #{shared_path}/config/database.yml        #{release_path}/config/ && 
     rake tmp:create &&
-    sudo rake edge REVISION=#{rails_version} RAILS_PATH=/var/www/#{application}/shared/rails
+    ln -s /var/www/#{application}/shared/rails/rails #{release_path}/vendor/rails
   CMD
 end
 
@@ -51,7 +52,7 @@ task :backup, :roles => :db, :only => { :primary => true } do
   end
 
   `mkdir -p #{File.dirname(__FILE__)}/../backups`
-  `rsync #{roles[:db][0].host}:#{filename} -e 'ssh -p 30187' #{File.dirname(__FILE__)}/../backups/`
+  `rsync #{roles[:db].servers[0].host}:#{filename} -e 'ssh -p 30187' #{File.dirname(__FILE__)}/../backups/`
   run "rm -f #{filename}"
 
   yaml = YAML::load_file('config/database.yml')
@@ -60,7 +61,7 @@ task :backup, :roles => :db, :only => { :primary => true } do
   filename.gsub!("/tmp", "./backups")
   puts "Loading data from #{filename} into *local* development DB"
   puts "Executing `bunzip2 -c #{filename} | mysql5 -u #{conf['username']} -h #{conf['host'] || '127.0.0.1'} -p #{conf['database']}`"
-  `bunzip2 -c #{filename} | mysql5 -u #{conf['username']} -h #{conf['host']} -p #{conf['database']}`
+  `bunzip2 -c #{filename} | mysql -u #{conf['username']} -h #{conf['host']} -p #{conf['database']}`
 
 #  backup_public_dir
 end

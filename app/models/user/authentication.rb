@@ -21,6 +21,8 @@ class User
   validates_format_of       :login, :with => login_format, :if => :not_openid?
   validates_format_of       :email, :with => email_format, :if => :not_openid?
   validates_uniqueness_of   :login, :email
+  validates_uniqueness_of   :identity_url,                 :unless => :not_openid?  
+  validates_presence_of     :identity_url,                 :unless => :not_openid?  
   before_save :encrypt_password, :if => :not_openid?
   
   # prevents a user from submitting a crafted form that bypasses activation
@@ -89,6 +91,20 @@ class User
     write_attribute :email, value
   end
 
+  def identity_url=(value)
+    unless value.nil?
+      value = value.strip
+      value.downcase!
+      value.gsub!(/^http[:]\/\//, '')
+      value.gsub!(/\/$/, '')
+      unless value.blank?
+        value = value + "/"
+        value = "http://#{value}" unless value =~ /^https/
+      end
+    end
+    write_attribute :identity_url, value
+  end
+
 protected
   # before filter 
   def encrypt_password
@@ -96,7 +112,7 @@ protected
     self.salt = Digest::SHA1.hexdigest("--#{Time.now}--#{login}--") if new_record?
     self.crypted_password = encrypt(password)
   end
-
+  
   def not_openid?
     identity_url.blank?
   end

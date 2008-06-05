@@ -9,7 +9,14 @@ class MembershipsController < ApplicationController
       format.js
     end
   end
-
+  
+  def update
+    @membership.update_attributes(params[:membership])
+    respond_to do |format|
+      format.html { redirect_to project_path(@project)}
+    end
+  end
+  
   def destroy
     @membership.destroy
 

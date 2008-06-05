@@ -7,7 +7,13 @@
   <meta name="viewport" content="width = 320" /> 
   <meta name="viewport" content="initial-scale=1, user-scalable=no" />
   <%= stylesheet_link_tag 'iphone' %>
+	<%= javascript_include_tag 'prototype' %>
 	<title>XTT</title>
+	<script type="text/javascript" charset="utf-8">
+	 document.observe('dom:loaded', function() {
+	   <%= yield :dom_loaded %>
+	 });
+	</script>
 </head>
 
 <body>

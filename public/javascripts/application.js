@@ -52,9 +52,51 @@ document.observe('dom:loaded', function() {
 		var rel = span.readAttribute('rel');
 		span.update(rel == 'words' ? utc.timeAgoInWords() : utc.strftime(Date.strftimeFormats[rel]))
   });
-
+  
+  $$('.text_field_options').each(function(ele) {
+    new TextFieldOptions(ele);
+  });
+  
 });
 
+TextFieldOptions = Class.create();
+TextFieldOptions.prototype = {
+  initialize: function(ele) {
+    this.element = $(ele)
+    this.values = []
+    this.targetField = $(this.element.id.replace('_options',''))
+    this.element.childElements().each(function(opt) {
+      opt.observe('click', this.onOptionClick.bind(this))
+      this.values.push(opt.innerHTML)
+    }.bind(this))
+    this.targetField.observe('keyup', this.onValueChange.bind(this))
+    this.getValue()
+  },
+  onOptionClick: function(event) {
+    Event.stop(event)
+    this.selectOption(event.element())
+    this.setValue(event.element().innerHTML)
+  },
+  onValueChange: function(event) {
+    Event.stop(event)
+    this.getValue()
+  },
+  deselectOptions: function() {
+    var current = this.element.down('.selected')
+    if (current != null) {current.removeClassName('selected')}
+  },
+  selectOption: function(ele) {
+    this.deselectOptions()
+    if (ele != null) { ele.addClassName('selected') }
+  },
+  getValue: function() {
+    i = this.values.indexOf(this.targetField.value)
+    this.selectOption(this.element.childElements()[i])
+  },
+  setValue: function(val) {
+    this.targetField.value = val
+  }
+};
 
 (function() {
   // Get users Timezone offset and set it in a cookie.

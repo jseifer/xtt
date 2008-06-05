@@ -26,7 +26,7 @@ Rails::Initializer.run do |config|
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
   # Add additional load paths for your own custom dirs
-  config.load_paths += %W( #{RAILS_ROOT}/app/concerns #{RAILS_ROOT}/vendor/googlecharts-0.2.0/lib #{RAILS_ROOT}/vendor/ruby-openid-1.1.4/lib #{RAILS_ROOT}/vendor/ruby-yadis-0.3.4/lib #{RAILS_ROOT}/vendor/fastercsv-1.2.3/lib)
+  config.load_paths += %W( #{RAILS_ROOT}/app/concerns )
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
@@ -41,25 +41,27 @@ Rails::Initializer.run do |config|
     :secret      => 'bd088a0f5b476fe5a2c02653a93ed14a95a8396829ce4e726ee77553ab6438a98d0f3e6d80fc6b120370ba047f28e09f71543ae5f842365e5070e7db51fb2cb8'
   }
 
+  config.gem :bj, :version => '1.0.1'
+  config.gem :tinder, :version => '0.1.6'
+  config.gem :fastercsv, :version => '1.2.3'
+  config.gem :googlecharts, :lib => "gchart", :version => '0.2.0'
+  config.gem :hpricot, :version => '0.6'
+  config.active_support.use_standard_json_time_format = true
+  config.active_record.include_root_in_json = true
+
   # Use the database for sessions instead of the cookie-based default,
   # which shouldn't be used to store highly confidential information
   # (create the session table with 'rake db:sessions:create')
   # config.action_controller.session_store = :active_record_store
 
-  # Use SQL instead of Active Record's schema dumper when creating the test database.
-  # This is necessary if your schema can't be completely dumped by the schema dumper,
-  # like if you have constraints or database-specific column types
-  # config.active_record.schema_format = :sql
-
   # Activate observers that should always be running
-  config.active_record.observers = :user_observer
+  config.active_record.observers = [ :user_observer, :status_observer ]
 
   # Make Active Record use UTC-base instead of local time
   config.time_zone = "UTC"
   
   config.after_initialize do
-    gem 'bj', '1.0.1'
-    %w(ostruct md5 gchart has_finder bj).each { |lib| require lib }
+    %w(ostruct md5).each { |lib| require lib }
     Bj.config["production.no_tickle"] = true if RAILS_ENV == 'production'
   end
 end

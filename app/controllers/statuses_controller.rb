@@ -67,7 +67,8 @@ class StatusesController < ApplicationController
         format.html { render :action => "new" }
         format.xml  { render :xml  => @status.errors, :status => :unprocessable_entity }
       else
-        format.html { redirect_after_status }
+        format.html   { redirect_after_status }
+        format.iphone { redirect_after_status }
         format.xml  { render :xml  => @status, :status => :created, :location => @status }
       end
     end

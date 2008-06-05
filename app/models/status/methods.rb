@@ -10,7 +10,7 @@ module Status::Methods
   
   module AssociationExtension
     def latest
-      @latest ||= find(:first)
+      @latest ||= first
     end
     
     def after(status)

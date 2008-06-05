@@ -166,7 +166,8 @@ describe User do
     end
     
     it "changes project" do
-      @status = @user.post "@#{projects(:default).code} Foo"
+      # assumes user's code == project's code
+      @status = @user.post "@#{memberships(:default).code} Foo"
       @status.project.should == projects(:default)
     end
     
@@ -323,7 +324,7 @@ describe User do
     before do
       @user = create_user :login => nil # eh, don't save it
       @user.login = 'quire'
-      fail @user.error_messages.to_sentence unless @user.valid?
+      # fail @user.error_messages.to_sentence unless @user.valid?
     end
     
     it "accepts valid login" do
@@ -352,6 +353,47 @@ describe User do
         @user.email = char + 'bob@foo.com'
         fail "#{@user.email.inspect} is valid" if @user.valid?
       end
+    end
+    
+    it "requires either login or identity_url" do
+      @user.login = "hello"
+      @user.should be_valid
+
+      @user.login = ""
+      @user.identity_url = ""
+      @user.should_not be_valid
+      
+      @user.login = "hello"
+      @user.should be_valid
+      
+      @user.login = ""
+      @user.identity_url = "http://hello.myplace.com"
+      @user.should be_valid
+    end
+    
+    it "fixes openid urls" do
+      urls = { "poop.com" => "http://poop.com/", "https://poo.bah" => "https://poo.bah/", "http://poop" => "http://poop/" }
+      urls.each do |key,value|
+        @user.identity_url = key
+        @user.identity_url.should == value
+      end
+    end
+    
+    it "requires a unique OpenID URL" do
+      user1 = create_user(:login => "hey", :email => "hey@whatisthat.com", :identity_url => "poop.com")
+      user1.save
+      user1.identity_url.should == 'http://poop.com/'
+      
+      user2 = create_user(:login => "poop", :email => "heharr@peep.com", :identity_url => "poop.com")
+      user2.should_not be_valid      
+    end
+    
+    it "requires a unique e-mail" do
+      user1 = create_user(:login => "thing", :email => "hey@hey.com")
+      user1.save
+      
+      user2 = create_user(:login => "peep", :email => "hey@hey.com")
+      user2.should_not be_valid      
     end
   end
 
