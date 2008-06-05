@@ -181,7 +181,7 @@
             <span class="dash">-</span>
             <span class="finish">              
               <% unless @status.followup.active? %>
-              <span class="time"><%= finish_time_for(@status.followup) %></span>
+              <span class="time"><%= finish_time_for(@status.followup) if @status.followup %></span>
               <span class="month"><%= js_day @status.followup.finished_at %></span>
               <% else %>
               <span class="time">Now</span>

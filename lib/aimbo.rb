@@ -14,8 +14,34 @@ module TOCMonkeypatch
   end
 end
 
+module TOCBuddyMonkeypatch
+
+  def raw_update(val) # :nodoc:
+    name, online, warning, signon_time, idle, user_type = *val.split(":")
+    @warning_level = warning.to_i
+    @last_signon = Time.at(signon_time.to_i)
+    @idle_time = idle.to_i
+    if online == "F"
+      update_status :offline
+    # UGH.
+    elsif user_type.nil?
+      update_status :away
+    elsif user_type[2...3] and user_type[2...3] == "U"
+      update_status :away
+    elsif @idle_time > 0
+      update_status :idle
+    else
+      update_status :available
+    end
+  end
+end
+
 class Net::TOC::BuddyList
   include TOCMonkeypatch
+end
+
+class Net::TOC::Buddy
+  include TOCBuddyMonkeypatch
 end
 
 module Net::TOC
