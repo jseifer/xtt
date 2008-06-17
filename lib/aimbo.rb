@@ -64,6 +64,12 @@ class XttBot
         puts "buddy list is #{@client.buddy_list.inspect}"
         @client.wait
 
+      rescue Net::TOC::CommunicationError
+        sleep 10 # wait, bitches
+        puts "Communication Error?"
+        @client.disconnect
+        @client.connect # reconnect
+        
       rescue Errno::EPIPE, Errno::ECONNRESET
         puts "DISCONNECT"
         @client.disconnect
