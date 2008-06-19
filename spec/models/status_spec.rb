@@ -107,6 +107,22 @@ describe Status, "being created" do
     @new.save!
     @status.user.reload.last_status_at.should == @new.created_at
   end
+
+    it "sets the time in the past" do
+      @new.message = "Howdy [-30]"
+      @new.save!
+      @new.created_at.should == Time.now - 30.minutes
+      @new.message.should == "Howdy"
+    end
+
+    it "sets the start time manually" do
+      @new.message = "Howdy [2:30pm]"
+      @new.save!
+      @new.created_at.should == Time.parse("14:30")
+      @new.message.should == "Howdy"
+    end
+
+    
 end
 
 describe Status, "being updated" do

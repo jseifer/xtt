@@ -14,6 +14,7 @@ class Status < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
   
+  before_validation_on_create :parse_time_from_message
   after_create :cache_user_status
   after_create :process_previous
   
@@ -77,6 +78,19 @@ protected
       if !project? && !@code.blank?
         errors.add_to_base("Invalid project code: @#{@code}")
       end
+    end
+  end
+
+  def parse_time_from_message
+    return if message.blank? 
+    if message =~ /\s\[\-(\d+)\]$/
+      offset = $1.to_s.to_i
+      message.gsub!(/\s\[\-#{offset}\]/, '')
+      self.created_at = Time.now - offset.minutes
+
+    elsif message =~  /\s\[(\d+[:]\d+(?:am|pm)?)\]$/
+      self.created_at = Time.parse($1)
+      message.gsub!(/\s\[#{$1}\]/, '')
     end
   end
 
