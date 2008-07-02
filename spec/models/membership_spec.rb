@@ -27,6 +27,7 @@ describe Membership do
     m = Membership.create!(:user_id => 1, :project => projects(:default))
     assert_not_nil m.project
     m.reload
+    m[:code].should be_nil
     m.code.should == 'abc'
   end
   
