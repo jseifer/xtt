@@ -141,6 +141,7 @@ describe Status, "being updated" do
     @status.should_not be_out
     @status.update_attributes(:code_and_message => "booya").should be_true
     @status.message.should == 'booya'
+    @status.project.should be_nil
     @status.should be_out
   end
   

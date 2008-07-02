@@ -1,6 +1,6 @@
 class Membership < ActiveRecord::Base
   class InvalidCodeError < StandardError; end
-
+    
   belongs_to :project
   belongs_to :user
   belongs_to :context
@@ -14,7 +14,7 @@ class Membership < ActiveRecord::Base
   end
   
   def self.find_by_code(code)
-    first(:conditions => {:code => code}) || raise(InvalidCodeError)
+    first(:conditions => ['memberships.code = :code or (memberships.code IS NULL AND projects.code = :code)', { :code => code}], :include => :project) || raise(InvalidCodeError)
   end
 
   def self.find_for(user_id, project_ids)

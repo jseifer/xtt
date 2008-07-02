@@ -73,10 +73,20 @@ class Status < ActiveRecord::Base
 
 protected
   def set_project_from_code
+    # Don't set the project if it's a new record and we have a project already. hm.
     unless new_record? && project?
-      self.project = @code.blank? ? nil : user.projects.find(:first, :conditions => ['memberships.code = ?', @code])
-      if !project? && !@code.blank?
-        errors.add_to_base("Invalid project code: @#{@code}")
+      if @code.blank? # Don't set a project
+        self.project = nil
+        return
+      end
+      begin
+        membership = user.memberships.find_by_code(@code)
+        self.project = membership && membership.project
+        unless project?
+          errors.add_to_base("Invalid project code: @#{@code}") 
+        end
+      rescue Membership::InvalidCodeError
+        errors.add_to_base("Invalid project code: @#{@code}") 
       end
     end
   end

@@ -22,6 +22,20 @@ describe Membership do
     Membership.create! :user => users(:default), :project => projects(:default), :code => 'test'
     projects(:default).users.include?(users(:default)).should == true
   end
+  
+  it "sets code to that of the project" do
+    m = Membership.create!(:user_id => 1, :project => projects(:default))
+    assert_not_nil m.project
+    m.reload
+    m.code.should == 'abc'
+  end
+  
+  it "sets code to project code working around dupes" do
+    m1 = Membership.create!(:user_id => 1, :project => projects(:another), :code => "abc")
+    m2 = Membership.create(:user_id => 1, :project => projects(:default))
+    m2.code.should == 'abc'
+  end
+  
 
   it "doesn't allow duplicates" do
     Membership.create!(:user_id => 1, :project_id => 1, :code => 'test')
