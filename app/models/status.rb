@@ -114,12 +114,14 @@ protected
   end
 
   def calculate_hours
+    # Can't calculate hours unless there's a 'next' state.
     return false if followup.nil?
     self.finished_at = followup.created_at
   end
 
   def process_previous
-    previous.process! if previous
+    user.statuses.find(:all, :conditions => ['state = ? AND finished_at IS NOT NULL', 'pending']).each &:process!
+    # previous.process! if previous(true)
   end
 
   def cache_user_status
