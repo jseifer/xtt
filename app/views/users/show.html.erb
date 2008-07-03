@@ -35,6 +35,7 @@
     <ol id="timeline" class="media-list">
     <% prev_status = '' %>
 		<% if @statuses.each_with_index do |status, index| -%>
+		  <% next if status.project && ! status.project.users.include?(current_user)  %>
       <li class="hentry media-item clearfix<%= %( last) if first_in_collection?(@statuses, index) %><%= %( daybreak)  if (status.created_at.day != prev_status.created_at.day) rescue '' %>">
         <% if (index == 0) || (status.created_at.day != prev_status.created_at.day) %>        
         <p class="day-break" style="display:none">
