@@ -83,6 +83,8 @@ describe Status, "being created" do
     @status.should be_pending
     @status.should be_valid
     @new.save!
+    @status.user.should == @new.user
+    @status.finished_at.should be_nil
     @status.reload.should be_processed
     @status.hours.to_f.should == 5.0
   end

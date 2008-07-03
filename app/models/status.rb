@@ -120,7 +120,7 @@ protected
   end
 
   def process_previous
-    user.statuses.find(:all, :conditions => ['state = ? AND finished_at IS NOT NULL', 'pending']).each &:process!
+    user.statuses.find(:all, :conditions => ['state = ? AND finished_at IS NULL AND id != ?', 'pending', id]).each &:process!
     # previous.process! if previous(true)
   end
 
