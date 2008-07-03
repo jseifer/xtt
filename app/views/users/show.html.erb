@@ -57,12 +57,25 @@
 						from <%=h status.source || "the web" %>
 						<% if status.project? -%>to <%= link_to_filtered_statuses h(status.project.name), :filter => params[:filter], :date => params[:date], :project => status.project %><% end -%>
 					</p>
+        <% if status.followup.nil? %>
+        <span class="others">
+          <span class="num"><%= nice_timer_for status %></span>
+          <span class="meta">logged</span>
+        </span>
+        <% else %>
+        <span class="others">
+          <span class="num"><%= status.hours.to_f %></span>
+          <span class="meta">hour<%= :s unless status.hours == 1.0 %></span>
+        </span>
+        <% end %>
+<!-->
           <% if status.processed? -%>
           <span class="others">
             <span class="num"><%= status.hours.to_f %></span>
             <span class="meta">hours</span>
           </span>
           <% end %>
+-->
         </div>
       </li>
 		<% end.empty? -%>
