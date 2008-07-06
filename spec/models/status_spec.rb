@@ -110,21 +110,19 @@ describe Status, "being created" do
     @status.user.reload.last_status_at.should == @new.created_at
   end
 
-    it "sets the time in the past" do
-      @new.message = "Howdy [-30]"
-      @new.save!
-      @new.created_at.should == Time.now - 30.minutes
-      @new.message.should == "Howdy"
-    end
+  it "sets the time in the past" do
+    @new.message = "Howdy [-30]"
+    @new.save!
+    @new.created_at.should == Time.now - 30.minutes
+    @new.message.should == "Howdy"
+  end
 
-    it "sets the start time manually" do
-      @new.message = "Howdy [2:30pm]"
-      @new.save!
-      @new.created_at.should == Time.parse("14:30")
-      @new.message.should == "Howdy"
-    end
-
-    
+  it "sets the start time manually" do
+    @new.message = "Howdy [2:30pm]"
+    @new.save!
+    @new.created_at.should == Time.parse("14:30")
+    @new.message.should == "Howdy"
+  end
 end
 
 describe Status, "being updated" do
@@ -159,20 +157,9 @@ describe Status, "being updated" do
   end
 end
 
-describe Status, "in pending state" do
-  define_models :copy => :statuses do
-    model Status do
-      stub :new, :message => 'howdy', :created_at => (current_time - 2.hours), :project => all_stubs(:project)
-    end
-  end
-  
-  before do
-    @new    = statuses(:new)
-    @status = statuses(:pending)
-  end
-  
+describe "pending statuses", :shared => true do
   it "#next retrieves next status" do
-    @status.followup.should == statuses(:new)
+    @status.followup.should == @new
   end
   
   it "skips processing if no followup is found" do
@@ -182,7 +169,80 @@ describe Status, "in pending state" do
     @status.process!
     @status.should be_pending
   end
-  
+end
+
+describe Status, "in pending state with followup in other project" do
+  it_should_behave_like "pending statuses"
+
+  define_models :copy => :statuses do
+    model Status do
+      stub :new_in_other_project, :message => '@def new_in_other_project', :created_at => (current_time - 2.hours), :project => all_stubs(:another_project)
+    end
+  end
+
+  before do
+    @new    = statuses(:new_in_other_project)
+    @status = statuses(:pending)
+    @new.code_and_message = @new.message
+  end
+
+  {0 => 0.0, 10 => 0.25, 15 => 0.25, 25 => 0.5, 30 => 0.5, 45 => 0.75}.each do |min, result|
+    it "processes @status hours in quarters at #{min} minutes past the hour" do
+      @new.created_at = @new.created_at + min.minutes
+      @new.save!
+
+      @status.hours.should == 0
+      @status.should be_pending
+      @status.process!
+      @status.should be_processed
+      @status.hours.to_s.should == (3.to_f + result).to_s
+    end
+  end
+end
+
+describe Status, "in pending state with followup in same project" do
+  it_should_behave_like "pending statuses"
+
+  define_models :copy => :statuses do
+    model Status do
+      stub :new_in_same_project, :message => '@abc new_in_same_project', :created_at => (current_time - 2.hours), :project => all_stubs(:project)
+    end
+  end
+
+  before do
+    @new    = statuses(:new_in_same_project)
+    @status = statuses(:pending)
+    @new.code_and_message = @new.message
+  end
+
+  {0 => 0.0, 10 => (1.0/6.0), 15 => 0.25, 25 => (25.0/60.0), 30 => 0.5, 45 => 0.75}.each do |min, result|
+    it "processes @status hours in quarters at #{min} minutes past the hour" do
+      @new.created_at = @new.created_at + min.minutes
+      @new.save!
+
+      @status.hours.should == 0
+      @status.should be_pending
+      @status.process!
+      @status.should be_processed
+      @status.hours.to_s.should == (3.to_f + result).to_s
+    end
+  end
+end
+
+describe Status, "in pending state with followup in no project" do
+  it_should_behave_like "pending statuses"
+
+  define_models :copy => :statuses do
+    model Status do
+      stub :new_without_project, :message => 'new_without_project', :created_at => (current_time - 2.hours)
+    end
+  end
+
+  before do
+    @new    = statuses(:new_without_project)
+    @status = statuses(:pending)
+  end
+
   {0 => 0.0, 10 => 0.25, 15 => 0.25, 25 => 0.5, 30 => 0.5, 45 => 0.75}.each do |min, result|
     it "processes @status hours in quarters at #{min} minutes past the hour" do
       @new.created_at = @new.created_at + min.minutes
