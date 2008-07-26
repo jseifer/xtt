@@ -66,12 +66,13 @@ class XttBot
 
       rescue Net::TOC::CommunicationError
         sleep 10 # wait, bitches
-        puts "Communication Error?"
+        $stderr.puts "Communication Error?"
         @client.disconnect
         @client.connect # reconnect
         
       rescue Errno::EPIPE, Errno::ECONNRESET
-        puts "DISCONNECT"
+        sleep 10
+        $stderr.puts "DISCONNECT"
         @client.disconnect
         @client.connect # reconnect
       end
