@@ -11,7 +11,7 @@ private
 
   def tinder
     return @tinder if @tinder
-    @tinder = Tinder::Campfire.new domain
+    @tinder = Tinder::Campfire.new domain, :ssl => true
     @tinder.login login, password
     @tinder
   end
