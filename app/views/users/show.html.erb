@@ -37,7 +37,7 @@
 		<% if @statuses.each_with_index do |status, index| -%>
 		  <% next if status.project && ! status.project.users.include?(current_user)  %>
       <li class="hentry media-item clearfix<%= %( last) if first_in_collection?(@statuses, index) %><%= %( daybreak)  if (status.created_at.day != prev_status.created_at.day) rescue '' %>">
-        <% if (index == 0) || (status.created_at.day != prev_status.created_at.day) %>        
+        <% if (index == 0) || (prev_status == '') || (status.created_at.day != prev_status.created_at.day) %>        
         <p class="day-break" style="display:none">
           <span class="num"><%= js_day_name status.created_at %></span>
           <span class="day"><%= js_datetime status.created_at, :short %></span>
