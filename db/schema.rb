@@ -1,5 +1,5 @@
 # This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of Active Record to incrementally modify your database, and
+# please use the migrations feature of ActiveRecord to incrementally modify your database, and
 # then regenerate this schema definition.
 #
 # Note that this schema.rb definition is the authoritative source for your database schema. If you need
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20080415234011) do
+ActiveRecord::Schema.define(:version => 20081003200545) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -23,12 +23,12 @@ ActiveRecord::Schema.define(:version => 20080415234011) do
   create_table "bj_job", :primary_key => "bj_job_id", :force => true do |t|
     t.text     "command"
     t.string   "state"
-    t.integer  "priority",       :limit => 11
+    t.integer  "priority"
     t.string   "tag"
-    t.integer  "is_restartable", :limit => 11
+    t.integer  "is_restartable"
     t.text     "submitter"
     t.text     "runner"
-    t.integer  "pid",            :limit => 11
+    t.integer  "pid"
     t.datetime "submitted_at"
     t.datetime "started_at"
     t.datetime "finished_at"
@@ -36,18 +36,18 @@ ActiveRecord::Schema.define(:version => 20080415234011) do
     t.text     "stdin"
     t.text     "stdout"
     t.text     "stderr"
-    t.integer  "exit_status",    :limit => 11
+    t.integer  "exit_status"
   end
 
   create_table "bj_job_archive", :primary_key => "bj_job_archive_id", :force => true do |t|
     t.text     "command"
     t.string   "state"
-    t.integer  "priority",       :limit => 11
+    t.integer  "priority"
     t.string   "tag"
-    t.integer  "is_restartable", :limit => 11
+    t.integer  "is_restartable"
     t.text     "submitter"
     t.text     "runner"
-    t.integer  "pid",            :limit => 11
+    t.integer  "pid"
     t.datetime "submitted_at"
     t.datetime "started_at"
     t.datetime "finished_at"
@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(:version => 20080415234011) do
     t.text     "stdin"
     t.text     "stdout"
     t.text     "stderr"
-    t.integer  "exit_status",    :limit => 11
+    t.integer  "exit_status"
   end
 
   create_table "campfires", :force => true do |t|
@@ -64,20 +64,14 @@ ActiveRecord::Schema.define(:version => 20080415234011) do
     t.string   "login"
     t.string   "password"
     t.string   "room"
-    t.integer  "user_id",    :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "clients", :force => true do |t|
-    t.string   "name"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "contexts", :force => true do |t|
     t.string   "name"
-    t.integer  "user_id",    :limit => 11
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "permalink"
@@ -88,8 +82,8 @@ ActiveRecord::Schema.define(:version => 20080415234011) do
   create_table "feeds", :force => true do |t|
     t.string   "name"
     t.string   "url"
-    t.integer  "project_id", :limit => 11
-    t.integer  "user_id",    :limit => 11
+    t.integer  "project_id"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -112,24 +106,24 @@ ActiveRecord::Schema.define(:version => 20080415234011) do
   add_index "invitations", ["code"], :name => "index_invitations_on_code"
 
   create_table "memberships", :force => true do |t|
-    t.integer "project_id", :limit => 11
-    t.integer "user_id",    :limit => 11
+    t.integer "project_id"
+    t.integer "user_id"
     t.string  "code"
-    t.integer "context_id", :limit => 11
+    t.integer "context_id"
   end
 
   create_table "open_id_authentication_associations", :force => true do |t|
     t.binary  "server_url"
     t.string  "handle"
     t.binary  "secret"
-    t.integer "issued",     :limit => 11
-    t.integer "lifetime",   :limit => 11
+    t.integer "issued"
+    t.integer "lifetime"
     t.string  "assoc_type"
   end
 
   create_table "open_id_authentication_nonces", :force => true do |t|
     t.string  "nonce"
-    t.integer "created", :limit => 11
+    t.integer "created"
   end
 
   create_table "open_id_authentication_settings", :force => true do |t|
@@ -141,37 +135,34 @@ ActiveRecord::Schema.define(:version => 20080415234011) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id",    :limit => 11
+    t.integer  "user_id"
     t.string   "code"
     t.string   "permalink"
+    t.string   "git_repo"
   end
 
   add_index "projects", ["code"], :name => "index_projects_on_code"
   add_index "projects", ["permalink"], :name => "index_projects_on_permalink"
 
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version", :limit => 11
-  end
-
   create_table "statuses", :force => true do |t|
-    t.integer  "user_id",     :limit => 11
-    t.decimal  "hours",                     :precision => 8, :scale => 2, :default => 0.0
+    t.integer  "user_id"
+    t.decimal  "hours",       :precision => 8, :scale => 2, :default => 0.0
     t.string   "message"
     t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "project_id",  :limit => 11
-    t.string   "source",                                                  :default => "the web"
+    t.integer  "project_id"
+    t.string   "source",                                    :default => "the web"
     t.datetime "finished_at"
   end
 
   add_index "statuses", ["created_at", "user_id"], :name => "index_statuses_on_created_at_and_user_id"
 
   create_table "tendrils", :force => true do |t|
-    t.integer  "project_id",    :limit => 11
+    t.integer  "project_id"
     t.string   "notifies_type"
-    t.integer  "notifies_id",   :limit => 11
-    t.integer  "user_id",       :limit => 11
+    t.integer  "notifies_id"
+    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -190,8 +181,8 @@ ActiveRecord::Schema.define(:version => 20080415234011) do
     t.string   "state",                                   :default => "passive"
     t.datetime "deleted_at"
     t.boolean  "admin",                                   :default => false
-    t.integer  "last_status_project_id",    :limit => 11
-    t.integer  "last_status_id",            :limit => 11
+    t.integer  "last_status_project_id"
+    t.integer  "last_status_id"
     t.string   "last_status_message"
     t.datetime "last_status_at"
     t.string   "time_zone"
