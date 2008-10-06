@@ -76,7 +76,7 @@ class User
   
   def login=(value)
     unless value.nil?
-      value.gsub! /\W/, ''
+      value.gsub! /[^\w\_\-]/, ''
       value.strip!
       value.downcase!
     end

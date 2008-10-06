@@ -7,7 +7,7 @@ module IM
 
       ActiveRecord::Base.verify_active_connections!
 
-      next if buddy.screen_name == 'aolsystemmsg'
+      return if buddy.screen_name == 'aolsystemmsg' or buddy.screen_name == 'AOL System Msg'
       @user = User.find_by_aim_login(buddy.screen_name)
       if @user
         message = parse_message(message)
@@ -24,7 +24,7 @@ module IM
           "I'm a time-tracker bot. Send me a status message like <b>@project hacking on \#54</b> or 'commands' for a list of commands"
         when "status":
           if status = @user.statuses.latest
-            code = (status.user.memberships.for(status.project) || status.project).code
+            code = (status.user.memberships.for(status.project) || status.project).code rescue "?"
             project = status.project ? "#{status.project.name} (@#{code})": "Out"
             "Your current status is: <b>#{project}</b> #{status.message}"
           else

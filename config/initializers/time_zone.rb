@@ -1,15 +1,15 @@
-class TimeZone
-  def utc_offset_string
-    is_negative = @utc_offset < 0
-    seconds = @utc_offset.abs
-    hours   = seconds / 1.hour
-    seconds = seconds % 1.hour
-    minutes = seconds / 1.minute
-    (is_negative ? '-' : '+') + ('%02d:%02d' % [hours, minutes])
+module ActiveSupport #:nodoc:
+  class TimeZone
+    def utc_offset_string
+      is_negative = @utc_offset < 0
+      seconds = @utc_offset.abs
+      hours   = seconds / 1.hour
+      seconds = seconds % 1.hour
+      minutes = seconds / 1.minute
+      (is_negative ? '-' : '+') + ('%02d:%02d' % [hours, minutes])
+    end
   end
-end
 
-module ActiveSupport
   # A Time-like class that can represent a time in any time zone. Necessary because standard Ruby Time instances are 
   # limited to UTC and the system's ENV['TZ'] zone
   class TimeWithZone
@@ -18,10 +18,7 @@ module ActiveSupport
       time.change_time_zone(new_zone)
     end
   end
-end
 
-
-module ActiveSupport #:nodoc:
   module CoreExtensions #:nodoc:
     module Time #:nodoc:
       # Methods for creating TimeWithZone objects from Time instances

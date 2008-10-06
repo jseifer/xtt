@@ -16,14 +16,14 @@ ModelStubbing.define_models do
   
   model Status do
     stub :user => all_stubs(:user), :message => 'default', :state => 'processed', :hours => 5, :created_at => current_time - 2.days
-    stub :in_project, :message => 'in-project', :created_at => current_time - 47.hours, :project => all_stubs(:project)
+    stub :in_project, :message => '@abc in-project', :created_at => current_time - 47.hours, :project => all_stubs(:project)
   end
   
   model Invitation do
     stub :code => 'abc', :email => 'invited-user@example.com', :project_ids => '55'
   end
   
-  model Membership # none
+  model Membership
   
   model Context
 
@@ -74,7 +74,7 @@ end
 
 ModelStubbing.define_models :statuses do
   model Status do
-    stub :pending, :state => 'pending', :hours => 0, :created_at => current_time - 5.hours, :project => all_stubs(:project)
+    stub :pending, :state => 'pending', :message => '@abc pending', :hours => 0, :created_at => current_time - 5.hours, :project => all_stubs(:project)
   end
 
   model Membership do
