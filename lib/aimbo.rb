@@ -101,16 +101,19 @@ class Aimbo
     @users = User.find(:all, :conditions => ['aim_login is not null'])
     @users.each do |user|  
       if pal = client.buddy_list.buddy_named(user.aim_login)
-        puts pal.to_s
-        pal.on_status([:available, :away, :offline]) do |status|
+        puts "Watching #{pal.to_s}"
+        pal.on_status(:available, :away, :offline) do |status|
+          # puts "Status is now #{status}"
           if user.aim_status != status
+            # puts "Buddy changed status from #{user.aim_status}"
             user.update_attribute :aim_status, status
-            puts "Buddy changed status to #{status}"
             # todo: hash the screen name
             File.open(File.dirname(__FILE__) + "/tmp/buddy.#{pal.screen_name}.status.txt", "w+") do |f|
               # todo: write xml
               f.write "{ time:#{Time.now.utc.to_f}, status: '#{status}' }"
             end
+          else
+            # puts "User status is the same"
           end
         end
       end
