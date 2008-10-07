@@ -102,7 +102,7 @@ class Aimbo
     @users.each do |user|  
       if pal = client.buddy_list.buddy_named(user.aim_login)
         puts "Watching #{pal.to_s}"
-        pal.on_status(:available, :away, :offline) do
+        pal.on_status(:available, :away, :idle, :offline) do
           if user.aim_status != pal.status
             user.update_attribute :aim_status, pal.status.to_s
             # todo: hash the screen name to avoid vulns
