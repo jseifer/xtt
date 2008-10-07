@@ -18,10 +18,6 @@ class Net::TOC::BuddyList
   include TOCMonkeypatch
 end
 
-class Net::TOC::Buddy
-  include TOCBuddyMonkeypatch
-end
-
 module Net::TOC
   Debug = true
 end
