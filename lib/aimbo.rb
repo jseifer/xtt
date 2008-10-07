@@ -102,18 +102,14 @@ class Aimbo
     @users.each do |user|  
       if pal = client.buddy_list.buddy_named(user.aim_login)
         puts "Watching #{pal.to_s}"
-        pal.on_status(:available, :away, :offline) do |status|
-          # puts "Status is now #{status}"
-          if user.aim_status != status
-            # puts "Buddy changed status from #{user.aim_status}"
-            user.update_attribute :aim_status, status
-            # todo: hash the screen name
-            File.open(File.dirname(__FILE__) + "/tmp/buddy.#{pal.screen_name}.status.txt", "w+") do |f|
-              # todo: write xml
-              f.write "{ time:#{Time.now.utc.to_f}, status: '#{status}' }"
+        pal.on_status(:available, :away, :offline) do
+          if user.aim_status != pal.status
+            user.update_attribute :aim_status, pal.status.to_s
+            # todo: hash the screen name to avoid vulns
+            File.open(RAILS_ROOT + "/tmp/buddy.#{pal.screen_name}.status.txt", "w+") do |f|
+              # todo: write xml? LOL
+              f.write "{ time:#{Time.now.utc.to_f}, status: '#{pal.status.to_s}' }\n"
             end
-          else
-            # puts "User status is the same"
           end
         end
       end
