@@ -111,7 +111,7 @@ class Aimbo
             user.update_attribute :aim_status, status
             puts "Buddy changed status to #{status}"
             # todo: hash the screen name
-            File.open("buddy.#{pal.screen_name}.status.txt", "w+") do |f|
+            File.open(File.dirname(__FILE__) + "/tmp/buddy.#{pal.screen_name}.status.txt", "w+") do |f|
               # todo: write xml
               f.write "{ time:#{Time.now.utc.to_f}, status: '#{status}' }"
             end
