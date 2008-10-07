@@ -7,31 +7,59 @@ describe "Net::TOC::Buddy" do
     @buddy = Net::TOC::Buddy.new "joesixpack", @conn
   end
   
-  it "Sets a user offline" do  
-    @buddy.should_receive(:update_status).with(:offline)
-    @buddy.raw_update "Joe Sixpack:F:0:1223330187:0:user_type"
-  end
+  describe "parsing raw updates" do
   
-  it "sets a user away" do
-    @buddy.should_receive(:update_status).with(:away)
-    @buddy.raw_update "youbetcha:T:0:1223306495:57: UU:0"
-  end
+    it "Sets a user offline" do  
+      @buddy.should_receive(:update_status).with(:offline)
+      @buddy.raw_update "Joe Sixpack:F:0:1223330187:0:user_type"
+    end
   
-  it "sets a user away if weird oddly-formatted missing user_type sent" do
-    @buddy.should_receive(:update_status).with(:away)
-    @buddy.raw_update "courtenay187:T:0:1223325191:0"  
+    it "sets a user away" do
+      @buddy.should_receive(:update_status).with(:away)
+      @buddy.raw_update "youbetcha:T:0:1223306495:57: UU:0"
+    end
+  
+    it "sets a user away if weird oddly-formatted missing user_type sent" do
+      @buddy.should_receive(:update_status).with(:away)
+      @buddy.raw_update "courtenay187:T:0:1223325191:0"  
+    end
+
+    it "sets a user idle" do
+      @buddy.should_receive(:update_status).with(:idle)
+      @buddy.raw_update "youbetcha:T:0:1223306495:57: C:0"
+    end
+  
+    it "sends a user offline when they select 'offline'" do
+      @buddy.should_receive(:update_status).with(:offline)
+      @buddy.raw_update "vpilf:F:0:0:0:  :0"
+    end
+
   end
 
-  it "sets a user idle" do
-    @buddy.should_receive(:update_status).with(:idle)
-    @buddy.raw_update "youbetcha:T:0:1223306495:57: C:0"
-  end
-  
-  it "sends a user offline when they select 'offline'" do
-    @buddy.should_receive(:update_status).with(:offline)
-    @buddy.raw_update "vpilf:F:0:0:0:  :0"
-  end
+  describe "setting states" do
+    
+    it "runs on_status :away callback" do
+      block = Proc.new { raise }
+      block.should_receive(:call)
+      
+      @buddy.on_status(:away) do 
+        block.call
+      end
+      @buddy.send :update_status, :away
+    end
 
+    it "runs on_status for several states" do
+      block = Proc.new {}
+      block.should_receive(:call).twice
+      
+      @buddy.on_status(:away, :offline) do 
+        block.call
+      end
+      @buddy.send :update_status, :away
+      @buddy.send :update_status, :offline
+    end
+    
+  end
 end
 
 # From the TOC1 spec:
