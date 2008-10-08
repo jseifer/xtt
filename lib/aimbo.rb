@@ -49,6 +49,7 @@ class XttBot
         $stderr.puts "DISCONNECT"
         @client.disconnect
         @client.connect # reconnect
+
       end
     end
   end
@@ -59,7 +60,8 @@ class Net::TOC::Client
   def event_loop
     # see if there are any pending messages to send any users.
     Message.transaction do
-      if messages = Message.find(:all, :conditions => ['id > ?', @last_msg.to_i]) && messages.size > 0
+      messages = Message.find(:all, :conditions => ['id > ?', @last_msg.to_i])
+      if messages && messages.size > 0
         @last_msg = messages.first.id
         messages.each do |message|
           next unless buddy = buddy_list.buddy_named(message.user.aim_login)
