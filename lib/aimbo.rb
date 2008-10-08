@@ -54,6 +54,26 @@ class XttBot
   end
 end
 
+class Net::TOC::Client
+  attr_reader :last_msg
+  def event_loop
+    # see if there are any pending messages to send any users.
+    Message.transaction do
+      if messages = Message.find(:all, :conditions => ['id > ?', @last_msg.to_i]) && messages.size > 0
+        @last_msg = messages.first.id
+        messages.each do |message|
+          next unless buddy = buddy_list.buddy_named(message.user.aim_login)
+          buddy.send_im message.message_text
+        end
+      end
+
+      @conn.recv do |msg, val|
+        @callbacks[msg].call(val) unless @callbacks[msg].nil?
+      end
+    end
+  end
+end
+
 class Aimbo
   
   @@credentials = {
