@@ -128,7 +128,7 @@ class Aimbo
           if user.aim_status != pal.status
             user.update_attribute :aim_status, pal.status.to_s
             # todo: hash the screen name to avoid vulns
-            File.open(RAILS_ROOT + "/tmp/buddy.#{pal.screen_name}.status.txt", "w+") do |f|
+            File.open(RAILS_ROOT + "/tmp/buddy.#{pal.screen_name}.status.txt", "a") do |f|
               # todo: write xml? LOL
               f.write "{ time:#{Time.now.utc.to_f}, status: '#{pal.status.to_s}' }\n"
             end

@@ -17,6 +17,8 @@ namespace :tt do
         elsif status.created_at.utc < 1.minute.ago.utc
           timing = ((Time.now - status.created_at) / 1.minute).to_i
           tense = "was (#{timing} mins ago)"
+        else
+          tense = "" # nothing. fuck you.
         end
         if status.out?
           previous = status.previous
