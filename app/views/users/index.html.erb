@@ -27,6 +27,9 @@
             <span class="meta">logged</span>
           </span>
           <% end %>
+          
+          <%#= render :partial => "statuses/chart", :locals => {:hours => (@hours ||[]), :date_range => @date_range} %>
+
           <%= image_tag Gchart.bar(
             :bg => 'CACACA', 
             :data => [1,2,4,2,3,5,1], 

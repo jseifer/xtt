@@ -53,7 +53,7 @@ class StatusesController < ApplicationController
         @statuses = import_statuses(params[:import])
       end
 
-  elsif params[:status]
+    elsif params[:status]
       @status  = current_user.post params[:status][:code_and_message]
     end
 

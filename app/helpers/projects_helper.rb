@@ -18,11 +18,37 @@ module ProjectsHelper
   end
   
   def normalized_max(data)
-    max = data.map { |d| d.to_f }.max
+    logger.warn "--------------\n#{data.inspect}"
+    max = data.flatten.map { |d| d.to_f }.max.to_i
     ((max * 10 ** -1).ceil.to_f / 10 **-1).to_i
   end
   
   def csv(str)
     '"' + h(str).gsub('"', '""') + '"'
   end
+
+  # this is a way of having a nice common interface whether you have
+  # a single data set in hours  [1,2,3,3,1,15.2]
+  # or multiple data sets [[1,2,3,3,1,5],[56,2,5,2,1]]
+  def fudge_data_from(hours, chart_labels)
+    chart_data = []
+    days = []
+    total = 0
+    if hours[0].is_a?(Array) # array of arrays -- multi-chart
+      hours.each do |hour|
+        data = chart_data_for(chart_labels, params[:filter], hour)
+        chart_data << ((data.sum == 0 && params[:filter] == :weekly ) ? [0] : data)
+      end # hours 
+      days = []
+      chart_data.each { |_set| _set.each_with_index { |day,i| days[i] = days[i].to_f + day.to_f }}
+      total = days.flatten.sum
+    else # single axis %>
+      days = hours.map { |h| h[2] }
+      chart_data = chart_data_for(chart_labels, params[:filter], hours)
+      chart_data = (chart_data.sum == 0 && params[:filter] == :weekly ) ? [0] : chart_data
+      total = hours.sum { |h| h[2].to_f }
+    end
+    return days, chart_data, total
+  end
+
 end

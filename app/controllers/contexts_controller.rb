@@ -11,6 +11,15 @@ class ContextsController < ApplicationController
     @daily_hours = Status.filtered_hours(user_status_for(params[:user_id]), :daily, :context => @context, :date => params[:date])
     @hours       = Status.filtered_hours(user_status_for(params[:user_id]), params[:filter], :context => @context, :date => params[:date])
 
+    user_ids = @statuses.map {|s| s.user.permalink }.uniq
+    @user_hours = []
+    user_ids.each do |user|
+      hours = Status.filtered_hours(user_status_for(user), params[:filter], :date => params[:date], :context => @context)
+      @user_hours << hours unless hours.empty?
+    end
+    # reset @user var. hack. omg.
+    user_status_for(params[:user_id])
+
     @context ||= Context.new :name => "etc"
     respond_to do |format|
       format.html # show.html.erb

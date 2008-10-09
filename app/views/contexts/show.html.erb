@@ -4,7 +4,7 @@
     <% form_for current_user.statuses.build do |f| -%>
       <ul class="media-list">
         <li class="clearfix" style="border-bottom:0">
-          <%= render :partial => "statuses/chart", :locals => {:hours => @hours, :date_range => @date_range} %>
+          <%= render :partial => "statuses/chart", :locals => {:hours => @user_hours, :date_range => @date_range} %>
         </li>
       </ul>
     <% end %>
@@ -95,8 +95,8 @@
     <div id='projects' style='display:none'>
       <ul id='projects-for-context' class='text-list'>
       <% @context.projects.each_with_index do |project, index| %>
-      <% project_hours = project.statuses.filtered_hours(@user, params[:filter], :date => params[:date]) -%>
-      <li<%= %( class="last") if first_in_collection?(current_user.projects, index) %> id="project-<%= project.id %>">
+      <% project_hours = project.statuses.filtered_hours(nil, params[:filter], :date => params[:date]) -%>
+      <li class="clearfix <%= %(last) if first_in_collection?(current_user.projects, index) %>" id="project-<%= project.id %>">
         <a href="<%= url_for project %>">
           <span class="ttl"><%=h project.name %></span>
           <span class="num"><%= number_with_precision project_hours.total, 2 %></span>

@@ -14,8 +14,18 @@ class ProjectsController < ApplicationController
 
   def show
     @statuses, @date_range = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :date => params[:date], :page => params[:page], :per_page => params[:per]||20)
+
     @daily_hours = @project.statuses.filtered_hours(user_status_for(params[:user_id]), :daily, :date => params[:date])
-    @hours       = @project.statuses.filtered_hours(user_status_for(params[:user_id]), params[:filter], :date => params[:date])
+
+    @hours = @project.statuses.filtered_hours(user_status_for(params[:user_id]), params[:filter], :date => params[:date])
+
+    user_ids = @statuses.map {|s| s.user.permalink }.uniq
+    @user_hours = []
+    user_ids.each do |user|
+      hours = @project.statuses.filtered_hours(user_status_for(user), params[:filter], :date => params[:date])
+      @user_hours << hours unless hours.empty?
+    end
+    
     respond_to do |format|
       format.html # show.html.erb
       format.iphone
