@@ -7,7 +7,7 @@ module ApplicationHelper
     box = OpenStruct.new
     box.name= name
     yield box
-    render :file => "/components/#{type}_box", :locals => {:box => box}
+    render :file => "#{RAILS_ROOT}/app/views/components/#{type}_box.html.erb", :locals => {:box => box}
   end
   
   def gravatar_for(user)
