@@ -1,5 +1,6 @@
 $:.unshift File.dirname(__FILE__)
 require 'gchart/version'
+require 'gchart/theme'
 require "open-uri"
 require "uri"
 
@@ -8,34 +9,34 @@ class Gchart
   include GchartInfo
   
   @@url = "http://chart.apis.google.com/chart?"  
-  @@types = ['line', 'line_xy', 'scatter', 'bar', 'venn', 'pie', 'pie_3d']
+  @@types = ['line', 'line_xy', 'scatter', 'bar', 'venn', 'pie', 'pie_3d', 'jstize', 'sparkline', 'meter']
   @@simple_chars = ('A'..'Z').to_a + ('a'..'z').to_a + ('0'..'9').to_a
   @@chars = @@simple_chars + ['-', '.']
   @@ext_pairs = @@chars.map { |char_1| @@chars.map { |char_2| char_1 + char_2 } }.flatten
   @@file_name = 'chart.png'
   
   attr_accessor :title, :type, :width, :height, :horizontal, :grouped, :legend, :data, :encoding, :max_value, :bar_colors,
-                :title_color, :title_size, :custom, :axis_with_labels, :axis_labels
+                :title_color, :title_size, :custom, :axis_with_labels, :axis_labels, :bar_width_and_spacing, :id, :alt, :class
     
-  class << self
-    # Support for Gchart.line(:title => 'my title', :size => '400x600')
-    def method_missing(m, options={})
-      # Extract the format and optional filename, then clean the hash
-      format = options[:format] || 'url'
-      @@file_name = options[:filename] unless options[:filename].nil?
-      options.delete(:format)
-      options.delete(:filename)
-      # create the chart and return it in the format asked for
-      if @@types.include?(m.to_s)  
-        chart = new(options.merge!({:type => m}))
-        chart.send(format)
-      elsif m.to_s == 'version' 
-        Gchart::VERSION::STRING
-      else
-        "#{m} is not a supported chart format, please use one of the following: #{supported_types}."
-      end  
-    end
-
+  # Support for Gchart.line(:title => 'my title', :size => '400x600')
+  def self.method_missing(m, options={})
+    # Start with theme defaults if a theme is set
+    theme = options[:theme]
+    options = theme ? Chart::Theme.load(theme).to_options.merge(options) : options 
+    # Extract the format and optional filename, then clean the hash
+    format = options[:format] || 'url'
+    @@file_name = options[:filename] unless options[:filename].nil?
+    options.delete(:format)
+    options.delete(:filename)
+    # create the chart and return it in the format asked for
+    if @@types.include?(m.to_s)  
+      chart = new(options.merge!({:type => m}))
+      chart.send(format)
+    elsif m.to_s == 'version' 
+      Gchart::VERSION::STRING
+    else
+      "#{m} is not a supported chart format, please use one of the following: #{supported_types}."
+    end  
   end
   
   def initialize(options={})
@@ -47,6 +48,12 @@ class Gchart
       @grouped = false
       @encoding = 'simple'
       @max_value = 'auto'
+      # Sets the alt tag when chart is exported as image tag
+      @alt = 'Google Chart'
+      # Sets the CSS id selector when chart is exported as image tag
+      @id = false
+      # Sets the CSS class selector when chart is exported as image tag
+      @class = false
 
       # set the options value if definable
       options.each do |attribute, value| 
@@ -101,7 +108,10 @@ class Gchart
       @chart_angle = options[:angle]
     end
   end
-      
+  
+  def self.jstize(string)
+    string.gsub(' ', '+').gsub(/\[|\{|\}|\||\\|\^|\[|\]|\`|\]/) {|c| "%#{c[0].to_s(16).upcase}"}
+  end    
   # load all the custom aliases
   require 'gchart/aliases'
   
@@ -120,9 +130,19 @@ class Gchart
   
   # Format
   
-  def img_tag
-    "<img src='#{query_builder}'/>"
+  def image_tag
+    image = "<img"
+    image += " id=\"#{@id}\"" if @id  
+    image += " class=\"#{@class}\"" if @class      
+    image += " src=\"#{query_builder(:html)}\""
+    image += " width=\"#{@width}\""
+    image += " height=\"#{@height}\""
+    image += " alt=\"#{@alt}\""
+    image += " title=\"#{@title}\"" if @title
+    image += " />"
   end
+  
+  alias_method :img_tag, :image_tag
   
   def url
     query_builder
@@ -134,7 +154,7 @@ class Gchart
   
   #
   def jstize(string)
-    string.gsub(' ', '+')
+    Gchart.jstize(string)
   end
   
   private
@@ -171,6 +191,28 @@ class Gchart
     "chco=#{@bar_colors}"
   end
   
+  # set bar spacing
+  # chbh=
+  # <bar width in pixels>,
+  # <optional space between bars in a group>,
+  # <optional space between groups>
+  def set_bar_width_and_spacing
+    width_and_spacing_values = case @bar_width_and_spacing
+    when String
+      @bar_width_and_spacing
+    when Array
+      @bar_width_and_spacing.join(',')
+    when Hash
+      width = @bar_width_and_spacing[:width] || 23
+      spacing = @bar_width_and_spacing[:spacing] || 4
+      group_spacing = @bar_width_and_spacing[:group_spacing] || 8
+      [width,spacing,group_spacing].join(',')
+    else
+      @bar_width_and_spacing.to_s
+    end
+    "chbh=#{width_and_spacing_values}"
+  end
+  
   def fill_for(type=nil, color='', angle=nil)
     unless type.nil? 
       case type
@@ -193,7 +235,7 @@ class Gchart
   # or
   # Gchart.line(:legend => ['first label', 'last label'])
   def set_legend
-    return set_labels if @type == :pie || @type == :pie_3d
+    return set_labels if @type == :pie || @type == :pie_3d || @type == :meter
     
     if @legend.is_a?(Array)
       "chdl=#{@legend.map{|label| "#{label}"}.join('|')}"
@@ -244,6 +286,10 @@ class Gchart
         "cht=v"
       when :scatter
         "cht=s"
+      when :sparkline
+        "cht=ls"
+      when :meter
+        "cht=gom"
       end
   end
   
@@ -279,12 +325,12 @@ class Gchart
   # to about 300 pixels. Simple encoding is suitable for all other types of chart regardless of size.
   def simple_encoding(dataset=[])
     dataset = prepare_dataset(dataset)
-    @max_value = dataset.map{|ds| ds.max}.max if @max_value == 'auto'
+    @max_value = dataset.compact.map{|ds| ds.compact.max}.max if @max_value == 'auto'
     
-    if @max_value == false || @max_value == 'false' || @max_value == :false
-      "s:" + dataset.map { |ds| ds.map { |number| convert_to_simple_value(number) }.join }.join(',')
+    if @max_value == false || @max_value == 'false' || @max_value == :false || @max_value == 0
+      "s:" + dataset.map { |ds| ds.map { |number| number.nil? ? '_' : convert_to_simple_value(number) }.join }.join(',')
     else
-      "s:" + dataset.map { |ds| ds.map { |number| convert_to_simple_value( (@@simple_chars.size - 1) * number / @max_value) }.join }.join(',')
+      "s:" + dataset.map { |ds| ds.map { |number| number.nil? ? '_' : convert_to_simple_value( (@@simple_chars.size - 1) * number / @max_value) }.join }.join(',')
     end
     
   end
@@ -315,18 +361,18 @@ class Gchart
   def extended_encoding(dataset=[])
     
     dataset = prepare_dataset(dataset)
-    @max_value = dataset.map{|ds| ds.max}.max if @max_value == 'auto'
+    @max_value = dataset.compact.map{|ds| ds.compact.max}.max if @max_value == 'auto'
     
     if @max_value == false || @max_value == 'false' || @max_value == :false
-      "e:" +  dataset.map { |ds| ds.map { |number| convert_to_extended_value(number)}.join }.join(',')
+      "e:" +  dataset.map { |ds| ds.map { |number| number.nil? ? '__' : convert_to_extended_value(number)}.join }.join(',')
     else
-      "e:" + dataset.map { |ds| ds.map { |number| convert_to_extended_value( (@@ext_pairs.size - 1) * number / @max_value) }.join }.join(',')
+      "e:" + dataset.map { |ds| ds.map { |number| number.nil? ? '__' : convert_to_extended_value( (@@ext_pairs.size - 1) * number / @max_value) }.join }.join(',')
     end
     
   end
   
   
-  def query_builder
+  def query_builder(options="")
     query_params = instance_variables.map do |var|
       case var
       # Set the graph size  
@@ -346,6 +392,8 @@ class Gchart
         set_data unless @data == []
       when '@bar_colors'
         set_bar_colors
+      when '@bar_width_and_spacing'
+        set_bar_width_and_spacing
       when '@axis_with_labels'
         set_axis_with_labels
       when '@axis_labels'
@@ -355,7 +403,15 @@ class Gchart
       end
     end.compact
     
-    jstize(@@url + query_params.join('&'))
+    # Use ampersand as default delimiter
+    unless options == :html
+      delimiter = '&'
+    # Escape ampersand for html image tags
+    else
+      delimiter = '&amp;'
+    end
+    
+    jstize(@@url + query_params.join(delimiter))
   end
   
 end
