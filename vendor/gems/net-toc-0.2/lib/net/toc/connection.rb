@@ -20,7 +20,11 @@ module Net::TOC
     end
 
     def close
-      @sock.close unless @sock.nil?
+      begin
+        @sock.close unless @sock.nil?
+      rescue IOError
+        # Who cares? We closed it!
+      end
     end
 
     FrameType = {
