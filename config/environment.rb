@@ -44,7 +44,7 @@ Rails::Initializer.run do |config|
   config.gem :bj, :version => '1.0.1'
   config.gem :tinder, :version => '0.1.6'
   config.gem :fastercsv, :version => '1.2.3'
-  config.gem :googlecharts, :lib => "gchart", :version => '0.2.0'
+  config.gem :googlecharts, :lib => "gchart", :version => '1.3.6'
   config.gem :hpricot, :version => '0.6'
   config.gem :'net-toc', :lib => 'net/toc', :version => '0.2'
   config.active_support.use_standard_json_time_format = true
