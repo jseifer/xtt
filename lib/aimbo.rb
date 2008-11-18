@@ -60,7 +60,7 @@ class Net::TOC::Client
   def event_loop
     # see if there are any pending messages to send any users.
     Message.transaction do
-      messages = Message.find(:all, :conditions => ['id > ?', @last_msg.to_i])
+      messages = Message.find(:all) #, :conditions => ['id > ?', @last_msg.to_i])
       if messages && messages.size > 0
         @last_msg = messages.first.id
         messages.each do |message|
@@ -68,11 +68,11 @@ class Net::TOC::Client
           buddy.send_im message.message_text
         end
       end
-
-      @conn.recv do |msg, val|
-        @callbacks[msg].call(val) unless @callbacks[msg].nil?
-      end
     end
+    @conn.recv do |msg, val|
+      @callbacks[msg].call(val) unless @callbacks[msg].nil?
+    end
+    messages.delete_all
   end
 end
 
@@ -128,7 +128,7 @@ class Aimbo
           if user.aim_status != pal.status
             user.update_attribute :aim_status, pal.status.to_s
             # todo: hash the screen name to avoid vulns
-            File.open(RAILS_ROOT + "/tmp/buddy.#{pal.screen_name}.status.txt", "a") do |f|
+            File.open(RAILS_ROOT + "/tmp/buddy.#{user.id}.status.txt", "a") do |f|
               # todo: write xml? LOL
               f.write "{ time:#{Time.now.utc.to_f}, status: '#{pal.status.to_s}' }\n"
             end
