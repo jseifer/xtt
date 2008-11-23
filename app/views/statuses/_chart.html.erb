@@ -3,7 +3,7 @@
 	<% unless params[:filter] == :daily -%>
 	<% chart_labels = chart_labels_for(params[:filter], date_range) -%>
   <% colors = ["224499", "6688AA", "bb9999","AABBCC","afafaf"] %>
-
+  
   <% unless hours.empty? %>
     <% days, chart_data, total = fudge_data_from(hours, chart_labels) %>
     <% max = normalized_max(days) %>
@@ -60,6 +60,9 @@
     <% end %>
   <% end -%>
   <% end %>
+  
+  <% # This is the biggest hack of hacks. I don't care. I want my daily totals and shit's fucked backwards up there with fudge_numbers %>
+  <% total =  hours.flatten[2] if params[:filter] = :daily %>
   <p class="special-num">
     <span class="main-num"><%= number_with_precision total, '2' %></span>
     <span class="quiet">
