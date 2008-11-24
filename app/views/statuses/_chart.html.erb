@@ -62,7 +62,8 @@
   <% end %>
   
   <% # This is the biggest hack of hacks. I don't care. I want my daily totals and shit's fucked backwards up there with fudge_numbers %>
-  <% total =  hours.flatten[2] if params[:filter] = :daily %>
+  <% total = fudge_total_daily_hours(@daily_hours) if params[:filter] == :daily && !@daily_hours.nil? %>
+  
   <p class="special-num">
     <span class="main-num"><%= number_with_precision total, '2' %></span>
     <span class="quiet">

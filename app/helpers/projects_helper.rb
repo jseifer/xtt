@@ -50,5 +50,13 @@ module ProjectsHelper
     end
     return days, chart_data, total
   end
+  
+  def fudge_total_daily_hours(daily_hours)
+    total = 0.0
+    daily_hours.each do |entry|
+      total = total + entry.flatten[2]
+    end
+    total
+  end
 
 end
