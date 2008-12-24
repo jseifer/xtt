@@ -43,6 +43,7 @@
 </div>
 
 <% content_for :dom_loaded do %>
+  $('login').focus();
 
   $('use-openid').observe('click', function() {
     $('unamepass').hide();
