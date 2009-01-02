@@ -14,7 +14,7 @@
           <h2><%=h @user.login %></h2>
         </li>
         <li class="clearfix" style="border-bottom:0">
-<%= render :partial => "statuses/chart", :locals => {:hours => @hours, :date_range => @date_range} %>
+<%= render :partial => "statuses/chart", :locals => {:hours => @hours, :date_range => @date_range, :chart => @user} %>
         </li>
       </ul>
     <% end %>

@@ -4,7 +4,7 @@
     <% form_for current_user.statuses.build do |f| -%>
       <ul class="media-list">
         <li class="clearfix" style="border-bottom:0">
-          <%= render :partial => "statuses/chart", :locals => {:hours => @user_hours, :date_range => @date_range} %>
+          <%= render :partial => "statuses/chart", :locals => {:hours => @user_hours, :date_range => @date_range, :chart => @context} %>
         </li>
       </ul>
     <% end %>

@@ -8,7 +8,6 @@ class Status
   module FilteredHourMethods
     def self.extended(hours)
       hours.collect! do |(grouped, hour)|
-        RAILS_DEFAULT_LOGGER.warn "========== #{grouped.inspect}, #{hour.inspect}"
         user_id, date = grouped.split("::")
         [user_id.to_i, Time.parse(date), hour]
       end
