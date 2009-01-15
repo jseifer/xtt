@@ -12,7 +12,9 @@ class ContextsController < ApplicationController
     @hours       = Status.filtered_hours(user_status_for(params[:user_id]), params[:filter], :context => @context, :date => params[:date])
 
     # memleeeaaakkkkkkk
+    logger.warn "==========="
     all_statuses = Status.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :context => @context, :date => params[:date])
+    logger.warn "----------"
     # hmm, the [0] is necessary b/c this is actually a WillPaginateCollection
     user_ids = all_statuses[0].map {|s| s.user.permalink }.uniq
     @user_hours = []

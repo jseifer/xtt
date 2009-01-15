@@ -22,10 +22,21 @@
   <% end # ! daily %>
   
   <p class="special-num">
+    <% if total && chart.hours(params[:filter], params[:date]) > total %>
+    <span class="main-num"><%= number_with_precision chart.hours(params[:filter], params[:date]), 2 %></span>
+      <span class="quiet">
+        Everyone's <%= period_to_sentence(params[:filter], date_range, total) %>
+      </span>
+      <span class="main-num"><%= number_with_precision total, 2 %></span>
+      <span class="quiet">
+        Filtered
+      </span>
+    <% else %>
     <span class="main-num"><%= number_with_precision chart.hours(params[:filter], params[:date]), 2 %></span>
     <span class="quiet">
       <%= period_to_sentence(params[:filter], date_range, total) %>
     </span>
+    <% end %>
     <%= paging_for_period(date_range) %>
   </p>
 <% else -%>
