@@ -68,7 +68,7 @@ class Net::TOC::Client
           buddy.send_im message.message_text
         end
       end
-    	Message.delete_all
+			Message.delete_all
     end
     @conn.recv do |msg, val|
       @callbacks[msg].call(val) unless @callbacks[msg].nil?
