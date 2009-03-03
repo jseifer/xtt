@@ -11,13 +11,13 @@ private
 
   def tinder
     return @tinder if @tinder
-    @tinder = Tinder::Campfire.new domain, :ssl => true
+    @tinder = Tinder::Campfire.new domain, :ssl => false
     @tinder.login login, password
     @tinder
   end
 
   def tinder_room
-    @tinder_room ||= tinder.rooms[0] #.select { |r| r.name == room }[0]
+    @tinder_room ||= tinder.rooms.select { |r| r.name == room }[0]
   end
 
 end

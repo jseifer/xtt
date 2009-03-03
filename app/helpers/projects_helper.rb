@@ -18,8 +18,8 @@ module ProjectsHelper
   end
   
   def normalized_max(data)
-    logger.warn "--------------\n#{data.inspect}"
-    max = data.flatten.map { |d| d.to_f }.max.to_i
+    Rails::logger.warn "--------------\n#{data.inspect}"
+    max = data.flatten.map { |d| d.to_f }.max
     ((max * 10 ** -1).ceil.to_f / 10 **-1).to_i
   end
   

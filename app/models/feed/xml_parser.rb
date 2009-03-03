@@ -1,5 +1,5 @@
 class Feed
-  require 'hpricot'
+  # require 'hpricot'
   
   #acts_as_cached
   
