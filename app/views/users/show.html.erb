@@ -4,7 +4,7 @@
     <% form_for current_user.statuses.build do |f| -%>
       <ul class="media-list">
         <li class="media-item status-form last">
-    			<%= f.text_area :message, :rows => 2, :cols => 55, :class => 'status-entry' %>
+          <%= f.text_area :code_and_message, :rows => 2, :cols => 55, :class => 'status-entry' %>
     			<p class="btns">
     			  <%= img_button 'out' %>
 						<%= update_button %>
@@ -14,7 +14,7 @@
           <h2><%=h @user.login %></h2>
         </li>
         <li class="clearfix" style="border-bottom:0">
-<%= render :partial => "statuses/chart", :locals => {:hours => @hours, :date_range => @date_range} %>
+<%= render :partial => "statuses/chart", :locals => {:hours => @hours, :date_range => @date_range, :chart => @user} %>
         </li>
       </ul>
     <% end %>

@@ -16,4 +16,13 @@ class Context < ActiveRecord::Base
   def to_param
     permalink
   end
+  
+  def hours(filter, date)
+    hours = 0
+    projects.each_with_index do |project, index|
+      hours += project.statuses.filtered_hours(nil, filter, :context => self, :date => date).total
+    end
+    hours
+  end
+
 end

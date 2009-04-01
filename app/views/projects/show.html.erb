@@ -16,7 +16,7 @@
           <h2><%=h @project.name %></h2>
         </li>
         <li class="clearfix" style="border-bottom:0">
-          <%= render :partial => "statuses/chart", :locals => {:hours => @user_hours, :date_range => @date_range} %>
+          <%= render :partial => "statuses/chart", :locals => {:hours => @user_hours, :date_range => @date_range, :chart => @project} %>
         </li>
       </ul>
     <% end %>

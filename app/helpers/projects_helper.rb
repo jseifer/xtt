@@ -18,8 +18,7 @@ module ProjectsHelper
   end
   
   def normalized_max(data)
-    logger.warn "--------------\n#{data.inspect}"
-    max = data.flatten.map { |d| d.to_f }.max.to_i
+    max = data.flatten.map { |d| d.to_f }.max.ceil.to_i
     ((max * 10 ** -1).ceil.to_f / 10 **-1).to_i
   end
   
@@ -49,6 +48,14 @@ module ProjectsHelper
       total = hours.sum { |h| h[2].to_f }
     end
     return days, chart_data, total
+  end
+  
+  def fudge_total_daily_hours(daily_hours)
+    total = 0.0
+    daily_hours.each do |entry|
+      total = total + entry.flatten[2]
+    end
+    total
   end
 
 end
