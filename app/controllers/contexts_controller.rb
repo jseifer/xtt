@@ -7,6 +7,7 @@ class ContextsController < ApplicationController
   end
 
   def show
+    params[:per] = 9999 if request.format == 'csv'
     @statuses, @date_range = Status.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :context => @context, :date => params[:date], :page => params[:page], :per_page => params[:per]||20)
     @daily_hours = Status.filtered_hours(user_status_for(params[:user_id]), :daily, :context => @context, :date => params[:date])
     @hours       = Status.filtered_hours(user_status_for(params[:user_id]), params[:filter], :context => @context, :date => params[:date])
