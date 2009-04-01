@@ -86,10 +86,22 @@
   </div>
 </div>
 
+<% box(:sidebar, 'export') do |sbox| %>
+  <% sbox.title = "Export data "%>
+  <% sbox.content = capture do %>
+    <div id="export">
+        Navigate using the date, next/previous buttons below the graph and select your preferred output format to view.
+      <ul class="text-list">
+        <li><%= link_to "CSV", params.update(:format => 'csv') %></li>
+      </ul>
+      <!-- todo: icon -->
+    </div>
+  <% end %>
+<% end %>
+
 <% box(:sidebar, 'projects') do |sbox| %>
-  <% sbox.title = "Projects" %>
+  <% sbox.title = "Projects seen on this page" %>
   <% sbox.content_classes = "nopad" %>
-  
   <% sbox.content = capture do %>
   <div id="projectlist">
     <ul class="text-list" id="project-lists">

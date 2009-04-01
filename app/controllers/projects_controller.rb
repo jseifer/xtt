@@ -13,6 +13,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    params[:per] = 9999 if request.format == 'csv'
     @statuses, @date_range = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :date => params[:date], :page => params[:page], :per_page => params[:per]||20)
 
     @daily_hours = @project.statuses.filtered_hours(user_status_for(params[:user_id]), :daily, :date => params[:date])
