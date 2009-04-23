@@ -3,7 +3,7 @@ set :repository,  "git@entp:tt.git"
 set :deploy_to, "/var/www/#{application}"
 set :scm, :git
 set :rails_version, 8872
-set :branch, "origin/production"
+set :branch, "production"
 set :ssh_options, :forward_agent => true
 
 # set :deploy_via, "copy"

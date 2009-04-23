@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.1.1' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.1.2' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -42,7 +42,7 @@ Rails::Initializer.run do |config|
   }
 
   config.gem :bj, :version => '1.0.1'
-  config.gem :tinder, :version => '0.1.6'
+  config.gem :tinder, :version => '1.1.7'
   config.gem :fastercsv, :version => '1.2.3'
   config.gem :googlecharts, :lib => "gchart", :version => '1.3.6'
   config.gem :hpricot, :version => '>=0.6'
