@@ -16,7 +16,7 @@
           <h2><%=h @project.name %></h2>
         </li>
         <li class="clearfix" style="border-bottom:0">
-          <%= render :partial => "statuses/chart", :locals => {:hours => @user_hours, :date_range => @date_range} %>
+          <%= render :partial => "statuses/chart", :locals => {:hours => @user_hours, :date_range => @date_range, :chart => @project} %>
         </li>
       </ul>
     <% end %>
@@ -155,7 +155,7 @@
       <% end %>
     </div>
   
-    <% if @project.owned_by? current_user or current_user.admin? -%>
+    <% if @project.owned_by?(current_user) or current_user.admin? -%>
   
       <div id="edit" style="display:none">
         <%= error_messages_for :project %>
@@ -163,7 +163,6 @@
         <%= render :partial => "form", :object => f %>
           <p class="btns"><%= update_button %></p>
         <% end -%>
-
 
         <h2>Tendrils</h2>
         <p>Tendrils reach out and communicate after you create a status. Useful for notifying a chat room of status changes.</p>
@@ -174,19 +173,17 @@
           </li>
         <% end %>
         </ul>
-
-
-      </div>
-    
-      <div id="export" style="display:none">
-        Navigate using the date, next/previous buttons below the graph and select your preferred output format to view.
-        <ul class="text-list">
-          <li><%= link_to "CSV", params.update(:format => 'csv') %></li>
-          <li><%= link_to "XML", params.update(:format => 'xml') %></li>
-        </ul>
-        <!-- todo: icon -->
       </div>
     <% end %>
+    
+    <div id="export" style="display:none">
+      Navigate using the date, next/previous buttons below the graph and select your preferred output format to view.
+      <ul class="text-list">
+        <li><%= link_to "CSV", params.update(:format => 'csv') %></li>
+        <li><%= link_to "XML", params.update(:format => 'xml') %></li>
+      </ul>
+      <!-- todo: icon -->
+    </div>
   <% end -%>
 <% end -%>
 
