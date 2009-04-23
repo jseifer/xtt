@@ -8,7 +8,6 @@ class Status
   module FilteredHourMethods
     def self.extended(hours)
       hours.collect! do |(grouped, hour)|
-        RAILS_DEFAULT_LOGGER.warn "========== #{grouped.inspect}, #{hour.inspect}"
         user_id, date = grouped.split("::")
         [user_id.to_i, Time.parse(date), hour]
       end
@@ -45,6 +44,11 @@ class Status
         :order => 'statuses.created_at desc', :page => options[:page], :per_page => options[:per_page]
       [records, range]
     end
+  end
+
+  # user_id can be an integer or nil
+  def self.filter_all_users(user_id, f, options = {})
+    filter(user_id, f, options)
   end
   
   def self.hours(user_id, filter, options = {})

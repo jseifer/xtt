@@ -7,11 +7,17 @@ class ContextsController < ApplicationController
   end
 
   def show
+    params[:per] = 9999 if request.format == 'csv'
     @statuses, @date_range = Status.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :context => @context, :date => params[:date], :page => params[:page], :per_page => params[:per]||20)
     @daily_hours = Status.filtered_hours(user_status_for(params[:user_id]), :daily, :context => @context, :date => params[:date])
     @hours       = Status.filtered_hours(user_status_for(params[:user_id]), params[:filter], :context => @context, :date => params[:date])
 
-    user_ids = @statuses.map {|s| s.user.permalink }.uniq
+    # memleeeaaakkkkkkk
+    logger.warn "==========="
+    all_statuses = Status.filter_all_users(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :context => @context, :date => params[:date])
+    logger.warn "----------"
+    # hmm, the [0] is necessary b/c this is actually a WillPaginateCollection
+    user_ids = all_statuses[0].map {|s| s.user.permalink }.uniq
     @user_hours = []
     user_ids.each do |user|
       hours = Status.filtered_hours(user_status_for(user), params[:filter], :date => params[:date], :context => @context)

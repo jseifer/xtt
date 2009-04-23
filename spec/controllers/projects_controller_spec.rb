@@ -55,6 +55,8 @@ describe ProjectsController, "GET #show" do
       
       before do
         @project.statuses.should_receive(:filter).with(*options[:args]).and_return([@statuses, @date_range])
+        # I really SHOULD specify what filter_all_users receives, but it's too hard.
+        @project.statuses.should_receive(:filter_all_users).and_return([@statuses, @date_range])
         @project.statuses.should_receive(:filtered_hours).with(*options[:args][0..-3] + [:daily, {:date => nil}]).and_return(@hours)
         @project.statuses.should_receive(:filtered_hours).with(*options[:args][0..-2] + [{:date => nil}]).and_return(@hours)
       end

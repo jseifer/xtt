@@ -37,6 +37,7 @@ describe ContextsController, "GET #show" do
       
       before do
         Status.should_receive(:filter).with(*options[:args]).and_return([@statuses, @date_range])
+        Status.should_receive(:filter_all_users).and_return([@statuses, @date_range])
         Status.should_receive(:filtered_hours).with(*options[:args][0..-3] + [:daily, {:date => nil, :context => 'c'}]).and_return(@hours)
         Status.should_receive(:filtered_hours).with(*options[:args][0..-2] + [{:date => nil, :context => 'c'}]).and_return(@hours)
       end

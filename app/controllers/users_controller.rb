@@ -10,13 +10,18 @@ class UsersController < ApplicationController
 
   # user status page
   def show
+    params[:per] = 9999 if request.format == 'csv'
     @statuses, @date_range = @user.statuses.filter(params[:filter] ||= :weekly, :page => params[:page],
-      :date => params[:date], :projects => (@user == current_user ? nil : current_user.projects))
+      :date => params[:date], :projects => (@user == current_user ? nil : current_user.projects), :per_page => params[:per]||20)
     @hours       = @user.statuses.filtered_hours(params[:filter], :date => params[:date])
     @daily_hours = @user.statuses.filtered_hours(:daily, :date => params[:date])
     project_ids = returning(@statuses.collect { |s| s.project_id }) { |ids| ids.uniq! ; ids.compact! }
     # @projects = project_ids.empty? ? [] : Project.find_all_by_id(project_ids)
     @memberships = project_ids.empty? ? [] : Membership.find_for(@user.id, project_ids)
+    respond_to do |format|
+      format.html
+      format.csv
+    end
   end
 
   # user signup
