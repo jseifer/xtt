@@ -17,7 +17,7 @@ private
   end
 
   def tinder_room
-    @tinder_room ||= tinder.rooms[0] #.select { |r| r.name == room }[0]
+    @tinder_room ||= tinder.rooms.select { |r| r.name == room }[0]
   end
 
 end

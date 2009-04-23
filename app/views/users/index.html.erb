@@ -47,6 +47,8 @@
   <% end %>
 <% end %>
 
+<%= javascript_tag "$('status_code_and_message').focus()" %>
+
 <% unless current_user.related_users.blank? %>
 <% box(:normal, 'everyone') do |box| %>
   <% box.title = "What's everyone else doing?" %>

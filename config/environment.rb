@@ -42,7 +42,7 @@ Rails::Initializer.run do |config|
   }
 
   config.gem :bj, :version => '1.0.1'
-  config.gem :tinder, :version => '1.1.7'
+  config.gem :tinder, :version => '1.2.0'
   config.gem :fastercsv, :version => '1.2.3'
   config.gem :googlecharts, :lib => "gchart", :version => '1.3.6'
   config.gem :hpricot, :version => '>=0.6'
