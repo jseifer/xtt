@@ -41,7 +41,6 @@ Rails::Initializer.run do |config|
     :secret      => 'SEKRIT'
   }
 
-  config.gem :bj, :version => '1.0.1'
   config.gem :tinder, :version => '1.2.0'
   config.gem :fastercsv, :version => '1.2.3'
   config.gem :googlecharts, :lib => "gchart", :version => '1.3.6'
