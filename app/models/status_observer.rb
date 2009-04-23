@@ -11,7 +11,8 @@ class StatusObserver < ActiveRecord::Observer
 
     return unless project
     project.tendrils.each do |tendril|
-      puts "WARNING: no notifies for tendril #{tendril.inspect}"
+      next if tendril.notifies.nil? # usually this is caused by bad data or missing foreign object (aka no 'campfire')
+
       # Round the message. If it was more than a few hours, we probably don't care
       # about the exact number of minutes.
       if status.created_at.utc < 4.hours.ago.utc
