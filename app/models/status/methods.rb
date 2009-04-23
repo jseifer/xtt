@@ -4,9 +4,14 @@ module Status::Methods
   end
   
   # todo
-  def hours
-    statuses.sum :hours
+  #def hours
+  #  statuses.sum :hours
+  #end
+  
+  def hours(filter, date)
+    hours = statuses.filtered_hours(nil, filter, :date => date).total
   end
+  
   
   module AssociationExtension
     def latest
