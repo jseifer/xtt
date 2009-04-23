@@ -90,7 +90,8 @@ class ProjectsController < ApplicationController
   def invite
     inviter = User::Inviter.new(params[:id], params[:emails])
     flash[:notice] = "Users invited: #{(inviter.logins + inviter.emails) * ", "}"
-    Bj.submit inviter.to_job, :rails_env => RAILS_ENV, :tag => 'invites'
+    inviter.invite # queue the job
+    # Bj.submit inviter.to_job, :rails_env => RAILS_ENV, :tag => 'invites'
     redirect_to project_path(params[:id])
   end
 
