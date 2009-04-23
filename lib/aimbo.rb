@@ -84,6 +84,7 @@ class Aimbo
     :admin    => 'courtenay187'
   }
   
+  cattr_accessor :credentials
   attr_accessor :client, :xtt
   include IM
   
