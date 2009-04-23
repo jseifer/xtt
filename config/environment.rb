@@ -41,7 +41,6 @@ Rails::Initializer.run do |config|
     :secret      => 'bd088a0f5b476fe5a2c02653a93ed14a95a8396829ce4e726ee77553ab6438a98d0f3e6d80fc6b120370ba047f28e09f71543ae5f842365e5070e7db51fb2cb8'
   }
 
-  config.gem :bj, :version => '1.0.1'
   config.gem :tinder, :version => '1.2.0'
   config.gem :fastercsv, :version => '1.2.3'
   config.gem :googlecharts, :lib => "gchart", :version => '1.3.6'
