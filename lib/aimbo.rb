@@ -140,12 +140,6 @@ class Aimbo
 
 end
 
-aimbo = Aimbo.new
-aimbo.xtt.xtt_loop
-return
-
-#/var/www/xtt/releases/20080208021931/vendor/rails/railties/lib/commands/runner.rb:47: 
-#/usr/lib64/ruby/gems/1.8/gems/net-toc-0.2/./net/toc.rb:218:in `recv': Connection reset by peer - recvfrom(2) (Errno::ECONNRESET)
-#from /usr/lib64/ruby/gems/1.8/gems/net-toc-0.2/./net/toc.rb:529:in `join'
-#     from /usr/lib64/ruby/gems/1.8/gems/net-toc-0.2/./net/toc.rb:529:in `wait'
-#     from /var/www/xtt/releases/20080208021931/lib/aimbo.rb:91
+#aimbo = Aimbo.new
+#aimbo.xtt.xtt_loop
+#return
