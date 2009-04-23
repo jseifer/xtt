@@ -14,12 +14,14 @@ class ProjectsController < ApplicationController
 
   def show
     params[:per] = 9999 if request.format == 'csv'
-    @statuses, @date_range = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :date => params[:date], :page => params[:page], :per_page => params[:per]||20)
+    @statuses, @date_range = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, { :date => params[:date], :page => params[:page], :per_page => params[:per]||20 })
 
     @daily_hours = @project.statuses.filtered_hours(user_status_for(params[:user_id]), :daily, :date => params[:date])
     @hours = @project.statuses.filtered_hours(user_status_for(params[:user_id]), params[:filter], :date => params[:date])
 
-    all_statuses = @project.statuses.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :date => params[:date])
+    # Now we need to build a summary of all users' statuses for this project for this time period for display
+    # in the sidebar. This can't be paginated.
+    all_statuses = @project.statuses.filter_all_users(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :date => params[:date])
     # hmm, the [0] is necessary b/c this is actually a WillPaginateCollection
     user_ids = all_statuses[0].map {|s| s.user.permalink }.uniq
     @user_hours = []

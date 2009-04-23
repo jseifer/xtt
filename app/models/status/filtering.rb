@@ -45,6 +45,11 @@ class Status
       [records, range]
     end
   end
+
+  # user_id can be an integer or nil
+  def self.filter_all_users(user_id, f, options = {})
+    filter(user_id, f, options)
+  end
   
   def self.hours(user_id, filter, options = {})
     scope_by_context options.delete(:context) do
