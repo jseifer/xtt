@@ -4,7 +4,7 @@ class Campfire < ActiveRecord::Base
   belongs_to :user # creator
 
   def send_message(message)
-    tinder_room.speak message
+    Job::NotifyCampfire.create self, message
   end
 
 private
