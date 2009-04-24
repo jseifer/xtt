@@ -12,6 +12,12 @@ role :app, "entp.com:30187"
 role :web, "entp.com:30187"
 role :db,  "entp.com:30187", :primary => true
 
+
+task :restart_job_runner, :roles => :app, :except => {:no_release => true, :no_symlink => true} do
+  run "sudo sv restart xtt-dj"
+end
+after  "deploy:restart",         "restart_job_runner"
+
 task :after_update_code, :roles => :app do
   run <<-CMD
     cd #{release_path} &&
