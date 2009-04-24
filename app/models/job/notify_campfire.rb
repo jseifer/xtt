@@ -1,4 +1,4 @@
-class Job::NofifyCampfire < Job::Base.new(:campfire, :message)
+class Job::NotifyCampfire < Job::Base.new(:campfire, :message)
 
   # tinder_room.speak message
   def perform

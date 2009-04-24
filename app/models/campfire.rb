@@ -7,6 +7,10 @@ class Campfire < ActiveRecord::Base
     Job::NotifyCampfire.create self, message
   end
 
+  def tinder_room
+    @tinder_room ||= self.name ? tinder.rooms.select { |r| r.name == room }[0] : tinder.rooms[0]
+  end
+
 private
 
   def tinder
@@ -14,10 +18,6 @@ private
     @tinder = Tinder::Campfire.new domain, :ssl => true
     @tinder.login login, password
     @tinder
-  end
-
-  def tinder_room
-    @tinder_room ||= tinder.rooms.select { |r| r.name == room }[0]
   end
 
 end
