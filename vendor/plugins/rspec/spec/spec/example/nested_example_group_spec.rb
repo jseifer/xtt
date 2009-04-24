@@ -55,5 +55,17 @@ module Spec
         end
       end
     end
+
+    describe "Nested Example Groups" do
+      describe "description options", :other_options => "other options" do
+        it "includes :location" do
+          self.class.options[:location].should match(/#{__FILE__}/)
+        end
+
+        it "includes any other options" do
+          self.class.options[:other_options].should == "other options"
+        end
+      end
+    end
   end
 end
