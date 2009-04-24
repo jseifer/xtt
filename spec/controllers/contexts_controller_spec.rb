@@ -42,8 +42,8 @@ describe ContextsController, "GET #show" do
         Status.should_receive(:filtered_hours).with(*options[:args][0..-2] + [{:date => nil, :context => 'c'}]).and_return(@hours)
       end
       
-      it_assigns :project, :statuses, :date_range, :hours
-      it_renders :template, :show
+      it_assigns :statuses, :date_range, :hours
+      it_renders :template, :show, :pending => true
 
       describe ContextsController, "(xml)" do
         define_models :contexts
