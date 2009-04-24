@@ -2,7 +2,7 @@ module ModelStubbing
   # Models hold one or more stubs.
   class Model
     attr_accessor :name, :plural, :singular
-    attr_reader   :definition, :stubs, :model_class, :options
+    attr_reader   :definition, :stubs, :model_class, :options, :ordered_stubs
 
     # Creates a stub for this model.  A stub with no name is assumed to be the default
     # stub.  A global key for the definition is also created based on the singular
@@ -17,13 +17,14 @@ module ModelStubbing
     end
 
     def initialize(definition, klass, options = {}, &block)
-      @definition  = definition
-      @model_class = klass
-      @name        = options.delete(:name)     || default_name.to_sym
-      @plural      = options.delete(:plural)   || name
-      @singular    = options.delete(:singular) || name.to_s.singularize
-      @options     = options
-      @stubs       = {}
+      @definition    = definition
+      @model_class   = klass
+      @name          = options.delete(:name)     || default_name.to_sym
+      @plural        = options.delete(:plural)   || name
+      @singular      = options.delete(:singular) || name.to_s.singularize
+      @options       = options
+      @stubs         = {}
+      @ordered_stubs = []
       unless @model_class.respond_to?(:mock_id)
         class << @model_class
           define_method :mock_id do
@@ -34,7 +35,7 @@ module ModelStubbing
       end
       instance_eval &block if block
     end
-    
+
     def default_name
       name = @model_class.name
       if name.respond_to?(:underscore)
@@ -81,9 +82,47 @@ module ModelStubbing
     end
     
     def stub_method_definition
-      "def #{@plural}(key, attrs = {}) self.class.definition.models[#{@plural.inspect}].retrieve_record(key, attrs) end\n
-      def new_#{@singular}(key = :default, attrs = {})  key, attrs = :default, key if key.is_a?(Hash) ; #{@plural}(key, attrs.merge(:id => :new)) end\n
-      def new_#{@singular}!(key = :default, attrs = {}) key, attrs = :default, key if key.is_a?(Hash) ; #{@plural}(key, attrs.merge(:id => :dup)) end"
+      <<-END
+      def #{@plural}(key, attrs = {})
+        klass = self.class
+        unless defined?(klass.definition) and klass.definition
+          # If we are in a subclass where define_models was called on a superclass but
+          # not on this subclass (e.g. in a nested define block) then define_models
+          # needs to be called again for this subclass in order for the teardown to
+          # happen correctly.
+          k = klass.superclass
+          name = nil
+          until k == Object or k.nil?
+            if defined?(k.definition) and k.definition
+              name = k.definition.name
+              k = nil
+            end
+          end
+          klass.module_eval { define_models name }
+          unless klass.definition_inserted
+            klass.definition.insert!
+            # Don't want to set definition_inserted to true because it will
+            # roll back at the end of the first test. The next test will
+            # correctly insert again before the transaction begins.
+          end
+          klass.definition.setup_test_run
+        end
+        klass.definition.models[#{@plural.inspect}].retrieve_record(key, attrs)
+      end
+      def new_#{@singular}(key = :default, attrs = {})
+        key, attrs = :default, key if key.is_a?(Hash)
+        #{@plural}(key, attrs.merge(:id => :new))
+      end
+      def new_#{@singular}!(key = :default, attrs = {})
+        key, attrs = :default, key if key.is_a?(Hash)
+        #{@plural}(key, attrs.merge(:id => :dup))
+      end
+      def create_#{@singular}(key = :default, attrs = {})
+        stub = new_#{@singular}(key, attrs)
+        stub.save!
+        stub
+      end
+      END
     end
 
     def inspect
@@ -92,7 +131,11 @@ module ModelStubbing
     
     def insert
       purge
-      @stubs.values.each &:insert
+      @ordered_stubs.each do |name| 
+        if stub = @stubs[name]
+          stub.insert
+        end
+      end
     end
     
     def purge
@@ -103,6 +146,20 @@ module ModelStubbing
     
     def connection
       @connection ||= model_class.respond_to?(:connection) && model_class.connection
+    end
+
+  protected
+    def method_missing(model_name, stub_name, *args)
+      named_model = @definition.models[model_name]
+      if named_model.nil?
+        raise "No #{model_name.inspect} model found when calling #{model_name}(#{stub_name})"
+      end
+      stub = named_model.stubs[stub_name]
+      if stub.nil?
+        raise "No #{stub_name.inspect} stub found in the #{model_name.inspect} model when calling #{model_name}(#{stub_name})"
+      else
+        stub
+      end
     end
   end
 end
