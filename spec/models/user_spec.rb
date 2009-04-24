@@ -188,6 +188,8 @@ describe User do
     define_models :users
     before do
       @user = nil
+      User.delete_all
+      @user = create_user :login => "admin", :email => "admin@example.com"
       @creating_user = lambda do
         @user = create_user
         violated "#{@user.errors.full_messages.to_sentence}" if @user.new_record?
