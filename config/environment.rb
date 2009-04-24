@@ -62,6 +62,5 @@ Rails::Initializer.run do |config|
   
   config.after_initialize do
     %w(ostruct md5).each { |lib| require lib }
-    Bj.config["production.no_tickle"] = true if RAILS_ENV == 'production'
   end
 end
