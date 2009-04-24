@@ -76,7 +76,7 @@ module ModelStubbing
     # Instantiates a stub into a new record.
     def retrieve_record(key, attributes = {})
       unless fetch = @stubs[key]
-        raise ActiveRecord::RecordNotFound, "Could not find the record defined by '#{key}'."
+        raise ActiveRecord::RecordNotFound, "Could not find the record defined by '#{key}'.  Available stubs are #{@stubs.keys.inspect}"
       end
       fetch.record(attributes)
     end
