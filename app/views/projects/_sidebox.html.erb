@@ -56,7 +56,7 @@
             <span class="ttl"><%=h project.name %></span>
             <span class="desc">message using <em class="project-code">@<%=h membership.code %></em></span>
             <span class="you">
-              <span class="num"><%= number_with_precision user_hours, 2 %></span>
+              <span class="num"><%= number_with_precision user_hours, :precision => 2 %></span>
               <span class="meta">you</span>
             </span>
             <span class="others">
