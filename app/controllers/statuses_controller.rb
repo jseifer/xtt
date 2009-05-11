@@ -6,12 +6,7 @@ class StatusesController < ApplicationController
   # USER SCOPE
   
   def index
-    @statuses ||= current_user.statuses
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml  => @statuses }
-    end
+    redirect_to user_path(current_user)
   end
 
   def last
