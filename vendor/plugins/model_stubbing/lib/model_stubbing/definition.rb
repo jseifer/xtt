@@ -100,26 +100,32 @@ module ModelStubbing
     
     def insert!
       return unless database? && insert?
-      ActiveRecord::Base.transaction do
+      #ActiveRecord::Base.transaction do
         ordered_models.each(&:insert)
-      end
+      #end
     end
     
     def teardown!
       return unless database? && insert?
-      ActiveRecord::Base.transaction do
+      #ActiveRecord::Base.transaction do
         ordered_models.each(&:purge)
-      end
+      #end
     end
     
     def setup_test_run
       ModelStubbing.records.clear
       ModelStubbing.stub_current_time_with(current_time) if current_time
+      ActiveRecord::Base.connection.increment_open_transactions
+      ActiveRecord::Base.connection.begin_db_transaction    
     end
     
     def teardown_test_run
       ModelStubbing.records.clear
       # TODO: teardown Time.stubs(:now)
+
+      #return unless database?
+      ActiveRecord::Base.connection.rollback_db_transaction
+      ActiveRecord::Base.verify_active_connections!
     end
     
     def database?

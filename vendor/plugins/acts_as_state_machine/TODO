@@ -1,11 +1,9 @@
-* Currently invalid events are ignored, create an option so that they can be
-  ignored or raise an exception.
+Before Next Release:
 
-* Query for a list of possible next states.
+* Add #aasm_next_state_for_event
+* Add #aasm_next_states_for_event
 
-* Make listing states optional since they can be inferred from the events.
-  Only required to list a state if you want to define a transition block for it.
+Cool ideas from users:
 
-* Real transition actions
-
-* Default states
+* Support multiple state machines on one object (Chris Nelson)
+* http://justbarebones.blogspot.com/2007/11/actsasstatemachine-enhancements.html (Chetan Patil)
