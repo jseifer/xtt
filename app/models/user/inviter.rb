@@ -13,6 +13,7 @@ class User::Inviter
     parse(string)
   end
   
+  # Ugh. This should run immediately, rather than through a fucking shell-out (see line 54)
   def invite
     ActiveRecord::Base.transaction do
       users.each do |user|
