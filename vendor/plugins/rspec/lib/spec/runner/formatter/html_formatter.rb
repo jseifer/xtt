@@ -1,26 +1,29 @@
 require 'erb'
 require 'spec/runner/formatter/base_text_formatter'
+require 'spec/runner/formatter/no_op_method_missing'
 
 module Spec
   module Runner
     module Formatter
       class HtmlFormatter < BaseTextFormatter
         include ERB::Util # for the #h method
+        include NOOPMethodMissing
         
         def initialize(options, output)
           super
-          @current_example_group_number = 0
-          @current_example_number = 0
+          @example_group_number = 0
+          @example_number = 0
+          @header_red = nil
         end
-
+        
         # The number of the currently running example_group
-        def current_example_group_number
-          @current_example_group_number
+        def example_group_number
+          @example_group_number
         end
         
         # The number of the currently running example (a global counter)
-        def current_example_number
-          @current_example_number
+        def example_number
+          @example_number
         end
         
         def start(example_count)
@@ -31,18 +34,17 @@ module Spec
           @output.flush
         end
 
-        def add_example_group(example_group)
+        def example_group_started(example_group)
           super
           @example_group_red = false
-          @example_group_red = false
-          @current_example_group_number += 1
-          unless current_example_group_number == 1
+          @example_group_number += 1
+          unless example_group_number == 1
             @output.puts "  </dl>"
             @output.puts "</div>"
           end
           @output.puts "<div class=\"example_group\">"
           @output.puts "  <dl>"
-          @output.puts "  <dt id=\"example_group_#{current_example_group_number}\">#{h(example_group.description)}</dt>"
+          @output.puts "  <dt id=\"example_group_#{example_group_number}\">#{h(example_group.description)}</dt>"
           @output.flush
         end
 
@@ -53,7 +55,7 @@ module Spec
         end
 
         def example_started(example)
-          @current_example_number += 1
+          @example_number += 1
         end
 
         def example_passed(example)
@@ -67,7 +69,7 @@ module Spec
           failure_style = failure.pending_fixed? ? 'pending_fixed' : 'failed'
           @output.puts "    <script type=\"text/javascript\">makeRed('rspec-header');</script>" unless @header_red
           @header_red = true
-          @output.puts "    <script type=\"text/javascript\">makeRed('example_group_#{current_example_group_number}');</script>" unless @example_group_red
+          @output.puts "    <script type=\"text/javascript\">makeRed('example_group_#{example_group_number}');</script>" unless @example_group_red
           @example_group_red = true
           move_progress
           @output.puts "    <dd class=\"spec #{failure_style}\">"
@@ -81,9 +83,9 @@ module Spec
           @output.flush
         end
 
-        def example_pending(example_group_description, example, message)
+        def example_pending(example, message, deprecated_pending_location=nil)
           @output.puts "    <script type=\"text/javascript\">makeYellow('rspec-header');</script>" unless @header_red
-          @output.puts "    <script type=\"text/javascript\">makeYellow('example_group_#{current_example_group_number}');</script>" unless @example_group_red
+          @output.puts "    <script type=\"text/javascript\">makeYellow('example_group_#{example_group_number}');</script>" unless @example_group_red
           move_progress
           @output.puts "    <dd class=\"spec not_implemented\"><span class=\"not_implemented_spec_name\">#{h(example.description)} (PENDING: #{h(message)})</span></dd>"
           @output.flush
@@ -106,7 +108,7 @@ module Spec
         def percent_done
           result = 100.0
           if @example_count != 0
-            result = ((current_example_number).to_f / @example_count.to_f * 1000).to_i / 10.0
+            result = ((example_number).to_f / @example_count.to_f * 1000).to_i / 10.0
           end
           result
         end
@@ -150,14 +152,6 @@ module Spec
     font-size: 80%;
   }
   </style>
-</head>
-<body>
-EOF
-        end
-
-        def report_header
-          <<-EOF
-<div class="rspec-report">
   <script type="text/javascript">
     // <![CDATA[
 #{global_scripts}
@@ -166,9 +160,19 @@ EOF
   <style type="text/css">
 #{global_styles}
   </style>
+</head>
+<body>
+EOF
+        end
+
+        def report_header
+          <<-EOF
+<div class="rspec-report">
 
 <div id="rspec-header">
-  <h1>RSpec Results</h1>
+  <div id="label">
+    <h1>RSpec Code Examples</h1>
+  </div>
 
   <div id="summary">
     <p id="totals">&nbsp;</p>
@@ -208,7 +212,7 @@ EOF
         def global_styles
           <<-EOF
 #rspec-header {
-  background: #65C400; color: #fff;
+  background: #65C400; color: #fff; height: 4em;
 }
 
 .rspec-report h1 {
@@ -216,15 +220,16 @@ EOF
   padding: 10px;
   font-family: "Lucida Grande", Helvetica, sans-serif;
   font-size: 1.8em;
+  position: absolute;
 }
 
 #summary {
   margin: 0; padding: 5px 10px;
   font-family: "Lucida Grande", Helvetica, sans-serif;
   text-align: right;
-  position: absolute;
   top: 0px;
   right: 0px;
+  float:right;
 }
 
 #summary p {
