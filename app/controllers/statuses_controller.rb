@@ -111,7 +111,7 @@ class StatusesController < ApplicationController
   
 protected
   def authorized?
-    logged_in? && (admin? || @status.nil? || @status.editable_by?(current_user))
+    logged_in? && (admin? || @status.nil? || @status.editable_by?(current_user)) && current_user.active?
   end
 
   def find_status
