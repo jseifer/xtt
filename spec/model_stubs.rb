@@ -35,10 +35,6 @@ ModelStubbing.define_models do
     stub :notifies_type => "Campfire", :notifies_id => 1, :project => all_stubs(:project)
   end
   
-  model Help do
-    stub :name => "foo"
-    stub :foo, :name => "bar"
-  end
 end
 
 ModelStubbing.define_models :feeds do
