@@ -37,7 +37,10 @@ describe StatusesController, "GET #new" do
   act! { get :new }
   before do
     @status  = Status.new
+    @status.stub!(:active?).and_return(false)
+    Status.stub!(:new).and_return(@status)
     controller.stub!(:login_required)
+    controller.stub!(:current_user).and_return users(:default)
   end
 
   it "assigns @status" do
@@ -203,6 +206,16 @@ describe StatusesController, "GET #show" do
     @status  = statuses(:default)
     Status.stub!(:find).with('1').and_return(@status)
     controller.stub!(:login_required)
+
+    followup = @status.dup
+    followup.finished_at = 1.minute.ago
+    followup.stub!(:active?).and_return true
+    
+    # Let's hope these two methods are covered in unit tests.
+    @status.stub!(:followup).and_return(followup) # fuck you, tests. 
+    @status.stub!(:previous).and_return(nil) # fuck you, tests.  
+    
+    # todo: test with an actual previous status
   end
   
   it_assigns :status
@@ -221,6 +234,11 @@ describe StatusesController, "PUT #update" do
   before do
     @attributes = {}
     @status = statuses(:default)
+    # Let's hope these two methods are covered in unit tests.
+    @status.stub!(:followup).and_return(nil) # fuck you, tests. 
+    @status.stub!(:previous).and_return(nil) # fuck you, tests. 
+    # Note to the future: try removing the above line. If tests fail, go fucking fuck yourself.  If they pass, keep it removed.
+    # the test failure looks like undefined method `find' for #<Class:0x2096d64> .. on an association proxy stub in rspec.what. the. fuck.
     Status.stub!(:find).with('1').and_return(@status)
     controller.stub!(:login_required)
   end
