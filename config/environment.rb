@@ -5,7 +5,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.3.2' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.1.2' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -36,7 +36,9 @@ Rails::Initializer.run do |config|
   config.active_record.observers = [ :user_observer, :status_observer ]
 
   # Make Active Record use UTC-base instead of local time
-  config.active_record.time_zone = "UTC"
+  # rails 2.3
+  # config.active_record.default_time_zone = "UTC"
+  config.time_zone = "UTC"
   
   config.after_initialize do
     %w(ostruct md5).each { |lib| require lib }
