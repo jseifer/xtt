@@ -2,20 +2,20 @@ require File.dirname(__FILE__) + '/../spec_helper'
 
 # USER SCOPE
 
-describe StatusesController, "GET #index for user" do
-  define_models
-
-  act! { get :index, :format => 'xml' }
-
-  before do
-    @statuses = [statuses(:default)]
-    login_as :default
-    @user.stub!(:statuses).and_return(@statuses)
-  end
-  
-  it_assigns :statuses
-  it_renders :xml, :statuses
-end
+# describe StatusesController, "GET #index for user" do
+#   define_models
+# 
+#   act! { get :index, :format => 'xml' }
+# 
+#   before do
+#     @statuses = [statuses(:default)]
+#     login_as :default
+#     @user.stub!(:statuses).and_return(@statuses)
+#   end
+#   
+#   #it_assigns :statuses
+#   #it_renders :xml, :statuses
+# end
 
 describe StatusesController, "GET #last for user" do
   define_models

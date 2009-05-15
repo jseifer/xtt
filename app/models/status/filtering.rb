@@ -36,7 +36,7 @@ class Status
     scope_by_context(options.delete(:context), user_id || options[:current_user]) do
       hours = search_for(:user => user_id, :created => {:period => filter, :start => options[:date]}).sum(:hours,
         :group => "CONCAT(statuses.user_id, '::', DATE(CONVERT_TZ(statuses.created_at, '+00:00', '#{Time.zone.utc_offset_string}')))", 
-        :conditions => 'statuses.project_id is not null')
+        :conditions => 'statuses.project_id is not null').to_a
       hours.extend(FilteredHourMethods)
     end
   end

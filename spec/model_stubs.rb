@@ -54,11 +54,19 @@ ModelStubbing.define_models :users do
   
   model Project do
     stub :user, :user => all_stubs(:pending_user), :permalink => 'w00t', :name => "W00t"
+    stub :one, :id => 1
+    stub :three, :id => 3
   end
   
   model Membership do
-    stub :user => all_stubs(:user), :project => all_stubs(:project), :code => 'abc'
+    stub         :user => all_stubs(:user), :project => all_stubs(:project), :code => 'abc'
     stub :admin, :user => all_stubs(:admin_user), :code => 'abc'
+  end
+  
+  model Status do
+    stub         :message => "oh hai", :user => all_stubs(:user), :created_at => 1.week.ago, :project => all_stubs(:one_project), :state => "processed"
+    stub :one,   :message => "oh hai", :user => all_stubs(:user), :created_at => 1.week.ago, :project => all_stubs(:one_project), :state => "processed"
+    stub :three, :message => "oh hai", :user => all_stubs(:user), :created_at => 1.week.ago, :project => all_stubs(:three_project), :state => "processed"
   end
 
   model Feed do
