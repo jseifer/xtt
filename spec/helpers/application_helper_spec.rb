@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe ApplicationHelper, "#number_to_running_time" do
+  include ApplicationHelper
   { nil => '0', 
     0 => '0', 
     30 => '00:30', 
