@@ -160,6 +160,44 @@ h4.status a:hover {
   float: right;
 }
 
+#project-lists li.context {
+  background-color: #e2e2e2;
+  padding: 8px 8px;
+}
+
+.meta {
+  color: #999;
+  font-size: 80%;
+  text-align: center;
+}
+#projects-for-context .ttl {
+  float: left;
+}
+#projects-for-context .num {
+  text-align: right;
+}
+.you {
+  position: absolute;
+  right: 50px;
+  top: 0;
+  width: 50px;
+  display: block;
+  text-align: center;
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+}
+
+.others {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  display: block;
+  text-align: center;
+}
+
+
+
 /* @group forms */
 .form label {
   font-weight: bold;
@@ -180,8 +218,5 @@ h4.status a:hover {
   border-bottom-color: #bbb;
   border-right-color: #bbb;
 }
-
-
-
 
 /* @end */

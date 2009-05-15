@@ -9,7 +9,7 @@
   <% end %>
 <% end #status %>
 
-<%= render :partial => "projects/sidebox", :locals => { :contexts => current_user.memberships.contexts } %>
+<%= render :partial => "projects/sidebox", :locals => {:contexts => [[@context, @context.memberships]]} %>
 
 <% content_for :dom_loaded do %>
   $$("#project-lists li").each(function(i){
