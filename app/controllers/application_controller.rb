@@ -34,7 +34,7 @@ protected
     return nil if cookies[:tzoffset].blank?
     @browser_timezone ||= begin
       min = cookies[:tzoffset].to_i
-      TimeZone[(min + (-2 * min)).minutes]
+      ActiveSupport::TimeZone[(min + (-2 * min)).minutes]
     end
   end
 

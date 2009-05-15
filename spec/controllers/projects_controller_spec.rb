@@ -117,8 +117,9 @@ describe ProjectsController, "POST #create" do
   before do
     login_as :default
     @attributes = {}
-    @project = mock_model Project, :new_record? => false, :errors => []
-    @user = mock_model User, :owned_projects => [], :active? => true, :time_zone => "UTC", :id => "1"
+    @project = Project.new 
+    @project.stub!(:new_record?).and_return false
+    @user = mock_model User, :owned_projects => [], :active? => true, :time_zone => "UTC", :id => "1", :login => "joe"
     @user.owned_projects.stub!(:build).with(@attributes).and_return(@project)
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)

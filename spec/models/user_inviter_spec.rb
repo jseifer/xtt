@@ -16,7 +16,7 @@ describe User::Inviter do
     model Invitation
   end
   
-  before do
+  before(:each) do
     @project = projects(:default)
     @string  = "FOO, bar , BAZ@email.com , newb@email.com"
     @inviter = User::Inviter.new(@project.permalink, @string)
@@ -50,7 +50,7 @@ describe User::Inviter do
   end
   
   it "retrieves adds extra project_id to existing invitation" do
-    Invitation.create :email => 'newb@email.com', :project_ids => '55'
+    Invitation.create! :email => 'newb@email.com', :project_ids => '55'
     @inviter.should have(1).invitations
     @inviter.invitations[0].project_ids.should   == ['55', @project.id.to_s]
     @inviter.invitations[0][:project_ids].should == "55, #{@project.id.to_s}"
@@ -59,11 +59,9 @@ describe User::Inviter do
   it "creates memberships and emails users" do
     @inviter.users.each do |user|
       Job::UserInviter.should_receive(:create).with(@inviter.project, user)
-      # User::Mailer.should_receive(:deliver_project_invitation).with(@inviter.project, user) # moved to a job
     end
     @inviter.invitations.each do |invite|
       Job::UserInviter.should_receive(:create).with(@inviter.project, invite)
-      # User::Mailer.should_receive(:deliver_new_invitation).with(@inviter.project, invite) # moved to a job
     end
     lambda { @inviter.invite }.should change(Membership, :count).by(2)
   end

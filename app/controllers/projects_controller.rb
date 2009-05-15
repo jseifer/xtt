@@ -102,7 +102,7 @@ protected
   end
   
   def authorized?
-    logged_in? && (admin? || @project.nil? || @project.editable_by?(current_user))
+    logged_in? && (admin? || @project.nil? || @project.editable_by?(current_user)) && current_user.active?
   end
   
   def user_status_for(status)

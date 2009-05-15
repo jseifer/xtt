@@ -182,10 +182,9 @@ describe User do
 
   describe 'being created' do
     define_models :users
-    before do
+    before(:each) do
       @user = nil
-      User.delete_all
-      @user = create_user :login => "admin", :email => "admin@example.com"
+      User.delete_all ['login=?', 'quire']
       @creating_user = lambda do
         @user = create_user
         violated "#{@user.errors.full_messages.to_sentence}" if @user.new_record?
@@ -249,6 +248,9 @@ describe User do
   end
 
   it 'authenticates user' do
+    user = users(:default)
+    user.password = user.password_confirmation = "test"
+    user.save!
     User.authenticate(users(:default).login, 'test').should == users(:default)
   end
 
