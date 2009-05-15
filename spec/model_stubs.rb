@@ -54,8 +54,8 @@ ModelStubbing.define_models :users do
   
   model Project do
     stub :user, :user => all_stubs(:pending_user), :permalink => 'w00t', :name => "W00t"
-    stub :one, :id => 1
-    stub :three, :id => 3
+    stub :one,  :user => all_stubs(:pending_user), :name => "one", :id => 1
+    stub :three, :user => all_stubs(:pending_user), :name => "three", :id => 3
   end
   
   model Membership do
