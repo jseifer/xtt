@@ -13,7 +13,7 @@ class Status
   
   # user_id can be an integer or nil
   def self.filter(user_id, filter, options = {})
-    scope_by_context options.delete(:context) do
+    scope_by_context(options.delete(:context), user_id || options[:current_user]) do
       range   = filter ? date_range_for(filter, options[:date]) : nil
       records = search :created => range, :user =>  user_id, 
         :order => 'statuses.created_at desc', :page => options[:page], :per_page => options[:per_page]
@@ -27,13 +27,13 @@ class Status
   end
   
   def self.hours(user_id, filter, options = {})
-    scope_by_context options.delete(:context) do
+    scope_by_context(options.delete(:context), user_id || options[:current_user]) do
       search_for(:user => user_id, :created => {:period => filter, :start => options[:date]}).sum :hours, :conditions => 'statuses.project_id is not null'
     end
   end
   
   def self.filtered_hours(user_id, filter, options = {})
-    scope_by_context options.delete(:context) do
+    scope_by_context(options.delete(:context), user_id || options[:current_user]) do
       hours = search_for(:user => user_id, :created => {:period => filter, :start => options[:date]}).sum(:hours,
         :group => "CONCAT(statuses.user_id, '::', DATE(CONVERT_TZ(statuses.created_at, '+00:00', '#{Time.zone.utc_offset_string}')))", 
         :conditions => 'statuses.project_id is not null')
@@ -42,12 +42,19 @@ class Status
   end
 
 protected
-  def self.scope_by_context(value)
+  def self.scope_by_context(value, user_id=nil)
     if value
-      value = value.id if value.is_a? Context
-      with_scope :find => {:conditions => {'memberships.context_id' => value}, :select => "DISTINCT statuses.*",
-          :joins => "INNER JOIN memberships on statuses.project_id = memberships.project_id"} do
-        yield
+      if value.class.name =~ /GlobalContext/
+        with_scope :find => {:conditions => {'memberships.user_id' => user_id}, :select => "DISTINCT statuses.*",
+            :joins => "INNER JOIN memberships on statuses.project_id = memberships.project_id"} do
+          yield
+        end
+      else
+        value = value.id if value.is_a? Context
+        with_scope :find => {:conditions => {'memberships.context_id' => value}, :select => "DISTINCT statuses.*",
+            :joins => "INNER JOIN memberships on statuses.project_id = memberships.project_id"} do
+          yield
+        end
       end
     else
       yield
