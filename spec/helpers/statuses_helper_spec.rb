@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe StatusesHelper do
+  include StatusesHelper
   before :all do
     @data = [
       [0, Time.utc(2008, 2, 4), 1],
