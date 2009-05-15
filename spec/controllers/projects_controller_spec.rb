@@ -67,7 +67,7 @@ describe ProjectsController, "GET #show" do
       describe ProjectsController, "(xml)" do
         define_models
         
-        act! { get :show, options.merge(:id => 1, :format => 'xml') }
+        act! { get :show, options.merge(:id => '1', :format => 'xml') }
       
         it_renders :xml, :project
       end if options[:user_id].nil? && options[:filter].nil?
@@ -100,7 +100,7 @@ end
 
 describe ProjectsController, "GET #edit" do
   define_models
-  act! { get :edit, :id => 1 }
+  act! { get :edit, :id => "1" }
   
   before do
     @project = projects(:default)
@@ -117,8 +117,7 @@ describe ProjectsController, "POST #create" do
   before do
     login_as :default
     @attributes = {}
-    @project = Project.new 
-    @project.stub!(:new_record?).and_return false
+    @user.owned_projects.stub!(:new).and_return @project = projects(:default)
     @user = mock_model User, :owned_projects => [], :active? => true, :time_zone => "UTC", :id => "1", :login => "joe"
     @user.owned_projects.stub!(:build).with(@attributes).and_return(@project)
     controller.stub!(:current_user).and_return(@user)
@@ -134,7 +133,7 @@ describe ProjectsController, "POST #create" do
     end
     
     it_assigns :project, :flash => { :notice => :not_nil }
-    it_redirects_to { project_path(@project) }
+    it_redirects_to("project_url(@project)") { project_url(@project) }
   end
 
   describe ProjectsController, "(unsuccessful creation)" do
@@ -142,6 +141,8 @@ describe ProjectsController, "POST #create" do
     act! { post :create, :project => @attributes }
 
     before do
+      # fuck you, rspec
+      controller.stub!(:project_url).and_return "URL"
       @project.stub!(:save).and_return(false)
     end
     
@@ -201,7 +202,7 @@ describe ProjectsController, "PUT #update" do
   
   describe ProjectsController, "(successful save)" do
     define_models
-    act! { put :update, :id => 1, :project => @attributes, :membership => {} }
+    act! { put :update, :id => '1', :project => @attributes, :membership => {} }
 
     before do
       @project.stub!(:save).and_return(true)
