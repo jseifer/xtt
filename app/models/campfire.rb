@@ -6,6 +6,10 @@ class Campfire < ActiveRecord::Base
   def send_message(message)
     Job::NotifyCampfire.create self, message
   end
+  
+  def tinder_room
+    @tinder_room ||= self.name ? tinder.rooms.select { |r| r.name == room }[0] : tinder.rooms[0]
+  end
 
   def tinder_room
     @tinder_room ||= self.name ? tinder.rooms.select { |r| r.name == room }[0] : tinder.rooms[0]
