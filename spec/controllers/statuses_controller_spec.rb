@@ -67,6 +67,7 @@ describe StatusesController, "POST #create" do
     @user.stub!(:post).and_return(@status)
     @user.statuses.stub!(:before).and_return(nil)
     @status.user = @user
+    controller.stub!(:status_url)
   end
 
   describe StatusesController, "(successful replace-creation with text field)" do
