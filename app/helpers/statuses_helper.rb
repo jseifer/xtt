@@ -45,7 +45,9 @@ module StatusesHelper
           when :me       then send("#{prefix}project_for_me_path",   args.update(:user_id => :me))
           else                send("#{prefix}project_for_user_path", args.update(:user_id => user_id))
         end
-      elsif options.key?(:context) || controller.controller_name == 'contexts'
+      elsif options.key?(:context) || \
+        controller.controller_name == 'contexts' || \
+        controller.controller_name == 'statuses' && controller.action_name == 'index'
         args[:id] ||= options[:context] || params[:id]
         case user_id
           when nil, :all then send("#{prefix}context_for_all_path",  args)

@@ -106,6 +106,7 @@
       </ul>
     </div>
     
+    <% if @context.is_a?(Context) %>
     <div id="context" style="display:none">
       <% form_for(@context, :html => { :class => "form" }, :method => 'put') do |form| %>
         <div class='row final'>
@@ -117,8 +118,8 @@
         <%# render :partial => 'memberships/form', :object => form %>
         <p class="btns"><%= save_button %></p>
       <% end %>
-  
     </div>
+    <% end %>
   
       <div id="export" style="display:none">
         Navigate using the date, next/previous buttons below the graph and select your preferred output format to view.

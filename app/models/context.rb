@@ -10,7 +10,7 @@ class Context < ActiveRecord::Base
   attr_accessible :name, :permalink
 
   def users
-    @users ||= User.for_projects(projects)
+    @users ||= User.for_projects(projects.map(&:id))
   end
 
   def to_param
