@@ -1,5 +1,7 @@
 # This controller handles the login/logout function of the site.  
 class SessionsController < ApplicationController
+  protect_from_forgery :except => :create
+  
   # render new.rhtml
   layout 'session'
   def new
