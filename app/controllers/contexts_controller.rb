@@ -8,6 +8,7 @@ class ContextsController < ApplicationController
 
   def show
     params[:per] = 9999 if request.format == 'csv'
+    # We pass in "current_user" so that for the "all" context, the project list is scoped.
     @statuses, @date_range = Status.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :context => @context, :date => params[:date], :page => params[:page], :per_page => params[:per]||20, :current_user => current_user.id)
     @daily_hours = Status.filtered_hours(user_status_for(params[:user_id]), :daily, :context => @context, :date => params[:date], :current_user => current_user.id)
     @hours       = Status.filtered_hours(user_status_for(params[:user_id]), params[:filter], :context => @context, :date => params[:date], :current_user => current_user.id)

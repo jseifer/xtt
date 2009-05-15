@@ -6,32 +6,7 @@ class StatusesController < ApplicationController
   # USER SCOPE
   
   def index
-    @context = Context.new :project_ids => current_user.project_ids, :name => "All projects"
-
-    params[:per] = 9999 if request.format == 'csv'
-    @statuses, @date_range = Status.filter(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :context => @context, :date => params[:date], :page => params[:page], :per_page => params[:per]||20)
-    @daily_hours = Status.filtered_hours(user_status_for(params[:user_id]), :daily, :context => @context, :date => params[:date])
-    @hours       = Status.filtered_hours(user_status_for(params[:user_id]), params[:filter], :context => @context, :date => params[:date])
-
-    all_statuses = Status.filter_all_users(user_status_for(params[:user_id]), params[:filter] ||= :weekly, :context => @context, :date => params[:date])
-    # hmm, the [0] is necessary b/c this is actually a WillPaginateCollection
-    user_ids = all_statuses[0].map {|s| s.user.permalink }.uniq
-    @user_hours = []
-    user_ids.each do |user|
-      hours = Status.filtered_hours(user_status_for(user), params[:filter], :date => params[:date], :context => @context)
-      @user_hours << hours unless hours.empty?
-    end
-    # reset @user var. hack. omg.
-    user_status_for(params[:user_id])
-
-    @context ||= Context.new :name => "etc"
-    respond_to do |format|
-      format.html # show.html.erb
-      format.iphone
-      format.xml  { render :xml  => @context }
-      format.csv  # show.csv.erb
-    end
-    
+    redirect_to user_path(current_user)
   end
 
   def last
