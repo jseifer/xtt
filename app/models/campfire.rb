@@ -11,10 +11,6 @@ class Campfire < ActiveRecord::Base
     @tinder_room ||= self.name ? tinder.rooms.select { |r| r.name == room }[0] : tinder.rooms[0]
   end
 
-  def tinder_room
-    @tinder_room ||= self.name ? tinder.rooms.select { |r| r.name == room }[0] : tinder.rooms[0]
-  end
-
 private
 
   def tinder
