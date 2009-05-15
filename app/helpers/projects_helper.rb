@@ -4,6 +4,7 @@ module ProjectsHelper
   end
   
   def period_to_sentence(filter, date_range, hours)
+    raise "date range is not an array" unless date_range.is_a?(Array)
     plural = hours == 1 ? 'hour' : 'hours'
     filter = filter.to_sym if filter
     final = case filter
