@@ -41,11 +41,11 @@ Rails::Initializer.run do |config|
     :secret      => 'SEKRIT'
   }
 
-  config.gem :tinder, :version => '1.2.0'
-  config.gem :fastercsv, :version => '1.2.3'
-  config.gem :googlecharts, :lib => "gchart", :version => '1.3.6'
-  config.gem :hpricot, :version => '>=0.6'
-  config.gem :'net-toc', :lib => 'net/toc', :version => '0.2'
+  config.gem 'tinder', :version => '1.2.0'
+  config.gem 'fastercsv', :version => '1.2.3'
+  config.gem 'googlecharts', :lib => "gchart", :version => '1.3.6'
+  config.gem 'hpricot', :version => '>=0.6'
+  config.gem 'net-toc', :lib => 'net/toc', :version => '0.2'
   config.active_support.use_standard_json_time_format = true
   config.active_record.include_root_in_json = true
 
