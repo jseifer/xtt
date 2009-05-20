@@ -1,0 +1,15 @@
+<h1>Goal: <%=h @goal.name %></h1>
+
+
+<ul>
+  <li>Number of hours: <%=h @goal.hours %></li>
+  <li>Starting on <%=h @goal.start_date %></li>
+  <li>Finishing on <%=h @goal.end_date %></li>
+</ul>
+
+<% if @goal.goal_watching %>
+<p>
+  Watching <%= @goal.goal_watching_type %> <%= link_to h(@goal.goal_watching_id), @goal.goal_watching %>
+  Hours for this thing: <!-- goal_watching.hours_for(goal.start_date, goal.end_date) %>
+</p>
+<% end %>

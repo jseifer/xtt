@@ -10,6 +10,9 @@ class User < ActiveRecord::Base
 
   has_many :campfires
   has_many :tendrils
+
+  has_many :goals
+  belongs_to :goal_watching
     
   has_many :memberships, :dependent => :delete_all do
     def for(project)

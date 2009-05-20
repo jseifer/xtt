@@ -1,0 +1,5 @@
+<%= error_messages_for :goal %>
+<% form_for @goal, {}, :html => { :class => "form" } do |f| -%>
+<%= render :partial => "form", :object => f %>
+	<p><%= submit_tag :Create %></p>
+<% end -%>

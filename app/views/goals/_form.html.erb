@@ -1,0 +1,54 @@
+  <p>
+    <label for="goal_name">Goal name:</label>
+    <%= form.text_field :name %>
+  </p>
+  
+  <p>
+	  <label for="goal_hours">Number of hours</label>
+	  <%= form.text_field :hours, :maxlength => 4 %>
+	</p>
+	
+	<p>
+	  <label for="goal_start_date">Starting from</label>
+	  <%= form.text_field :start_date %><br />
+	  Enter a date 
+    <%= js_link_to_days 1, 'goal_start_date', 'Tomorrow' %> |
+    <%= js_link_to_days 0, 'goal_start_date', 'Today' %> |
+    <%= js_link_to_days Time.now.monday, 'goal_start_date', 'Start of this week' %>
+	</p>
+	
+	<p>
+	  <label for="goal_end_date">Ending at</label>
+	  <%= form.text_field :end_date %><br />
+    <%= js_link_to_days 1, 'goal_end_date', 'Tomorrow' %> |
+    <%= js_link_to_days 0, 'goal_end_date', 'Today' %> |
+    <%= js_link_to_days Time.now.monday, 'goal_end_date', 'Start of this week' %>
+	</p>
+	
+	<p>
+	  <label for="goal_goal_watching">Watching this thing</label>
+	</p>
+	<ul id="goal_watching_type">
+	  <li><%= form.radio_button :goal_watching_type, "Project" %> Project</li>
+	  <li><%= form.radio_button :goal_watching_type, "Context" %> Context</li>
+	  <li><%= form.radio_button :goal_watching_type, "User" %> User</li>
+	</ul>
+
+	<p id="goal_watching_selects">
+	  <%= form.select "goal_watching_project_id", current_user.projects.map { |p| [p.name, p.id] }, {}, { :style => "display:none", :id => "goal_watching_Project" } %>
+	  <%= form.select "goal_watching_context_id", current_user.contexts.map { |p| ["#{p.name} #{p.id}", p.id] }, {}, { :style => "display:none", :id => "goal_watching_Context" } %>
+	  <%= form.select "goal_watching_user_id", User.for_projects(current_user.projects).map { |p| [p.login, p.id] }, {}, { :style => "display:none", :id => "goal_watching_User" } %>
+  </p>
+  
+<script type="text/javascript">
+
+  $$('#goal_watching_type input').each(function(radio){
+    radio.observe('click', function(obj){
+      $$('#goal_watching_selects select').invoke('disable');
+      $$('#goal_watching_selects select').invoke('hide');
+      $('goal_watching_' + $F(radio)).show();
+      $('goal_watching_' + $F(radio)).enable();
+    })
+  })
+
+</script>
