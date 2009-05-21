@@ -4,7 +4,7 @@ class CreateGoals < ActiveRecord::Migration
       t.string :name
       t.integer :hours
       t.datetime :start_date
-      t.datetime :end_date
+      t.string  :period
       t.integer :user_id
       t.integer :goal_watching_id
       t.string  :goal_watching_type

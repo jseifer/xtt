@@ -4,12 +4,23 @@
 <ul>
   <li>Number of hours: <%=h @goal.hours %></li>
   <li>Starting on <%=h @goal.start_date %></li>
-  <li>Finishing on <%=h @goal.end_date %></li>
+  <li>Watching for <%=h @goal.period %></li>
 </ul>
 
 <% if @goal.goal_watching %>
-<p>
-  Watching <%= @goal.goal_watching_type %> <%= link_to h(@goal.goal_watching_id), @goal.goal_watching %>
-  Hours for this thing: <!-- goal_watching.hours_for(goal.start_date, goal.end_date) %>
-</p>
+<% if @goal.goal_watching_type == 'Context' %>
+<h1>Context: <%= link_to h(@goal.goal_watching.name), @goal.goal_watching %></h1>
+<h2>Hours: <%= total = @hours.sum { |h| h.sum { |hour| hour[2].to_f }} %></h2>
+
+<% if total < @goal.hours %>
+<div style="width:400px; background-color:white">
+  <div style="width:<%= (400.0 * (total/@goal.hours)) %>px; background-color: #888">&nbsp;</div>
+</div>
+  You have <%= @goal.hours - total %> hours left on your goal!
+
+<% elsif total >= @goal.hours %>
+  You are <%= total - @goal.hours %> hours over your goal!
+<% end %>
+<% end %>
+</goal>
 <% end %>

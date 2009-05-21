@@ -1,6 +1,8 @@
 class GoalsController < ApplicationController
   before_filter :find_goal, :only => [:show, :edit, :update, :destroy]
   before_filter :login_required
+  
+  helper :projects
 
   def index
     @goals = current_user.goals
@@ -8,6 +10,24 @@ class GoalsController < ApplicationController
 
   def show
     @goal = current_user.goals.find(params[:id])
+
+    @hours = case @goal.goal_watching_type
+      when 'Project'
+        @goal.goal_watching.statuses.filtered_hours(current_user.id, @goal.period, :date => @goal.start_date)
+      when 'Context'
+        @context = @goal.goal_watching
+
+        all_statuses = Status.filter_all_users(nil, @goal.period, :context => @context, :date => @goal.start_date)
+        user_ids = all_statuses[0].map {|s| s.user_id }.uniq
+        @user_hours = []
+        user_ids.each do |user|
+          hours = Status.filtered_hours(user, @goal.period, :date => @goal.start_date, :context => @context)
+          @user_hours << hours unless hours.empty?
+        end
+        @user_hours
+      else
+        raise
+      end
   end
 
   def new
@@ -16,7 +36,6 @@ class GoalsController < ApplicationController
 
   def create
     params[:goal][:start_date].gsub!(/^\w+ /, '')
-    params[:goal][:end_date].gsub!(/^\w+ /, '')
     params[:goal_watching_id] = params[:'goal_watching_#{params[:goal_watching_type].downcase}_id']
     @goal = current_user.goals.build(params[:goal])
 

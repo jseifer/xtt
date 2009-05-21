@@ -18,11 +18,8 @@
 	</p>
 	
 	<p>
-	  <label for="goal_end_date">Ending at</label>
-	  <%= form.text_field :end_date %><br />
-    <%= js_link_to_days 1, 'goal_end_date', 'Tomorrow' %> |
-    <%= js_link_to_days 0, 'goal_end_date', 'Today' %> |
-    <%= js_link_to_days Time.now.monday, 'goal_end_date', 'Start of this week' %>
+	  <label for="goal_end_date">Time period</label>
+	  <%= form.select :period, ['weekly', 'monthly', 'daily'] %>
 	</p>
 	
 	<p>
