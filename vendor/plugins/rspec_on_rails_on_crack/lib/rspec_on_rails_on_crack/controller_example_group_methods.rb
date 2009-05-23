@@ -1,4 +1,4 @@
-module Spec::Extensions::Main
+module Spec::DSL::Main
   def describe_access_for(controller, &block)
     RspecOnRailsOnCrack::ControllerAccessProxy.new(self, controller).instance_eval(&block)
   end
@@ -18,7 +18,8 @@ module RspecOnRailsOnCrack
         describe @controller, "access for #{user.inspect}", :type => :controller do
           ControllerAccessGroup.new(self, blocks, filters).instance_eval(&block)
           before do
-            controller.stub!(:current_user).and_return(user == :anon ? :false : users(user))
+            controller.stub!(:current_user).and_return(user == :anon ? nil : users(user))
+            controller.stub!(:logged_in?).and_return(user != :anon)
           end
         end
       end
@@ -107,18 +108,18 @@ module RspecOnRailsOnCrack
     protected
       def asserts_content_type(type = :html)
         mime = Mime::Type.lookup_by_extension((type || :html).to_s)
-        violated "Renders with Content-Type of #{mime}" unless response.content_type == mime
+        violated "Renders with Content-Type of #{response.content_type}, not #{mime}" unless response.content_type == mime
       end
       
       def asserts_status(status)
         case status
         when String, Fixnum
           code = ActionController::StatusCodes::STATUS_CODES[status.to_i]
-          violated "Renders with status of #{response.code.inspect}" unless response.code == status.to_s
+          violated "Renders with status of #{response.code.inspect}, not #{status}" unless response.code == status.to_s
         when Symbol
           code_value = ActionController::StatusCodes::SYMBOL_TO_STATUS_CODE[status]
           code       = ActionController::StatusCodes::STATUS_CODES[code_value]
-          violated "Renders with status of #{code.inspect}" unless response.code == code_value.to_s
+          violated "Renders with status of #{response.code.inspect}, not #{code.inspect}" unless response.code == code_value.to_s
         else
           violated "Is not successful" unless response.success?
         end
@@ -154,6 +155,10 @@ module RspecOnRailsOnCrack
     # in the Spec Example:
     #
     #   it_assigns :foo # => assigns[:foo].should == @foo
+    #
+    # If there is no instance variable @foo, it will just check to see if its not nil:
+    #
+    #   it_assigns :foo # => assigns[:foo].should_not be_nil (if @foo is not defined in spec)
     #
     # Check multiple instance variables
     # 
@@ -285,7 +290,11 @@ module RspecOnRailsOnCrack
           when :undefined
             controller.send(:instance_variables).should_not include("@#{name}")
           when Symbol
-            assigns[name].should == instance_variable_get("@#{value}")
+            if (instance_variable = instance_variable_get("@#{value}")).nil?
+              assigns[name].should_not be_nil
+            else
+              assigns[name].should == instance_variable
+            end
           end
       end
     end
@@ -322,10 +331,19 @@ module RspecOnRailsOnCrack
     #
     def it_renders_template(template_name, options = {})
       it "renders #{template_name}" do
+        integration = lambda { @controller.integrate_views! }
+        unless options[:pending]
+          @controller.integrate_views!
+        end
+        
         acting do |response|
           asserts_status options[:status]
           asserts_content_type options[:format]
           response.should render_template(template_name.to_s)
+        end
+
+        if options[:pending]
+          pending "Views are not integrated yet"
         end
       end
     end
@@ -391,17 +409,19 @@ module RspecOnRailsOnCrack
         options = record
         record  = nil
       end
+
       it "renders #{format}" do
         if record
           pieces = record.to_s.split(".")
           record = instance_variable_get("@#{pieces.shift}")
           record = record.send(pieces.shift) until pieces.empty?
+          block ||= lambda { record.send("to_#{format}") }
         end
-        block ||= lambda { record.send("to_#{format}") }
+
         acting do |response|
           asserts_status options[:status]
           asserts_content_type options[:format] || format
-          response.should have_text(block.call)
+          response.should have_text(block.call) if block
         end
       end
     end

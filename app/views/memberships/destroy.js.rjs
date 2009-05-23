@@ -1,2 +1,1 @@
-page.hide dom_id(@user)
-page['new_member'].replace_html :partial => 'groups/new_member'
+page.hide dom_id(@membership.user)

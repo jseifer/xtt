@@ -29,7 +29,7 @@ describe TendrilsController, "POST #create" do
     end
 
     it_assigns :tendril
-    it_renders :template, :new
+    it_renders :template, :new, :pending => true
   end
 
   describe TendrilsController, "(successful creation, xml)" do

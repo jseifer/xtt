@@ -6,12 +6,7 @@ class StatusesController < ApplicationController
   # USER SCOPE
   
   def index
-    @statuses ||= current_user.statuses
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml  => @statuses }
-    end
+    redirect_to user_path(current_user)
   end
 
   def last
@@ -116,7 +111,7 @@ class StatusesController < ApplicationController
   
 protected
   def authorized?
-    logged_in? && (admin? || @status.nil? || @status.editable_by?(current_user))
+    logged_in? && (admin? || @status.nil? || @status.editable_by?(current_user)) && current_user.active?
   end
 
   def find_status
@@ -150,4 +145,11 @@ protected
     end
     invalid
   end
+
+  # index
+  def user_status_for(status)
+    @user = status == 'me' ? current_user : User.find_by_permalink(status)
+    @user ? @user.id : nil
+  end
+
 end

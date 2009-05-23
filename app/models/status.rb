@@ -64,7 +64,7 @@ class Status < ActiveRecord::Base
     user &&
       (user.admin?         ||
       (user_id == user.id) || # status owner
-      (project? && project.owned_by?(user))) # project owner
+      (!project.nil? && project.owned_by?(user))) # project owner
   end
   
   def code_and_message=(value)

@@ -80,22 +80,30 @@ describe UsersController do
 end
 
 describe UsersController, "GET #show" do
+  define_models :users
   before do
     @user = users(:default)
-    @statuses   = [mock_model(Status, :project_id => 1), mock_model(Status, :project_id => 3), mock_model(Status, :project_id => 1)]
-    @memberships = [mock_model(Membership), mock_model(Membership)]
-    @date_range = :date_range
-    @hours      = 75.0
+    project = projects(:default)
+    @statuses = WillPaginate::Collection.create(1,10,10){|pager| pager.replace [
+      statuses(:default),
+      statuses(:one),
+      statuses(:three)
+      ]}
+    @memberships = [memberships(:default), memberships(:admin)]
+    @date_range = (1.week.ago..2.weeks.ago)
+    @hours      = [["#{@user.id}::2009-04-01", 75]]
+    @hours.extend Status::FilteredHourMethods
+    @hours      = [@hours]
     controller.stub!(:login_required)
     controller.stub!(:current_user).and_return(@user)
   end
 
-  [ {:filter => nil, :args => [:weekly, {:projects => nil, :date => nil, :page => nil}]},
-    {:filter => nil, :args => [:weekly, {:projects => nil, :date => nil, :page => nil}]},
-    {:filter => 'weekly', :args => ['weekly', {:date => nil, :page => nil, :projects => nil}]}].each do |options|
+  [ {:filter => nil, :args => [:weekly, {:projects => nil, :date => nil, :page => nil, :per_page => 20}]},
+    {:filter => nil, :args => [:weekly, {:projects => nil, :date => nil, :page => nil, :per_page => 20}]},
+    {:filter => 'weekly', :args => ['weekly', {:date => nil, :page => nil, :projects => nil, :per_page => 20}]}].each do |options|
       
     describe UsersController, "(filtered)" do
-      define_models
+      define_models :users
       
       act! { get :show, options.merge(:id => @user.to_param) }
       

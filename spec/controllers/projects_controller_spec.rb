@@ -7,7 +7,7 @@ describe ProjectsController, "GET #index" do
 
   before do
     @projects = []
-    @user = mock_model User, :projects => @projects, :active? => true, :time_zone => "UTC", :id => "1"
+    @user = mock_model User, :projects => @projects, :active? => true, :time_zone => "UTC", :id => "1", :login => "Joe"
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
   end
@@ -55,17 +55,19 @@ describe ProjectsController, "GET #show" do
       
       before do
         @project.statuses.should_receive(:filter).with(*options[:args]).and_return([@statuses, @date_range])
+        # I really SHOULD specify what filter_all_users receives, but it's too hard.
+        @project.statuses.should_receive(:filter_all_users).and_return([@statuses, @date_range])
         @project.statuses.should_receive(:filtered_hours).with(*options[:args][0..-3] + [:daily, {:date => nil}]).and_return(@hours)
         @project.statuses.should_receive(:filtered_hours).with(*options[:args][0..-2] + [{:date => nil}]).and_return(@hours)
       end
       
       it_assigns :project, :statuses, :date_range, :hours
-      it_renders :template, :show
+      it_renders :template, :show, :pending => true
 
       describe ProjectsController, "(xml)" do
         define_models
         
-        act! { get :show, options.merge(:id => 1, :format => 'xml') }
+        act! { get :show, options.merge(:id => '1', :format => 'xml') }
       
         it_renders :xml, :project
       end if options[:user_id].nil? && options[:filter].nil?
@@ -98,7 +100,7 @@ end
 
 describe ProjectsController, "GET #edit" do
   define_models
-  act! { get :edit, :id => 1 }
+  act! { get :edit, :id => "1" }
   
   before do
     @project = projects(:default)
@@ -115,8 +117,8 @@ describe ProjectsController, "POST #create" do
   before do
     login_as :default
     @attributes = {}
-    @project = mock_model Project, :new_record? => false, :errors => []
-    @user = mock_model User, :owned_projects => [], :active? => true, :time_zone => "UTC", :id => "1"
+    @user.owned_projects.stub!(:new).and_return @project = projects(:default)
+    @user = mock_model User, :owned_projects => [], :active? => true, :time_zone => "UTC", :id => "1", :login => "joe"
     @user.owned_projects.stub!(:build).with(@attributes).and_return(@project)
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
@@ -131,7 +133,7 @@ describe ProjectsController, "POST #create" do
     end
     
     it_assigns :project, :flash => { :notice => :not_nil }
-    it_redirects_to { project_path(@project) }
+    it_redirects_to("project_url(@project)") { project_url(@project) }
   end
 
   describe ProjectsController, "(unsuccessful creation)" do
@@ -139,6 +141,8 @@ describe ProjectsController, "POST #create" do
     act! { post :create, :project => @attributes }
 
     before do
+      # fuck you, rspec
+      controller.stub!(:project_url).and_return "URL"
       @project.stub!(:save).and_return(false)
     end
     
@@ -198,7 +202,7 @@ describe ProjectsController, "PUT #update" do
   
   describe ProjectsController, "(successful save)" do
     define_models
-    act! { put :update, :id => 1, :project => @attributes, :membership => {} }
+    act! { put :update, :id => '1', :project => @attributes, :membership => {} }
 
     before do
       @project.stub!(:save).and_return(true)

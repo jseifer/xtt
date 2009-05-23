@@ -1,0 +1,21 @@
+<% content_for :status do %>
+  <% form_for current_user.statuses.build do |f| -%>
+  	<%= f.text_field :code_and_message, :style => 'width:190px', :class => 'status-entry' %>
+    <p class="btns">
+      <%= img_button 'out' %>
+      <%= hidden_field_tag :destination, project_path(@project) if @project %>
+      <%= update_button %>
+    </p>
+  <% end %>
+<% end #status %>
+
+<%= render :partial => "projects/sidebox", :locals => {:contexts => [[@context, @context.memberships]]} %>
+
+<% content_for :dom_loaded do %>
+  $$("#project-lists li").each(function(i){
+    i.observe('click', function(j) { 
+      window.location.href = this.down("a").href; 
+    });
+  })
+<% end %>
+

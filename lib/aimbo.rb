@@ -68,11 +68,11 @@ class Net::TOC::Client
           buddy.send_im message.message_text
         end
       end
+			Message.delete_all
     end
     @conn.recv do |msg, val|
       @callbacks[msg].call(val) unless @callbacks[msg].nil?
     end
-    messages.delete_all
   end
 end
 
@@ -83,7 +83,7 @@ class Aimbo
     :password => 'caboose',
     :admin    => 'courtenay187'
   }
-  
+  cattr_accessor :credentials
   attr_accessor :client, :xtt
   include IM
   
@@ -140,9 +140,9 @@ class Aimbo
 
 end
 
-aimbo = Aimbo.new
-aimbo.xtt.xtt_loop
-return
+#aimbo = Aimbo.new
+#aimbo.xtt.xtt_loop
+#return
 
 #/var/www/xtt/releases/20080208021931/vendor/rails/railties/lib/commands/runner.rb:47: 
 #/usr/lib64/ruby/gems/1.8/gems/net-toc-0.2/./net/toc.rb:218:in `recv': Connection reset by peer - recvfrom(2) (Errno::ECONNRESET)

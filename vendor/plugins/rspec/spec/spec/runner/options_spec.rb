@@ -1,4 +1,5 @@
-require File.dirname(__FILE__) + '/../../spec_helper.rb'
+require File.dirname(__FILE__) + '/../../spec_helper'
+require File.dirname(__FILE__) + '/resources/custom_example_group_runner'
 
 module Spec
   module Runner
@@ -7,12 +8,17 @@ module Spec
         @err = StringIO.new('')
         @out = StringIO.new('')
         @options = Options.new(@err, @out)
+
+        before_suite_parts = []
+        after_suite_parts = []
+        @options.stub!(:before_suite_parts).and_return(before_suite_parts)
+        @options.stub!(:after_suite_parts).and_return(after_suite_parts)
       end
 
       after(:each) do
         Spec::Expectations.differ = nil
       end
-
+      
       describe "#examples" do
         it "should default to empty array" do
           @options.examples.should == []
@@ -98,6 +104,12 @@ module Spec
       describe "#dry_run" do
         it "should default to false" do
           @options.dry_run.should == false
+        end
+      end
+      
+      describe "#debug" do
+        it "should default to false" do
+          @options.debug.should == false
         end
       end
 
@@ -209,10 +221,26 @@ module Spec
         end
       end
 
+      describe "debug option specified" do
+        it "should cause ruby_debug to be required and do nothing" do
+          @options.debug = true
+          @options.should_receive(:require_ruby_debug)
+          @options.run_examples.should be_true
+        end
+      end
+      
+      describe "debug option not specified" do
+        it "should not cause ruby_debug to be required" do
+          @options.debug = false
+          @options.should_not_receive(:require_ruby_debug)
+          @options.run_examples.should be_true
+        end
+      end
+      
       describe "#load_class" do
         it "should raise error when not class name" do
           lambda do
-            @options.send(:load_class, 'foo', 'fruit', '--food')
+            @options.__send__(:load_class, 'foo', 'fruit', '--food')
           end.should raise_error('"foo" is not a valid class name')
         end
       end
@@ -223,9 +251,24 @@ module Spec
           @options.reporter.options.should === @options
         end
       end
+      
+      describe "#number_of_examples" do
+        context "when --example is parsed" do
+          it "provides the number of examples parsed instead of the total number of examples collected" do
+            @example_group = Class.new(::Spec::Example::ExampleGroup).describe("Some Examples") do
+              it "uses this example_group 1" do; end
+              it "uses this example_group 2" do; end
+              it "uses this example_group 3" do; end
+            end
+            @options.add_example_group @example_group
+            @options.parse_example("an example")
+            @options.number_of_examples.should == 1
+          end
+        end
+      end
 
       describe "#add_example_group affecting passed in example_group" do
-        it "runs all examples when options.examples is nil" do
+        it "runs all examples when options.examples is empty" do
           example_1_has_run = false
           example_2_has_run = false
           @example_group = Class.new(::Spec::Example::ExampleGroup).describe("Some Examples") do
@@ -237,7 +280,7 @@ module Spec
             end
           end
 
-          @options.examples = nil
+          @options.examples.clear
 
           @options.add_example_group @example_group
           @options.run_examples
@@ -256,8 +299,6 @@ module Spec
               example_2_has_run = true
             end
           end
-
-          @options.examples = []
 
           @options.add_example_group @example_group
           @options.run_examples
@@ -293,39 +334,78 @@ module Spec
       end
 
       describe "#run_examples" do
-        it "should use the standard runner by default" do
-          runner = ::Spec::Runner::ExampleGroupRunner.new(@options)
-          ::Spec::Runner::ExampleGroupRunner.should_receive(:new).
+        describe "with global predicate matchers" do
+          it "defines global predicate matcher methods on ExampleMethods" do
+            Spec::Runner.configuration.stub!(:predicate_matchers).and_return({:this => :that?})
+            group = Class.new(::Spec::Example::ExampleGroupDouble).describe("Some Examples")
+            example = group.new(::Spec::Example::ExampleProxy.new)
+            
+            @options.run_examples
+            example.this
+          end
+          
+          after(:each) do
+            Spec::Example::ExampleMethods.class_eval "undef :this"
+          end
+        end
+        
+        describe "with a mock framework defined as a Symbol" do
+          it "includes Spec::Adapters::MockFramework" do
+            Spec::Runner.configuration.stub!(:mock_framework).and_return('spec/adapters/mock_frameworks/rspec')
+
+            Spec::Example::ExampleMethods.should_receive(:include).with(Spec::Adapters::MockFramework)
+
+            @options.run_examples
+          end
+        end
+        
+        describe "with a mock framework defined as a Module" do
+          it "includes the module in ExampleMethods" do
+            mod = Module.new
+            Spec::Runner.configuration.stub!(:mock_framework).and_return(mod)
+            Spec::Example::ExampleMethods.should_receive(:include).with(mod)
+            @options.run_examples
+          end
+        end
+        
+        describe "when not given a custom runner" do
+          it "should use the standard" do
+            runner = ::Spec::Runner::ExampleGroupRunner.new(@options)
+            ::Spec::Runner::ExampleGroupRunner.should_receive(:new).
             with(@options).
             and_return(runner)
-          @options.user_input_for_runner = nil
+            @options.user_input_for_runner = nil
 
-          @options.run_examples
+            @options.run_examples
+          end
         end
 
-        it "should use a custom runner when given" do
-          runner = Custom::ExampleGroupRunner.new(@options, nil)
-          Custom::ExampleGroupRunner.should_receive(:new).
+        describe "when given a custom runner" do
+          it "should use the custom runner" do
+            runner = Custom::ExampleGroupRunner.new(@options, nil)
+            Custom::ExampleGroupRunner.should_receive(:new).
             with(@options, nil).
             and_return(runner)
-          @options.user_input_for_runner = "Custom::ExampleGroupRunner"
+            @options.user_input_for_runner = "Custom::ExampleGroupRunner"
 
-          @options.run_examples
-        end
+            @options.run_examples
+          end
 
-        it "should use a custom runner with extra options" do
-          runner = Custom::ExampleGroupRunner.new(@options, 'something')
-          Custom::ExampleGroupRunner.should_receive(:new).
+          it "should use the custom runner with extra options" do
+            runner = Custom::ExampleGroupRunner.new(@options, 'something')
+            Custom::ExampleGroupRunner.should_receive(:new).
             with(@options, 'something').
             and_return(runner)
-          @options.user_input_for_runner = "Custom::ExampleGroupRunner:something"
+            @options.user_input_for_runner = "Custom::ExampleGroupRunner:something"
 
-          @options.run_examples
+            @options.run_examples
+          end
         end
 
         describe "when there are examples" do
           before(:each) do
-            @options.add_example_group Class.new(::Spec::Example::ExampleGroup)
+            @example_group = Class.new(::Spec::Example::ExampleGroup)
+            @options.add_example_group @example_group
             @options.formatters << Formatter::BaseTextFormatter.new(@options, @out)
           end
 
@@ -338,6 +418,77 @@ module Spec
             @options.examples_run?.should be_false
             @options.run_examples
             @options.examples_run?.should be_true
+          end
+
+          describe "and the suite passes" do
+            before do
+              @example_group.should_receive(:run).and_return(true)
+            end
+
+            it "invokes after_suite_parts with true" do
+              success_result = nil
+              @options.after_suite_parts << lambda do |success|
+                success_result = success
+              end
+              
+              @options.run_examples
+              success_result.should be_true
+            end
+          end
+
+          describe "and the suite fails" do
+            before(:each) do
+              @example_group.should_receive(:run).and_return(false)
+            end
+
+            it "invokes after_suite_parts with false" do
+              success_result = nil
+              @options.after_suite_parts << lambda do |success|
+                success_result = success
+              end
+
+              @options.run_examples
+              success_result.should be_false
+            end
+          end
+
+          describe "when using heckle runner" do
+            before(:each) do
+              @heckle_runner_mock = mock("HeckleRunner")
+              @options.heckle_runner = @heckle_runner_mock
+            end
+            
+            it "should heckle" do
+              @heckle_runner_mock.should_receive(:heckle_with)
+              @options.run_examples
+            end
+            
+            it "shouldn't heckle recursively" do
+              heckled = false
+              @heckle_runner_mock.should_receive(:heckle_with) {
+                heckled.should == false
+                heckled = true
+                @options.run_examples
+              }
+              @options.run_examples
+            end
+
+            it "shouldn't load spec files twice" do
+              example_runner = mock("ExampleGroupRunner")
+              example_runner_inside_heckle = mock("ExampleGroupRunner inside Heckle")
+
+              ExampleGroupRunner.should_receive(:new).twice.and_return(
+                example_runner, example_runner_inside_heckle
+              )
+
+              example_runner.stub!(:run)
+              example_runner.should_receive(:load_files)
+              @heckle_runner_mock.stub!(:heckle_with).and_return { @options.run_examples }
+              example_runner_inside_heckle.stub!(:run)
+              example_runner_inside_heckle.should_not_receive(:load_files)
+
+              @options.run_examples
+            end
           end
         end
 
@@ -356,6 +507,16 @@ module Spec
             @options.examples_run?.should be_false
             @options.run_examples
             @options.examples_run?.should be_false
+          end
+
+          it "invokes after_suite_parts with true" do
+            success_result = nil
+            @options.after_suite_parts << lambda do |success|
+              success_result = success
+            end
+
+            @options.run_examples
+            success_result.should be_true
           end
         end
       end

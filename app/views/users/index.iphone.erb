@@ -3,20 +3,13 @@
   	<%= f.text_field :code_and_message, :style => 'width:190px', :class => 'status-entry' %>
     <p class="btns">
       <%= img_button 'out' %>
-      <%= hidden_field_tag :destination, project_path(@project) %>
+      <%= hidden_field_tag :destination, project_path(@project) if @project %>
       <%= update_button %>
     </p>
   <% end %>
 <% end #status %>
 
-<div id="projectlist">
-  <h2>Your Projects</h2>
-  <ul class="text-list" id="project-lists">
-    <% current_user.memberships.each do |membership| %>
-    <li>@<%= membership.code %> <%= link_to h(membership.project.name), membership.project %></li>
-    <% end %>
-  </ul>
-</div>
+<%= render :partial => "projects/sidebox", :locals => { :contexts => current_user.memberships.contexts } %>
 
 <% content_for :dom_loaded do %>
   $$("#project-lists li").each(function(i){
@@ -25,3 +18,4 @@
     });
   })
 <% end %>
+

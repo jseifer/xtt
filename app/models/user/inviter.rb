@@ -13,14 +13,15 @@ class User::Inviter
     parse(string)
   end
   
+  # Ugh. This should run immediately, rather than through a fucking shell-out (see line 54)
   def invite
     ActiveRecord::Base.transaction do
       users.each do |user|
         @project.users << user
-        User::Mailer.deliver_project_invitation @project, user
+        Job::UserInviter.create @project, user
       end
       invitations.each do |invite|
-        User::Mailer.deliver_new_invitation @project, invite
+        Job::UserInviter.create @project, invite
       end
     end
   end

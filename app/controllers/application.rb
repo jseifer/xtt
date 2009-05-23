@@ -18,11 +18,13 @@ class ApplicationController < ActionController::Base
 
 protected
   def iphone_user_agent?
-    @iphone_user_agent ||= (request.env["HTTP_USER_AGENT"] && request.env["HTTP_USER_AGENT"][/(Mobile\/.+Safari)/]) || :false
+    session[:iphone] = true if params[:iphone]
+    @iphone_user_agent ||= session[:iphone] || (request.env["HTTP_USER_AGENT"] && request.env["HTTP_USER_AGENT"][/(Mobile\/.+Safari)/]) || :false
+    @iphone_user_agent = false if session[:no_iphone] = params[:no_iphone]
     @iphone_user_agent  != :false
   end
 
-  # Set iPhone format if request to iphone.trawlr.com
+  # Set iPhone format
   def adjust_format_for_iphone    
     request.format = :iphone if iphone_user_agent?
   end
@@ -34,7 +36,7 @@ protected
     return nil if cookies[:tzoffset].blank?
     @browser_timezone ||= begin
       min = cookies[:tzoffset].to_i
-      TimeZone[(min + (-2 * min)).minutes]
+      ActiveSupport::TimeZone[(min + (-2 * min)).minutes]
     end
   end
 

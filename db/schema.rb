@@ -112,6 +112,12 @@ ActiveRecord::Schema.define(:version => 20081003200545) do
     t.integer "context_id"
   end
 
+	create_table "messages", :force => true do |t|
+		t.integer "user_id"
+		t.string "message_text"
+		t.timestamps
+	end
+
   create_table "open_id_authentication_associations", :force => true do |t|
     t.binary  "server_url"
     t.string  "handle"
@@ -189,6 +195,7 @@ ActiveRecord::Schema.define(:version => 20081003200545) do
     t.string   "aim_login"
     t.string   "identity_url"
     t.string   "permalink"
+    t.string   "aim_status"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email"

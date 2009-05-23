@@ -4,20 +4,20 @@ class Campfire < ActiveRecord::Base
   belongs_to :user # creator
 
   def send_message(message)
-    tinder_room.speak message
+    Job::NotifyCampfire.create self, message
+  end
+  
+  def tinder_room
+    @tinder_room ||= self.name ? tinder.rooms.select { |r| r.name == room }[0] : tinder.rooms[0]
   end
 
 private
 
   def tinder
     return @tinder if @tinder
-    @tinder = Tinder::Campfire.new domain, :ssl => true
+    @tinder = Tinder::Campfire.new domain, :ssl => false # should be customizable
     @tinder.login login, password
     @tinder
-  end
-
-  def tinder_room
-    @tinder_room ||= tinder.rooms[0] #.select { |r| r.name == room }[0]
   end
 
 end
