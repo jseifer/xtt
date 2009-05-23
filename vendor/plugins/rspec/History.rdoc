@@ -1,18 +1,4 @@
-=== Version 1.2.7 (in git)
-
-* enhancments
-  * added support for obj.stub(:method) { # implementation }
-  * allow subject { self } (Jarmo Pertman). Closes #816.
-
-* bug fixes
-  * NegativeOperatorMatcher now returns false (Wesley Beary). Closes #812.
-
-=== Version 1.2.6 / 2009-04-30
-
-* bug fixes
-  * gem actually built with spec executable
-
-=== Version 1.2.5 / 2009-04-29
+=== master (in git)
 
 * enhancements
 
@@ -20,10 +6,6 @@
     * you can do mock(:foo => "woo", :bar => "car")
   * expect { this_block }.to change{this.expression}.from(old_value).to(new_value)
   * expect { this_block }.to raise_error
-  * better failiure messages for equal matcher (James Byrne). Closes #804.
-  * add stub_chain method
-    * also alias_method :stub, :stub!, so you can stub with less bang
-  * added options to example_group_proxy
     
 * bug fixes
 
@@ -35,17 +17,14 @@
       implementations like JRuby
   * fix bug where in some circumstances, loading lib/spec/interop/test.rb
     raised an error (tsechingho). Closes #803.
-  * make sure specs only run against spec server when using drb (patch from Chuck Grindel). Closes #797.
-  * remove deprecation warning in example_pending when using FailingExamplesFormatter. Closes #794.
-  * Access explicit subject from nested groups of arbitrary depth. Closes #756.
 
-=== Version 1.2.4 / 2009-04-13
+=== Version 1.2.4
 
 * bug fix
 
   * just one - update the manifest
 
-=== Version 1.2.3 / 2009-04-13
+=== Version 1.2.3
 
 * deprecations
 

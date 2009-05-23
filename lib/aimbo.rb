@@ -83,6 +83,10 @@ class Aimbo
     :password => 'caboose',
     :admin    => 'courtenay187'
   }
+<<<<<<< HEAD:lib/aimbo.rb
+=======
+  
+>>>>>>> 91ca3d433dea47ccea38f28cdcabd6ec05036f77:lib/aimbo.rb
   cattr_accessor :credentials
   attr_accessor :client, :xtt
   include IM
@@ -143,9 +147,3 @@ end
 #aimbo = Aimbo.new
 #aimbo.xtt.xtt_loop
 #return
-
-#/var/www/xtt/releases/20080208021931/vendor/rails/railties/lib/commands/runner.rb:47: 
-#/usr/lib64/ruby/gems/1.8/gems/net-toc-0.2/./net/toc.rb:218:in `recv': Connection reset by peer - recvfrom(2) (Errno::ECONNRESET)
-#from /usr/lib64/ruby/gems/1.8/gems/net-toc-0.2/./net/toc.rb:529:in `join'
-#     from /usr/lib64/ruby/gems/1.8/gems/net-toc-0.2/./net/toc.rb:529:in `wait'
-#     from /var/www/xtt/releases/20080208021931/lib/aimbo.rb:91

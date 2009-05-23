@@ -84,7 +84,6 @@ module WillPaginate
       #   expected_options = { :conditions => { :colored => 'red' } }
       #   assert_equal expected_options, Shirt.colored('red').proxy_options
       def named_scope(name, options = {})
-        puts "defining named scope!!?!?"
         name = name.to_sym
         scopes[name] = lambda do |parent_scope, *args|
           Scope.new(parent_scope, case options

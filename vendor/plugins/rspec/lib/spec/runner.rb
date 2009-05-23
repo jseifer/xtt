@@ -58,7 +58,8 @@ module Spec
       end
 
       def run
-        options.examples_run? || options.run_examples
+        return true if options.examples_run?
+        options.run_examples
       end
 
     end

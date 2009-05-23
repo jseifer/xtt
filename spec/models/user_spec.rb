@@ -9,10 +9,6 @@ describe User do
   define_models :users
 
   describe "being bootstrapped" do
-    define_models :copy => false do
-      model User
-    end
-  
     it "creates initial user as admin" do
       create_user.should be_admin
     end
@@ -20,7 +16,7 @@ describe User do
   
   describe "cached status associations" do
     define_models
-
+    
     before do
       @user    = users(:default)
       @status  = statuses(:default)

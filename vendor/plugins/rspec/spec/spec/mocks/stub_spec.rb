@@ -16,15 +16,11 @@ module Spec
         @instance = @class.new
         @stub = Object.new
       end
-      
-      [:stub!, :stub].each do |method|
-        context "using #{method}" do
-          it "should return expected value when expected message is received" do
-            @instance.send(method, :msg).and_return(:return_value)
-            @instance.msg.should equal(:return_value)
-            @instance.rspec_verify
-          end
-        end
+
+      it "should return expected value when expected message is received" do
+        @instance.stub!(:msg).and_return(:return_value)
+        @instance.msg.should equal(:return_value)
+        @instance.rspec_verify
       end
 
       it "should ignore when expected message is received" do

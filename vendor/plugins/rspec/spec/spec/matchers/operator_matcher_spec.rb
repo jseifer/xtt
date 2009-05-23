@@ -33,7 +33,7 @@ describe "should_not ==" do
   
   it "should return true on success" do
     subject = "apple"
-    (subject.should_not == "orange").should be_false
+    (subject.should_not == "orange").should be_true
   end
 
   it "should fail when target.==(actual) returns false" do

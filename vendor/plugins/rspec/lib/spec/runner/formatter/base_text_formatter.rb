@@ -28,7 +28,7 @@ module Spec
           @example_group = example_group_proxy
         end
         
-        def example_pending(example, message, deprecated_pending_location=nil)
+        def example_pending(example, message, ignore)
           @pending_examples << ["#{@example_group.description} #{example.description}", message, example.location]
         end
         

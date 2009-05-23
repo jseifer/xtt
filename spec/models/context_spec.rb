@@ -18,6 +18,6 @@ describe User, "sorting membership contexts" do
   end
 
   it "leaves nil context for last" do
-    @contexts.last.should == [nil, [memberships(:default)]]
+    @contexts.to_a.last.should == [nil, [memberships(:default)]]
   end
 end

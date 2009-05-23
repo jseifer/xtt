@@ -55,9 +55,8 @@ module Spec
 
     class PositiveOperatorMatcher < OperatorMatcher #:nodoc:
       def __delegate_operator(actual, operator, expected)
-        if actual.__send__(operator, expected)
-          true
-        elsif ['==','===', '=~'].include?(operator)
+        return true if actual.__send__(operator, expected)
+        if ['==','===', '=~'].include?(operator)
           fail_with_message("expected: #{expected.inspect},\n     got: #{actual.inspect} (using #{operator})") 
         else
           fail_with_message("expected: #{operator} #{expected.inspect},\n     got: #{operator.gsub(/./, ' ')} #{actual.inspect}")
@@ -68,7 +67,7 @@ module Spec
 
     class NegativeOperatorMatcher < OperatorMatcher #:nodoc:
       def __delegate_operator(actual, operator, expected)
-        return false unless actual.__send__(operator, expected)
+        return true unless actual.__send__(operator, expected)
         return fail_with_message("expected not: #{operator} #{expected.inspect},\n         got: #{operator.gsub(/./, ' ')} #{actual.inspect}")
       end
 
