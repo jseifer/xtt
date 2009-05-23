@@ -83,10 +83,7 @@ class Aimbo
     :password => 'caboose',
     :admin    => 'courtenay187'
   }
-<<<<<<< HEAD:lib/aimbo.rb
-=======
-  
->>>>>>> 91ca3d433dea47ccea38f28cdcabd6ec05036f77:lib/aimbo.rb
+
   cattr_accessor :credentials
   attr_accessor :client, :xtt
   include IM

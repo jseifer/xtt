@@ -17,12 +17,14 @@ class Status < ActiveRecord::Base
   before_validation_on_create :parse_time_from_message
   after_create :cache_user_status
   after_create :process_previous
+
+  include AASM
   
-  acts_as_state_machine :initial => :pending
-  state :pending
-  state :processed
+  aasm_initial_state :pending
+  aasm_state :pending
+  aasm_state :processed
   
-  event :process do
+  aasm_event :process do
     transitions :from => :pending, :to => :processed, :guard => :calculate_hours
   end
   
