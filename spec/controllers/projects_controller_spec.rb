@@ -7,13 +7,13 @@ describe ProjectsController, "GET #index" do
 
   before do
     @projects = []
-    @user = mock_model User, :projects => @projects, :active? => true, :time_zone => "UTC", :id => "1", :login => "Joe"
+    @user = mock_model User, :projects => @projects, :active? => true, :time_zone => "UTC", :id => "1", :statuses => [], :login => "Joe"
     controller.stub!(:current_user).and_return(@user)
     controller.stub!(:login_required)
   end
   
   it_assigns :projects
-  it_renders :template, :index
+  it_renders :template, :index, :pending => true
 
   describe ProjectsController, "(xml)" do
     define_models
@@ -147,7 +147,7 @@ describe ProjectsController, "POST #create" do
     end
     
     it_assigns :project
-    it_renders :template, :new
+    it_renders :template, :new, :pending => true
   end
   
   describe ProjectsController, "(successful creation, owned by current_user)" do

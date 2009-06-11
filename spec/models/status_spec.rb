@@ -332,7 +332,7 @@ describe Status, "(filtering by date)" do
     end
 
     model Status do
-      stub :message => 'default', :state => 'processed', :hours => 5, :created_at => current_time - 5.minutes, :user => all_stubs(:user), :project_id => 1
+      stub :message => 'default', :aasm_state => 'processed', :hours => 5, :created_at => current_time - 5.minutes, :user => all_stubs(:user), :project_id => 1
       stub :status_day, :message => 'status_day', :created_at => current_time - 8.minutes, :user => all_stubs(:other_user), :project_id => 2
       stub :status_week_1, :message => 'status_week_1', :created_at => current_time - 3.days
       stub :status_week_2, :message => 'status_week_2', :created_at => current_time - (4.days + 20.hours), :user => all_stubs(:other_user)
