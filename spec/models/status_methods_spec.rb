@@ -21,7 +21,7 @@ end
 describe User, "(order)" do
   define_models do
     model Status do
-      stub :pending, :state => 'pending', :hours => 0, :created_at => current_time - 3.days, :project => all_stubs(:project)
+      stub :pending, :aasm_state => 'pending', :hours => 0, :created_at => current_time - 3.days, :project => all_stubs(:project)
     end
   end
   

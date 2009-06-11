@@ -134,7 +134,7 @@ protected
       #if row.compact.size == 3
         @status = current_user.post row['code_and_message'], "import"
         @status.update_attributes({ :created_at => Time.parse(row['created_datetime']), :finished_at => Time.parse(row['finished_datetime']), :user_id => current_user.id })
-        @status.state ||= 'pending'
+        @status.aasm_state ||= 'pending'
         @status.process!
         unless @status.valid?
           invalid << @status
