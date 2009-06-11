@@ -21,11 +21,7 @@ class Status < ActiveRecord::Base
   include AASM
   
   aasm_initial_state :pending
-<<<<<<< Updated upstream:app/models/status.rb
   aasm_state :pending
-=======
-  # aasm_state :pending
->>>>>>> Stashed changes:app/models/status.rb
   aasm_state :processed
   
   aasm_event :process do
