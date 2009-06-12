@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090511004030) do
+ActiveRecord::Schema.define(:version => 20090423230345) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -67,6 +67,11 @@ ActiveRecord::Schema.define(:version => 20090511004030) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "can_search_record", :force => true do |t|
+    t.integer  "parent_id"
+    t.datetime "created_at"
   end
 
   create_table "contexts", :force => true do |t|
@@ -143,9 +148,13 @@ ActiveRecord::Schema.define(:version => 20090511004030) do
   end
 
   create_table "open_id_authentication_nonces", :force => true do |t|
-    t.integer "timestamp",  :null => false
-    t.string  "server_url"
-    t.string  "salt",       :null => false
+    t.string  "nonce"
+    t.integer "created"
+  end
+
+  create_table "open_id_authentication_settings", :force => true do |t|
+    t.string "setting"
+    t.binary "value"
   end
 
   create_table "projects", :force => true do |t|
@@ -165,7 +174,7 @@ ActiveRecord::Schema.define(:version => 20090511004030) do
     t.integer  "user_id"
     t.decimal  "hours",       :precision => 8, :scale => 2, :default => 0.0
     t.string   "message"
-    t.string   "aasm_state"
+    t.string   "state"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "project_id"
@@ -195,7 +204,7 @@ ActiveRecord::Schema.define(:version => 20090511004030) do
     t.datetime "remember_token_expires_at"
     t.string   "activation_code",           :limit => 40
     t.datetime "activated_at"
-    t.string   "aasm_state",                              :default => "passive"
+    t.string   "state",                                   :default => "passive"
     t.datetime "deleted_at"
     t.boolean  "admin",                                   :default => false
     t.integer  "last_status_project_id"
