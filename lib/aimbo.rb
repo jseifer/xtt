@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'net/toc'
 
-require 'status'
-require 'user'
+# require 'status'
+# require 'user'
 
 module TOCMonkeypatch
   def names
@@ -84,6 +84,7 @@ class Aimbo
     :admin    => 'courtenay187'
   }
   
+  cattr_accessor :credentials
   attr_accessor :client, :xtt
   include IM
   
@@ -140,9 +141,9 @@ class Aimbo
 
 end
 
-aimbo = Aimbo.new
-aimbo.xtt.xtt_loop
-return
+#aimbo = Aimbo.new
+#aimbo.xtt.xtt_loop
+#return
 
 #/var/www/xtt/releases/20080208021931/vendor/rails/railties/lib/commands/runner.rb:47: 
 #/usr/lib64/ruby/gems/1.8/gems/net-toc-0.2/./net/toc.rb:218:in `recv': Connection reset by peer - recvfrom(2) (Errno::ECONNRESET)
