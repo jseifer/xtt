@@ -16,18 +16,18 @@ module Spec
         # See +ExampleMethods#should+ for more information about this approach.
         def subject(&block)
           block.nil? ?
-            explicit_subject || implicit_subject : @explicit_subject_block = block
+            explicit_subject || implicit_subject : @_explicit_subject_block = block
         end
-        
-        attr_reader :explicit_subject_block # :nodoc:
         
       private
       
         def explicit_subject
-          group = self
-          while group.respond_to?(:explicit_subject_block)
-            return group.explicit_subject_block if group.explicit_subject_block
-            group = group.superclass
+          if defined?(@_explicit_subject_block)
+            @_explicit_subject_block
+          elsif super_subject = superclass.instance_variable_get('@_explicit_subject_block')
+            super_subject
+          else
+            nil
           end
         end
         
@@ -37,10 +37,6 @@ module Spec
       end
       
       module ExampleMethods
-
-        alias_method :__should_for_example_group__,     :should
-        alias_method :__should_not_for_example_group__, :should_not
-
         # Returns the subject defined in ExampleGroupMethods#subject. The
         # subject block is only executed once per example, the result of which
         # is cached and returned by any subsequent calls to +subject+.
@@ -68,7 +64,7 @@ module Spec
         def subject
           @subject ||= instance_eval(&self.class.subject)
         end
-        
+
         # When +should+ is called with no explicit receiver, the call is
         # delegated to the object returned by +subject+. Combined with
         # an implicit subject (see +subject+), this supports very concise
@@ -80,7 +76,11 @@ module Spec
         #     it { should be_eligible_to_vote }
         #   end
         def should(matcher=nil)
-          self == subject ? self.__should_for_example_group__(matcher) : subject.should(matcher)
+          if matcher
+            subject.should(matcher)
+          else
+            subject.should
+          end
         end
 
         # Just like +should+, +should_not+ delegates to the subject (implicit or
@@ -92,7 +92,11 @@ module Spec
         #     it { should_not be_eligible_to_vote }
         #   end
         def should_not(matcher=nil)
-          self == subject ? self.__should_not_for_example_group__(matcher) : subject.should_not(matcher)
+          if matcher
+            subject.should_not(matcher)
+          else
+            subject.should_not
+          end
         end
       end
     end

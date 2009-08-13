@@ -19,6 +19,8 @@ module ModelStubbing
         end
 
       @global_key = (name == :default ? @model.singular : "#{name}_#{@model.singular}").to_sym
+      @model.ordered_stubs << name
+      @model.ordered_stubs.uniq!
       @model.all_stubs[@global_key] = @model.stubs[name] = self
     end
     
@@ -161,7 +163,6 @@ module ModelStubbing
     def record_key(attributes)
       return @record_key if @record_key && attributes.empty?
       key = [model.model_class.name, @global_key, @attributes.merge(attributes).inspect] * ":"
-      key << model.model_class.base_class.mock_id.to_s if attributes[:id] == :new
       @record_key = key if attributes.empty?
       key 
     end
@@ -174,10 +175,12 @@ module ModelStubbing
     end
 
     def key_list
+      exclude_associations!
       keys.collect { |key| @stub.connection.quote_column_name(column_name_for(key)) } * ", "
     end
 
     def value_list
+      exclude_associations!
       list = inject([]) do |fixtures, (key, value)|
         column_name = column_name_for key
         column      = column_for column_name
@@ -211,7 +214,11 @@ module ModelStubbing
     end
   
   private
-    def model_class
+      def exclude_associations!
+        self.delete_if{|k,v| model_class.reflect_on_association(k) }
+      end
+  
+      def model_class
       @stub.model.model_class
     end
   end

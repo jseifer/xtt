@@ -1,5 +1,5 @@
 # This file is auto-generated from the current state of the database. Instead of editing this file, 
-# please use the migrations feature of ActiveRecord to incrementally modify your database, and
+# please use the migrations feature of Active Record to incrementally modify your database, and
 # then regenerate this schema definition.
 #
 # Note that this schema.rb definition is the authoritative source for your database schema. If you need
@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081003200545) do
+ActiveRecord::Schema.define(:version => 20090511004030) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -79,6 +79,20 @@ ActiveRecord::Schema.define(:version => 20081003200545) do
 
   add_index "contexts", ["permalink"], :name => "index_contexts_on_permalink"
 
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "feeds", :force => true do |t|
     t.string   "name"
     t.string   "url"
@@ -112,11 +126,12 @@ ActiveRecord::Schema.define(:version => 20081003200545) do
     t.integer "context_id"
   end
 
-	create_table "messages", :force => true do |t|
-		t.integer "user_id"
-		t.string "message_text"
-		t.timestamps
-	end
+  create_table "messages", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "message_text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "open_id_authentication_associations", :force => true do |t|
     t.binary  "server_url"
@@ -128,13 +143,9 @@ ActiveRecord::Schema.define(:version => 20081003200545) do
   end
 
   create_table "open_id_authentication_nonces", :force => true do |t|
-    t.string  "nonce"
-    t.integer "created"
-  end
-
-  create_table "open_id_authentication_settings", :force => true do |t|
-    t.string "setting"
-    t.binary "value"
+    t.integer "timestamp",  :null => false
+    t.string  "server_url"
+    t.string  "salt",       :null => false
   end
 
   create_table "projects", :force => true do |t|
@@ -154,7 +165,7 @@ ActiveRecord::Schema.define(:version => 20081003200545) do
     t.integer  "user_id"
     t.decimal  "hours",       :precision => 8, :scale => 2, :default => 0.0
     t.string   "message"
-    t.string   "state"
+    t.string   "aasm_state"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "project_id"
@@ -184,7 +195,7 @@ ActiveRecord::Schema.define(:version => 20081003200545) do
     t.datetime "remember_token_expires_at"
     t.string   "activation_code",           :limit => 40
     t.datetime "activated_at"
-    t.string   "state",                                   :default => "passive"
+    t.string   "aasm_state",                              :default => "passive"
     t.datetime "deleted_at"
     t.boolean  "admin",                                   :default => false
     t.integer  "last_status_project_id"
