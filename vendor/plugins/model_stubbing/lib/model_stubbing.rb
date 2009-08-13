@@ -37,7 +37,7 @@ module ModelStubbing
     name    ||= is_a?(Class) ? self : :default
     base_name = options[:copy] || :default
     base      = name == base_name ? nil : ModelStubbing.definitions[base_name]
-    defn      = ModelStubbing.definitions[name] ||= (base && options[:copy] != false) ? base.dup : ModelStubbing::Definition.new
+    defn      = ModelStubbing.definitions[name] ||= (base && options[:copy] != false) ? base.dup : ModelStubbing::Definition.new(name)
     options   = base.options.merge(options) if base
     defn.setup_on self, options, &block
   end
