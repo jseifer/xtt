@@ -1,3 +1,6 @@
+require 'spec/deprecation'
+Spec.deprecate('spec_server', 'spork (gem install spork)')
+
 if Rails::VERSION::STRING >= '2.2' && Rails.configuration.cache_classes
   raise <<-MESSAGE
 
@@ -102,7 +105,12 @@ module Spec
           )
         )
 
-        dispatcher.cleanup_application if dispatcher.respond_to?(:cleanup_application)
+        if ::ActionController::Dispatcher.respond_to?(:cleanup_application)
+          ::ActionController::Dispatcher.cleanup_application
+        else
+          dispatcher.cleanup_application
+        end
+        
       end
 
       def in_memory_database?

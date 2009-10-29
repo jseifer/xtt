@@ -74,9 +74,17 @@ module Spec
         @files_loaded = false
         @out_used = nil
       end
-
+      
       def add_example_group(example_group)
         @example_groups << example_group
+      end
+      
+      def line_number_requested?
+        !!line_number
+      end
+      
+      def example_line
+        Spec::Runner::LineNumberQuery.new(self).example_line_for(files.first, line_number)
       end
 
       def remove_example_group(example_group)
@@ -340,7 +348,7 @@ module Spec
               error_stream.puts "You must specify one file, not a directory when providing a line number"
               exit(1) if stderr?
             else
-              example = SpecParser.new(self).spec_name_for(files[0], line_number)
+              example = LineNumberQuery.new(self).spec_name_for(files[0], line_number)
               @examples = [example]
             end
           else

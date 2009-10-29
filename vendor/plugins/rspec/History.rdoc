@@ -1,4 +1,31 @@
-=== master (in git)
+=== Version 1.2.7 / 2009-06-22
+
+* enhancments
+  * added support for fakes using obj.stub(:method) { # implementation }
+  * allow subject { self } (Jarmo Pertman). Closes #816.
+  * friendly error message when a matcher returns nil on a failure message
+  * add ruby_cmd option to SpecTask (Rick DeNatale). Closes #823.
+    * also added missing specs for SpecTask - thanks Rick!
+  * add support for generating matchers with fluent interfaces with the
+    Matcher DSL
+
+* bug fixes
+  * NegativeOperatorMatcher now returns false (Wesley Beary). Closes #812.
+  * derive MockExpectationError from Exception rather than StandardError
+    (Kerry Buckley). Closes #830.
+  * fix bug where multi-line failure messages weren't getting picked up by
+    autotest (Jarmo Pertman). Closes #832.
+  * --line_number now works for it { should xxx } format (assist from Fred
+    Lee)
+  * warn instead of raise when there is no description supplied for an
+    example. Closes #840.
+
+=== Version 1.2.6 / 2009-04-30
+
+* bug fixes
+  * gem actually built with spec executable
+
+=== Version 1.2.5 / 2009-04-29
 
 * enhancements
 
@@ -6,6 +33,10 @@
     * you can do mock(:foo => "woo", :bar => "car")
   * expect { this_block }.to change{this.expression}.from(old_value).to(new_value)
   * expect { this_block }.to raise_error
+  * better failiure messages for equal matcher (James Byrne). Closes #804.
+  * add stub_chain method
+    * also alias_method :stub, :stub!, so you can stub with less bang
+  * added options to example_group_proxy
     
 * bug fixes
 
@@ -17,14 +48,17 @@
       implementations like JRuby
   * fix bug where in some circumstances, loading lib/spec/interop/test.rb
     raised an error (tsechingho). Closes #803.
+  * make sure specs only run against spec server when using drb (patch from Chuck Grindel). Closes #797.
+  * remove deprecation warning in example_pending when using FailingExamplesFormatter. Closes #794.
+  * Access explicit subject from nested groups of arbitrary depth. Closes #756.
 
-=== Version 1.2.4
+=== Version 1.2.4 / 2009-04-13
 
 * bug fix
 
   * just one - update the manifest
 
-=== Version 1.2.3
+=== Version 1.2.3 / 2009-04-13
 
 * deprecations
 

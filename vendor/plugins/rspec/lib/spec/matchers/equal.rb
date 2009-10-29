@@ -19,22 +19,32 @@ module Spec
           actual.equal?(_expected_)
         end
         
+        def inspect_object(o)
+          "#<#{o.class}:#{o.object_id}> => #{o.inspect}"
+        end
+        
         failure_message_for_should do |actual|
           <<-MESSAGE
 
-expected #{_expected_.inspect}
-     got #{actual.inspect}
-     
-(compared using equal?)
+expected #{inspect_object(_expected_)}
+     got #{inspect_object(actual)}
+
+Compared using equal?, which compares object identity,
+but expected and actual are not the same object. Use
+'actual.should == expected' if you don't care about
+object identity in this example.
+
 MESSAGE
         end
 
         failure_message_for_should_not do |actual|
           <<-MESSAGE
 
-expected #{actual.inspect} not to equal #{_expected_.inspect}
+expected not #{inspect_object(actual)}
+         got #{inspect_object(_expected_)}
 
-(compared using equal?)
+Compared using equal?, which compares object identity.
+
 MESSAGE
         end
       end
