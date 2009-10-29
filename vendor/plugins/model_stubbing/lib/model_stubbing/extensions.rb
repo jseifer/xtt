@@ -19,7 +19,7 @@ module ModelStubbing
 
     module ClassMethods
       def create_model_methods_for(models)
-        class_eval models.collect { |model| model.stub_method_definition }.join("\n")
+        class_eval models.collect { |model| model.stub_method_definition }.join("\n") << "definition.insert!"
       end
     end
 
@@ -47,8 +47,10 @@ module ModelStubbing
         self.class.definition.teardown_test_run
       end
       if database?
-        ActiveRecord::Base.connection.rollback_db_transaction
-        ActiveRecord::Base.connection.decrement_open_transactions
+        if ActiveRecord::Base.connection.open_transactions != 0
+          ActiveRecord::Base.connection.rollback_db_transaction
+          ActiveRecord::Base.connection.decrement_open_transactions
+        end
         ActiveRecord::Base.verify_active_connections!
       end
     end
