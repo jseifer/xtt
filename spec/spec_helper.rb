@@ -10,9 +10,10 @@ require File.dirname(__FILE__) + "/model_stubs"
 require 'ruby-debug'
 Debugger.start
 
-ActiveRecord::Base.connection.transaction_joinable = true # Rails 2.3.2 
+# ActiveRecord::Base.connection.transaction_joinable = true # Rails 2.3.2 
 Spec::Runner.configure do |config|
   # config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = true
   config.use_instantiated_fixtures  = false
   config.fixture_path = RAILS_ROOT + '/spec/fixtures/'
 
