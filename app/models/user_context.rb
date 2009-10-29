@@ -1,4 +1,5 @@
-class Context < ActiveRecord::Base
+class UserContext < ActiveRecord::Base
+  set_table_name "contexts"
   has_many :memberships
   has_many :projects, :through => :memberships
   belongs_to :user
