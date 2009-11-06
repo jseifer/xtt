@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090423230345) do
+ActiveRecord::Schema.define(:version => 20091105233416) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -67,11 +67,6 @@ ActiveRecord::Schema.define(:version => 20090423230345) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "can_search_record", :force => true do |t|
-    t.integer  "parent_id"
-    t.datetime "created_at"
   end
 
   create_table "contexts", :force => true do |t|
@@ -148,13 +143,9 @@ ActiveRecord::Schema.define(:version => 20090423230345) do
   end
 
   create_table "open_id_authentication_nonces", :force => true do |t|
-    t.string  "nonce"
-    t.integer "created"
-  end
-
-  create_table "open_id_authentication_settings", :force => true do |t|
-    t.string "setting"
-    t.binary "value"
+    t.integer "timestamp",  :null => false
+    t.string  "server_url"
+    t.string  "salt",       :null => false
   end
 
   create_table "projects", :force => true do |t|
@@ -165,6 +156,7 @@ ActiveRecord::Schema.define(:version => 20090423230345) do
     t.string   "code"
     t.string   "permalink"
     t.string   "git_repo"
+    t.boolean  "active",     :default => true
   end
 
   add_index "projects", ["code"], :name => "index_projects_on_code"
@@ -174,7 +166,7 @@ ActiveRecord::Schema.define(:version => 20090423230345) do
     t.integer  "user_id"
     t.decimal  "hours",       :precision => 8, :scale => 2, :default => 0.0
     t.string   "message"
-    t.string   "state"
+    t.string   "aasm_state"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "project_id"
@@ -204,7 +196,7 @@ ActiveRecord::Schema.define(:version => 20090423230345) do
     t.datetime "remember_token_expires_at"
     t.string   "activation_code",           :limit => 40
     t.datetime "activated_at"
-    t.string   "state",                                   :default => "passive"
+    t.string   "aasm_state",                              :default => "passive"
     t.datetime "deleted_at"
     t.boolean  "admin",                                   :default => false
     t.integer  "last_status_project_id"

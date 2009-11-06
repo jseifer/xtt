@@ -2,7 +2,9 @@
     <label for="project_name">Project name:</label>
     <%= form.text_field :name %>
   </p>
-  
+  <p>
+    <label for="project_active"><%= form.check_box :active %> Active project</label>
+  </p>
   <p>
 	  <label for="project_code">Default Code for posting to this project?</label>
 	  <span class="at">@</span>
