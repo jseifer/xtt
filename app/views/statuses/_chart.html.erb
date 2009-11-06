@@ -27,7 +27,7 @@
       <span class="quiet">
         Everyone's <%= period_to_sentence(params[:filter], date_range, total) %>
       </span>
-      <span class="main-num"><%= number_with_precision total, 2 %></span>
+      <span class="main-num"><%= number_with_precision total, :precision => 2 %></span>
       <span class="quiet">
         Filtered
       </span>

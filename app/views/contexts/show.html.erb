@@ -99,14 +99,14 @@
       <li class="clearfix <%= %(last) if first_in_collection?(current_user.projects, index) %>" id="project-<%= project.id %>">
         <a href="<%= url_for project %>">
           <span class="ttl"><%=h project.name %></span>
-          <span class="num"><%= number_with_precision project_hours.total, 2 %></span>
+          <span class="num"><%= number_with_precision project_hours.total, :precision => 2 %></span>
         </a>
       </li>
       <% end %>
       </ul>
     </div>
     
-    <% if @context.is_a?(Context) %>
+    <% if @context.class.name == "Context" %>
     <div id="context" style="display:none">
       <% form_for(@context, :html => { :class => "form" }, :method => 'put') do |form| %>
         <div class='row final'>
@@ -151,11 +151,11 @@
           </h4>
           <p class="quiet"><% if user.last_status_id -%>Active <%= js_time_ago_in_words user.last_status_at %><% else -%>Inactive<% end -%></p>
           <span class="you">
-            <span class="num"><%= number_with_precision @daily_hours.total(user.id), 2 %></span>
+            <span class="num"><%= number_with_precision @daily_hours.total(user.id), :precision => 2 %></span>
             <span class="meta">today</span>
           </span>
           <span class="others">
-            <span class="num"><%= number_with_precision @hours.total(user.id), 2 %></span>
+            <span class="num"><%= number_with_precision @hours.total(user.id), :precision => 2 %></span>
             <span class="meta"><%=h params[:filter] %></span>
           </span>
         </div>
