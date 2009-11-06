@@ -76,7 +76,8 @@ module StatusesHelper
   end
   
   def chart_data_for(labels, filter, hours)
-    filter     = filter.to_sym if filter
+    hours  = [hours] unless hours[0].is_a?(Array)
+    filter = filter.to_sym if filter
     hours_cache = {}
     hour_block = case filter
       when :weekly
