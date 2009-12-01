@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 
 describe Membership do
-  define_models :memberships do
+  define_models :memberships, :copy => :default do
     model Membership do
       stub :user => all_stubs(:user), :project => all_stubs(:another_project), :code => 'foo'
     end

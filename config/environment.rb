@@ -39,6 +39,8 @@ Rails::Initializer.run do |config|
   # rails 2.3
   # config.active_record.default_time_zone = "UTC"
   config.time_zone = "UTC"
+  # config.active_record.time_zone = "UTC"
+  config.active_record.default_timezone = :utc
   
   config.after_initialize do
     %w(ostruct md5).each { |lib| require lib }

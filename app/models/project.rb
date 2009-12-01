@@ -19,6 +19,7 @@ class Project < ActiveRecord::Base
   after_create :create_membership_for_owner
 
   named_scope :all, :order => 'permalink'
+  named_scope :active, { :conditions => { :active => true }}
 
   def editable_by?(user)
     users.include?(user)

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090511004030) do
+ActiveRecord::Schema.define(:version => 20091105233416) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -156,6 +156,7 @@ ActiveRecord::Schema.define(:version => 20090511004030) do
     t.string   "code"
     t.string   "permalink"
     t.string   "git_repo"
+    t.boolean  "active",     :default => true
   end
 
   add_index "projects", ["code"], :name => "index_projects_on_code"

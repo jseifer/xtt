@@ -50,6 +50,7 @@
       </li>
     	<% memberships.each_with_index do |membership, index| -%>
     	  <% project = membership.project %>
+    	  <% next if ! project.active? %>
   			<% project_hours = project.statuses.filtered_hours(nil, :daily) ; user_hours = project_hours.total(current_user) -%>
         <li<%= %( class="last") if first_in_collection?(current_user.projects, index) %> id="project-<%= project.id %>">
           <a href="<%= url_for project %>">

@@ -78,11 +78,17 @@ module StatusesHelper
   def chart_data_for(labels, filter, times)
     times = [times] unless times[0].is_a?(Array)
     filter     = filter.to_sym if filter
+    hours_cache = {}
     hour_block = case filter
       when :weekly
-        lambda { |memo, (user_id, date, hours)| memo.update(date.strftime("%A")[0..2] => hours) }
+        #if date.is_a?(Array)
+        #  lambda { |memo, (user_id, date, hours)| memo.update(date.strftime("%A")[0..2] => hours) }
+        #else
+        hours.each { |item| hours_cache.update(item[1].strftime("%A")[0..2] => item[2]) }
+        #end
       when :monthly, :'bi-weekly'
-        lambda { |memo, (user_id, date, hours)| memo.update(date.day => hours) }
+        # lambda { |memo, (user_id, date, hours)| memo.update(date.day => hours) }
+        hours.each { |item| hours_cache.update(item[1].day => item[2]) }
     end
     hour_cache = times.inject({}, &hour_block)
     labels.inject([]) { |memo, day| memo << hour_cache[day].to_f }

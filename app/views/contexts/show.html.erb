@@ -99,7 +99,7 @@
       <li class="clearfix <%= %(last) if first_in_collection?(current_user.projects, index) %>" id="project-<%= project.id %>">
         <a href="<%= url_for project %>">
           <span class="ttl"><%=h project.name %></span>
-          <span class="num"><%= number_with_precision project_hours.total, 2 %></span>
+          <span class="num"><%= number_with_precision project_hours.total, :precision => 2 %></span>
         </a>
       </li>
       <% end %>
