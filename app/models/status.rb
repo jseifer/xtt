@@ -1,6 +1,7 @@
 require 'tinder'
 
 class Status < ActiveRecord::Base
+  include Twitter::Autolink
   validate :set_project_from_code
   validates_presence_of :user_id, :message
   validate :times_are_sane
@@ -28,6 +29,10 @@ class Status < ActiveRecord::Base
     transitions :from => :pending, :to => :processed, :guard => :calculate_hours
   end
   
+  def linked_message
+    auto_link self.message
+  end
+
   def membership
     @membership = (project? ? user.memberships.for(project) : nil) || false unless @membership == false
   end
