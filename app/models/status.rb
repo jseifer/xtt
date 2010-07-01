@@ -30,7 +30,7 @@ class Status < ActiveRecord::Base
   end
   
   def linked_message
-    auto_link self.message
+    auto_link self.message, { :hashtag_url_base => "http://xtt.railsmachine.com/search?hashtag=%23" }
   end
 
   def membership
