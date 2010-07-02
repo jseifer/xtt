@@ -171,6 +171,7 @@ ActiveRecord::Schema.define(:version => 20100702185317) do
     t.integer  "project_id"
     t.string   "source",                                    :default => "the web"
     t.datetime "finished_at"
+    t.string   "rendered"
   end
 
   add_index "statuses", ["created_at", "user_id"], :name => "index_statuses_on_created_at_and_user_id"
