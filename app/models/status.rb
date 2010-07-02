@@ -2,11 +2,8 @@ require 'tinder'
 
 class Status < ActiveRecord::Base
   include Twitter::Autolink
-<<<<<<< HEAD
-=======
   include Twitter::Extractor
 
->>>>>>> 9f918e3523302520a67df12f8597d0c6e25617d6
   validate :set_project_from_code
   validates_presence_of :user_id, :message
   validate :times_are_sane
