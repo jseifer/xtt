@@ -8,9 +8,6 @@ class User < ActiveRecord::Base
   has_many :owned_projects, :order => 'projects.permalink', :class_name => 'Project'
   has_many :contexts, :order => 'contexts.permalink', :class_name => "UserContext"
 
-  has_many :campfires
-  has_many :tendrils
-    
   has_many :memberships, :dependent => :delete_all do
     def for(project)
       loaded? ? 
