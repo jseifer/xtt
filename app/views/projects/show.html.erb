@@ -52,8 +52,8 @@
           <%= link_to gravatar_for(status.user), status.user %>
         </div>
         <div class="media-content">
-          <h4 class="media-title status"><%= link_to(status_for(status), status, :class => 'entry-title entry-content') %></h4>
-          <p class="quiet">posted by <%= link_to(h(status.user.login), status.user) %>,  <%= status_at status %> from <strong><%=h status.source || "the web" %></strong></p>
+          <h4 class="media-title status"><%= status.rendered %></h4>
+          <p class="quiet">posted by <%= link_to(h(status.user.login), status.user) %>,  <%= link_to status_at(status), status %> from <strong><%=h status.source || "the web" %></strong></p>
           <% if status.processed? -%>
             <span class="others">
               <span class="num"><%= status.hours.to_f %></span>

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100630014806) do
+ActiveRecord::Schema.define(:version => 20100702172625) do
 
   create_table "bj_config", :primary_key => "bj_config_id", :force => true do |t|
     t.string "hostname"
@@ -172,6 +172,7 @@ ActiveRecord::Schema.define(:version => 20100630014806) do
     t.integer  "project_id"
     t.string   "source",                                    :default => "the web"
     t.datetime "finished_at"
+    t.string   "rendered"
   end
 
   add_index "statuses", ["created_at", "user_id"], :name => "index_statuses_on_created_at_and_user_id"

@@ -1,6 +1,9 @@
 require 'tinder'
 
 class Status < ActiveRecord::Base
+  include Twitter::Autolink
+  include Twitter::Extractor
+
   validate :set_project_from_code
   validates_presence_of :user_id, :message
   validate :times_are_sane
@@ -18,6 +21,8 @@ class Status < ActiveRecord::Base
   after_create :cache_user_status
   after_create :process_previous
 
+  before_save :render_message
+
   include AASM
   
   aasm_initial_state :pending
@@ -28,6 +33,10 @@ class Status < ActiveRecord::Base
     transitions :from => :pending, :to => :processed, :guard => :calculate_hours
   end
   
+  def render_message
+    self['rendered'] = auto_link self.message, { :hashtag_url_base => "/hashtags/" }
+  end
+
   def membership
     @membership = (project? ? user.memberships.for(project) : nil) || false unless @membership == false
   end

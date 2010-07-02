@@ -46,9 +46,9 @@
             <% else %>
               <%= link_to_filtered_statuses h(status.project.name), :context => nil, :project => status.project %> /
             <% end %>
-            <%= link_to(status_for(status), status, :class => 'entry-title entry-content') %>
+            <%= status.rendered %>
           </h4>
-          <p class="quiet">posted by <%= link_to(h(status.user.login), status.user) %>,  <%= status_at status %> from <strong><%=h status.source || "the web" %></strong></p>
+          <p class="quiet">posted by <%= link_to(h(status.user.login), status.user) %>,  <%= link_to status_at(status), status %> from <strong><%=h status.source || "the web" %></strong></p>
           <% if status.processed? -%>
             <span class="others">
               <span class="num"><%= status.hours.to_f %></span>
