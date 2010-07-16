@@ -30,6 +30,12 @@ To deploy, you need to create the following files (we provide also the default t
     set :rails_env, :staging
     server 'staging.example.com', :app, :web, :db, :primary => true
 
+### config/initializers/usertime_config.rb
+
+    Stop::UserTime.configure do |config|
+      config.key = "sekrit"
+    end
+
 ### config/initializers/custom.rb
 
     TT_HOST  = 'example.com'

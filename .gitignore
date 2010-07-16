@@ -8,5 +8,6 @@ vendor/rails
 config/deploy/production.rb
 config/deploy/staging.rb
 config/initializers/custom.rb
+config/initializers/usertime_config.rb
 config/moonshine/production.yml
 config/moonshine/staging.yml
