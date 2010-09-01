@@ -133,13 +133,19 @@ protected
       next if row['code_and_message'].blank?
       logger.warn row.inspect
       #if row.compact.size == 3
-        @status = current_user.post row['code_and_message'], "import"
-        @status.update_attributes({ :created_at => Time.parse(row['created_datetime']), :finished_at => Time.parse(row['finished_datetime']), :user_id => current_user.id })
-        @status.aasm_state ||= 'pending'
-        @status.process!
-        unless @status.valid?
-          invalid << @status
-        end
+      @status = current_user.statuses.new(:source => 'import', :created_at => row['created_datetime'], :finished_at => row['finished_datetime'], :code_and_message => row['code_and_message'])
+      @status.save!
+      @status.process!
+      invalid << @status unless @status.valid?
+      
+      
+        # @status = current_user.post row['code_and_message'], "import"
+        # @status.update_attributes({ :created_at => Time.parse(row['created_datetime']), :finished_at => Time.parse(row['finished_datetime']), :user_id => current_user.id })
+        # @status.aasm_state ||= 'pending'
+        # @status.process!
+        # unless @status.valid?
+        #   invalid << @status
+        # end
       #else
         # do nothing
       #end
